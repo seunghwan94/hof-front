@@ -22,7 +22,7 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Install Dependencies
+    - name: Install Dependencies 
       run: yarn install
 
     - name: Build React App
