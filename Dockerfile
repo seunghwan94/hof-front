@@ -1,5 +1,5 @@
 # 1. Node 환경에서 빌드
-FROM node:18 AS builder
+FROM node:22 AS builder
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install
