@@ -13,7 +13,7 @@ function AppRoutes(){
       <Route path="/Intro" element={<Intro />} />
       <Route path="/Login" element={<Login />} />
       <Route path="/Home" element={<Home />} />
-      <Route path="/CssExample" element={<CssExample />} />
+      <Route path="/CssExample" element={<CssExample/>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

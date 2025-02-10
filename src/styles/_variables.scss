@@ -1,0 +1,26 @@
+// 기본 버튼 색상 변경
+$primary: #ff6600;   // Bootstrap 기본 primary 색상을 오렌지로 변경
+$secondary: #ff0000;    // secondary 색상 변경
+
+// 버튼 스타일 변경
+$btn-border-radius: 12px;  // 버튼 모서리를 둥글게 변경
+$btn-padding-y: 14px;      // 버튼 위아래 패딩 조정
+$btn-padding-x: 24px;      // 버튼 좌우 패딩 조정
+$btn-font-size: 18px;      // 버튼 폰트 크기 변경
+$btn-font-weight: bold;    // 버튼 폰트 굵기 변경
+
+// Alert 색상 정의 (파스텔 톤)
+$alert-primary-bg: #a7d8f0;   // 파란색 (Primary)
+$alert-success-bg: #b7e4c7;   // 초록색 (Success)
+$alert-danger-bg: #f8b4b4;    // 빨간색 (Danger)
+$alert-warning-bg: #ffe4a1;   // 노란색 (Warning)
+$alert-info-bg: #d4d4f5;      // 보라색 (Info)
+
+$alert-primary-color: #055160;   // 파란색 텍스트
+$alert-success-color: #0c5722;   // 초록색 텍스트
+$alert-danger-color: #7d2020;    // 빨간색 텍스트
+$alert-warning-color: #855400;   // 노란색 텍스트
+$alert-info-color: #4c4c89;      // 보라색 텍스트
+
+
+@import "bootstrap/scss/bootstrap"; // Bootstrap 스타일 불러오기
