@@ -1,7 +1,7 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import Header from "./components/layout/Header";
 import AppRoutes from "./routes/AppRoutes";
-import "./styles/custom.scss"; // Bootstrap SCSS 적용
+
 
 function App() {
   return (
