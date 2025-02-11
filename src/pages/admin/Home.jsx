@@ -4,7 +4,7 @@ import CategoryBar from "./CategoryBar";
 function Home(){
   return (
     <div>
-      <CategoryBar/>
+
     </div>
     
   );

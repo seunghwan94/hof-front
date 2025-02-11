@@ -6,7 +6,7 @@ import Logo from "../../components/layout/Logo";
 
 
 const CategoryBar = () => {
-  const location = useLocation(); // 현재 라우트 가져오기
+  const location = useLocation();
   console.log(location);
 
 
@@ -16,7 +16,7 @@ const isActive = (path) => location.pathname.startsWith(path);
   
 
   return (
-    <div className="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white my-3 ms-3 rounded-3 shadow" style={{
+    <div className="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white my-3 ms-3 rounded-3 shadow category-bar" style={{
       width: "250px",
       height: "95vh",
       maxHeight: "95vh",

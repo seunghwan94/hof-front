@@ -4,7 +4,7 @@ import CategoryBar from './CategoryBar';
 const Prod = () => {
   return (
     <div>
-      <CategoryBar/>
+
     </div>
   );
 }

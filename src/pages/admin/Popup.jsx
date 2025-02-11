@@ -4,7 +4,7 @@ import CategoryBar from './CategoryBar';
 const Popup = () => {
   return (
     <div>
-      <CategoryBar/>
+
     </div>
   );
 }

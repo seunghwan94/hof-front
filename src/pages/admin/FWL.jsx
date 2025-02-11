@@ -4,7 +4,7 @@ import CategoryBar from './CategoryBar';
 const FWL = () => {
   return (
     <div>
-      <CategoryBar/>
+
       
     </div>
   );

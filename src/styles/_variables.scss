@@ -330,3 +330,14 @@ body {
   bottom: 0;  /* 마지막 섹션에 도달했을 때 올라옴 */
   position: fixed;
 }
+
+.category-bar {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 250px; 
+  height: 100vh; 
+  background-color: #212529; 
+  overflow-y: auto; 
+  z-index: 1000; 
+}

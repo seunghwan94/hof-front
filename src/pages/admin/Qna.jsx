@@ -4,7 +4,7 @@ import CategoryBar from './CategoryBar';
 const Qna = () => {
   return (
     <div>
-      <CategoryBar/>
+
     </div>
   );
 }

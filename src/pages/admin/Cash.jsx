@@ -4,7 +4,7 @@ import CategoryBar from './CategoryBar';
 const Cash = () => {
   return (
     <div>
-      <CategoryBar/>
+
     </div>
   );
 }

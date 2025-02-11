@@ -10,13 +10,20 @@ import Popup from "../pages/admin/Popup";
 import Cash from "../pages/admin/Cash";
 import Qna from "../pages/admin/Qna";
 import FWL from "../pages/admin/FWL";
+import BarRoutes from "../pages/admin/layout/BarRoutes";
+
+
 
 function AppRoutes(){
   return (
+    // <>
+ 
+    // <BarRoutes/>
+
     <Routes>
       <Route path="/*" element={<Index />} /> 
       <Route path="/Login" element={<Login />} />
-      <Route path="/DashBoard" element={<Home />} />
+      <Route path="/dashboard" element={<Home />} />
       <Route path="/member" element={<Member />} />
       <Route path="/prod" element={<Prod />} />
       <Route path="/popup" element={<Popup />} />
@@ -25,6 +32,7 @@ function AppRoutes(){
       <Route path="/fwl" element={<FWL />} />
       <Route path="/CssExample" element={<CssExample/>} />
     </Routes>
+    // </>
   );
 };
 
