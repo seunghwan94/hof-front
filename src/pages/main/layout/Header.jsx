@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import Logo from "../../../components/layout/Logo";
 
 const Header = () => {
   const location = useLocation(); // 현재 경로 가져오기
@@ -8,7 +9,7 @@ const Header = () => {
     <>
       <nav className="navbar navbar-expand-lg fixed-top">
         <div className="container">
-          <Link className="navbar-brand" to="/">MyApp</Link>
+          <Link className="navbar-brand" to="/"><Logo /></Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span className="navbar-toggler-icon"></span>
           </button>
