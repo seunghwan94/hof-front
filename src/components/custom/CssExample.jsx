@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CustomAlert from "./CustomAlert";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
@@ -14,30 +14,30 @@ function CssExample() {
     message: "",
   });
 
-  // 버튼 데이터 배열
-  const buttons_toast = [
-    { type: "success", label: "성공 toast", message: "작업이 성공적으로 완료되었습니다!" },
-    { type: "error", label: "오류 toast", message: "오류가 발생했습니다!" },
-    { type: "info", label: "정보 toast", message: "이것은 정보 메시지입니다!" },
-    { type: "warning", label: "경고 toast", message: "주의가 필요합니다!" },
-  ];
+  // // 버튼 데이터 배열
+  // const buttons_toast = [
+  //   { type: "success", label: "성공 toast", message: "작업이 성공적으로 완료되었습니다!" },
+  //   { type: "error", label: "오류 toast", message: "오류가 발생했습니다!" },
+  //   { type: "info", label: "정보 toast", message: "이것은 정보 메시지입니다!" },
+  //   { type: "warning", label: "경고 toast", message: "주의가 필요합니다!" },
+  // ];
 
   const buttons_alert = [
     { type: "blue", label: "정보 alert", message: "이것은 정보 메시지입니다!" },
   ];
   // Toast 알림 표시 함수
-  const showToast = (type, message) => {
-    // Toast 알림 표시
-    toast[type](message, {
-      position: "top-center",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "colored",
-    });
-  };
+  // const showToast = (type, message) => {
+  //   // Toast 알림 표시
+  //   toast[type](message, {
+  //     position: "top-center",
+  //     autoClose: 3000,
+  //     hideProgressBar: false,
+  //     closeOnClick: true,
+  //     pauseOnHover: true,
+  //     draggable: true,
+  //     theme: "colored",
+  //   });
+  // };
 
   // CustomAlert 표시 함수
   const showAlert = (type, message) => {
