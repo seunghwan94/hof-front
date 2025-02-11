@@ -1,10 +1,12 @@
 import React from "react";
+import CategoryBar from "./CategoryBar";
 
 function Home(){
   return (
     <div>
-      <h1>admin index</h1>
+      <CategoryBar/>
     </div>
+    
   );
 }
 

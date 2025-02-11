@@ -12,7 +12,7 @@ function AppRoutes(){
       <Route path="/" element={<Home />} />
       <Route path="/Intro" element={<Intro />} />
       <Route path="/Login" element={<Login />} />
-      <Route path="/Home" element={<Home />} />
+      <Route path="/DashBoard" element={<Home />} />
       <Route path="/CssExample" element={<CssExample/>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
