@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBed, faChair, faShirt, faShop, faToiletPortable, faBoxes } from "@fortawesome/free-solid-svg-icons";
 
@@ -15,23 +15,21 @@ function Category() {
 
   return (
     <>
-      <Container className="mt-1">
-        <h4>카테고리</h4>
-        <Row className="justify-content-center pt-3"> {/* ✅ Row도 중앙 정렬 */}
-          {categories.map((category, index) => (
-            <Col key={index} xs={6} sm={4} md={3} lg={2} className="text-center">
-              <a href="/" className="text-hof d-flex flex-column align-items-center text-decoration-none">
-                <FontAwesomeIcon 
-                  icon={category.icon} 
-                  className="mb-2" 
-                  style={{ fontSize: "2rem" }} // ✅ 크기 조절
-                />
-                {category.name}
-              </a>
-            </Col>
-          ))}
-        </Row>
-      </Container>
+      <h4>카테고리</h4>
+      <Row className="justify-content-center">
+        {categories.map((category, index) => (
+          <Col key={index} xs={6} sm={4} md={3} lg={2} className="text-center p-4">
+            <a href="/" className="text-hof d-flex flex-column align-items-center text-decoration-none">
+              <FontAwesomeIcon 
+                icon={category.icon} 
+                className="mb-2" 
+                style={{ fontSize: "2rem" }}
+              />
+              {category.name}
+            </a>
+          </Col>
+        ))}
+      </Row>
     </>
   );
 }
