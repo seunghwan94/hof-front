@@ -12,13 +12,13 @@ import NotFound from "../pages/not-found/NotFound";
 function AppRoutes(){
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
       <Route path="/Intro" element={<Intro />} />
       <Route path="/shop" element={<Shop />} />
       <Route path="/community" element={<Community />} />
       <Route path="/Interior" element={<Interior />} />
       <Route path="/Login" element={<Login />} />
       <Route path="/Login" element={<Login />} />
+      <Route path="/DashBoard" element={<Home />} />
       <Route path="/CssExample" element={<CssExample/>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
