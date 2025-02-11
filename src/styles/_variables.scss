@@ -36,7 +36,7 @@ $alert-info-color: #4c4c89;
 
 /* 전체 적용 */
 body {
-  font-family: "CustomFont", sans-serif;
+  font-family: "CustomFont", sans-serif !important;
 }
 
 // ✅ 2. Bootstrap의 SCSS 불러오기 (변수 재정의 후 적용됨)

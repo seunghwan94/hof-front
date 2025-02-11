@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import CustomAlert from "./CustomAlert";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../../styles/custom_alert.scss";
+
 
 function CssExample() {
   const [activeCategory, setActiveCategory] = useState(null);
@@ -58,6 +58,7 @@ function CssExample() {
       <h1>CssExample index</h1>
 
       <div className="button-container">
+        <p style={{ fontWeight: "bold" }}>이 텍스트가 AnotherFont로 표시되면 정상!</p>
         <button className="btn btn-hof">hof</button>
         <span className="text-hof">쇼핑</span>
         <span
