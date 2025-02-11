@@ -1,5 +1,5 @@
 // ✅ 1. Bootstrap에서 사용하는 변수 먼저 재정의
-$primary: #ff6600;   // 기본 primary 색상을 오렌지로 변경
+$primary: #35c5f0;   // 기본 primary 색상을 오렌지로 변경
 $secondary: #ff0000; // secondary 색상 변경
 
 $btn-border-radius: 12px; // 버튼 모서리를 둥글게
@@ -23,19 +23,108 @@ $alert-info-color: #4c4c89;
 // ✅ 2. Bootstrap의 SCSS 불러오기 (변수 재정의 후 적용됨)
 @import "bootstrap/scss/bootstrap";
 
-// ✅ 3. Bootstrap의 `.btn-primary` 스타일 덮어쓰기
-.btn-primary {
-  background-color: #ff5733 !important;
-  border-color: #ff5733 !important;
-
+.btn-hof {
+  background-color: #35c5f0 !important;
+  border-color: #35c5f0 !important;
+  color : #fff !important;
   &:hover {
-    background-color: #e14d2a !important;
-    border-color: #e14d2a !important;
+    background-color: #009FCE !important;
+    border-color: #009FCE !important;
   }
 
   &:active {
-    background-color: #c43c1d !important;
-    border-color: #c43c1d !important;
+    background-color: #35c5f0 !important;
+    border-color: #35c5f0 !important;
   }
 }
 
+.btn-outline-hof {
+  @extend .btn-outline-primary; // ✅ Bootstrap의 btn-outline-primary 스타일 상속
+  color: #35c5f0 !important;
+  border-color: #35c5f0 !important;
+  
+  &:hover {
+    color: white !important;
+    background-color: #35c5f0 !important;
+    border-color: #35c5f0 !important;
+  }
+
+  &:focus,
+  &:active {
+    color: white !important;
+    background-color: #2bb0db !important;
+    border-color: #2bb0db !important;
+    box-shadow: 0 0 0 0.2rem rgba(53, 197, 240, 0.5);
+  }
+
+  &:disabled {
+    color: #a0d9f2 !important;
+    border-color: #a0d9f2 !important;
+    background-color: transparent !important;
+  }
+}
+
+
+.text-hof {
+  color : #222 !important;
+  &.active,
+  &:hover {
+    color: #35c5f0 !important;
+  }
+}
+
+.checkbox-hof {
+  appearance: none; // 기본 스타일 제거
+  width: 18px;
+  height: 18px;
+  border: 2px solid #35c5f0;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+
+  &:checked {
+    background-color: #35c5f0;
+    border-color: #35c5f0;
+  }
+
+  &:checked::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -60%) rotate(45deg);
+  }
+}
+
+.radio-hof {
+  appearance: none; // 기본 스타일 제거
+  width: 18px;
+  height: 18px;
+  border: 2px solid #35c5f0;
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+
+  &:checked {
+    background-color: #35c5f0;
+    border-color: #35c5f0;
+  }
+
+  &:checked::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

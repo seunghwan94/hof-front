@@ -35,7 +35,7 @@ const CustomAlert = ({ isVisible, type, message, onConfirm, onCancel, onClose })
           <div className="custom-alert-content">
             <p>{message}</p>
             <div className="custom-alert-buttons">
-              <button className="btn btn-confirm" onClick={onConfirm}>
+              <button className="btn btn-outline-hof" onClick={onConfirm}>
                 확인
               </button>
               <button className="btn btn-cancel" onClick={onCancel}>

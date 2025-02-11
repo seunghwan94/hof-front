@@ -5,6 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../styles/custom_alert.scss";
 
 function CssExample() {
+  const [activeCategory, setActiveCategory] = useState(null);
+
   // CustomAlert 상태 관리
   const [alertConfig, setAlertConfig] = useState({
     isVisible: false,
@@ -56,6 +58,20 @@ function CssExample() {
       <h1>CssExample index</h1>
 
       <div className="button-container">
+        <button className="btn btn-hof">hof</button>
+        <span className="text-hof">쇼핑</span>
+        <span
+          className={`text-hof ${activeCategory === "interior" ? "active" : ""}`}
+          onClick={() => setActiveCategory("interior")}
+        >
+          인테리어/생활
+        </span>
+        <input type="checkbox" className="checkbox-hof" />
+        <input type="radio" name="category" className="radio-hof" />
+        <input type="radio" name="category" className="radio-hof" />
+        <br></br>
+        <hr></hr>
+
         {buttons_toast.map((btn) => (
           <button
             key={btn.type}
