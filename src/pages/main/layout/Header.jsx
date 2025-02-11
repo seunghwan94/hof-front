@@ -2,12 +2,12 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../../../components/layout/Logo";
 
-const Header = () => {
+const Header = ({ fixed }) => {
   const location = useLocation(); // 현재 경로 가져오기
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg fixed-top">
+      <nav className={`navbar navbar-expand-lg ${fixed ? "fixed-top" : ""}`}>
         <div className="container">
           <Link className="navbar-brand" to="/"><Logo /></Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -35,7 +35,7 @@ const Header = () => {
           </div>
         </div>
       </nav>
-      <hr style={{width:'100%', marginTop:'5em'}}/>
+      {!fixed && <hr style={{width:'100%', marginTop:0}}/>}
     </>
   );
 };

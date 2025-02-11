@@ -250,3 +250,81 @@ body {
   background-color: #35c5f0 !important;
   color: white !important;
 }
+
+
+
+
+
+/* fullPage.js 기본 스타일 조정 */
+#fullpage-wrapper {
+  height: 100vh !important;
+  width: 100vw !important;
+}
+
+/* 전체 화면을 덮는 비디오 컨테이너 */
+.video-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 비디오 스타일 수정 */
+.video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100vw;
+  min-height: 100vh;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+}
+
+/* 텍스트 오버레이 스타일 */
+.text-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  z-index: 2;
+}
+
+/* 전체 섹션 스타일 */
+.section {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #eee;
+  color: #fff;
+  text-align: center;
+  transition: transform 0.5s ease-out;
+}
+
+/* Footer 스타일 */
+.footer {
+  position: absolute;  /* 처음에는 화면 밖에 위치 */
+  bottom: -75px;  /* 화면 밖에 위치 */
+  left: 0;
+  width: 100%;
+  background-color: #222;
+  color: #fff;
+  padding: 10px 0;
+  text-align: center;
+  transition: bottom 0.5s ease-in-out;  /* 자연스러운 올라오는 애니메이션 */
+}
+
+.footer.show {
+  bottom: 0;  /* 마지막 섹션에 도달했을 때 올라옴 */
+  position: fixed;
+}

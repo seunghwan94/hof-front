@@ -22,10 +22,9 @@ function Index() {
   const isNotFound = !isValidRoute; // 유효한 경로가 아니면 404
 
   const routes = useRoutes([...routesConfig, { path: "*", element: <NotFound /> }]);
-
   return (
     <>
-      {!isNotFound && <Header />}
+      {!isNotFound && <Header fixed={location.pathname === "/" || location.pathname === "/Intro"} />}   
       {routes}
     </>
   );
