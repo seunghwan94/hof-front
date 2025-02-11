@@ -1,21 +1,23 @@
 import React from "react";
+import LoginInput from "./LoginInput";
+import LoginLeft from "./LoginLeft";
 
 function Login(){
-  return (
-    <form>
-      <div>
-        <h1>Login index</h1>
+
+  return (   
+    <div className="d-flex" style={{alignItems: "center", justifyContent: "space-around", height: "100vh"}}>      
+      <div >
+        <LoginLeft />
       </div>
       <div >
-        <div>
-          <h1>l</h1>
-        </div>
-        <div>
-          <h1>r</h1>
-        </div>   
+        <LoginInput />
       </div>
-    </form>
+    </div>
   );
 }
+
+
+
+
 
 export default Login;
