@@ -9,7 +9,7 @@ const Logo = ({ color = "black" }) => {
         color: color, // props로 받은 색상 적용
       }}
       className="py-2 m-0 ps-4"
-    >
+    > 
       가구의집
     </h3>
   );

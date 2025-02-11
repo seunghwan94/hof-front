@@ -35,7 +35,7 @@ const Header = () => {
           </div>
         </div>
       </nav>
-      <hr style={{width:'100%', marginTop:'4em'}}/>
+      <hr style={{width:'100%', marginTop:'5em'}}/>
     </>
   );
 };
