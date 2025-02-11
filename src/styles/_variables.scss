@@ -24,6 +24,12 @@ $alert-info-color: #4c4c89;
   font-family: "CustomFont";
   src: url("../assets/fonts/MinSansVF.ttf") format("truetype");
 }
+@font-face {
+  font-family: "KCC-Ganpan";
+  src: url('../assets/fonts/KCC-Ganpan.ttf') format('truetype');
+}
+
+
 
 /* 전체 적용 */
 body {
