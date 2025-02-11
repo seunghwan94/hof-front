@@ -20,7 +20,7 @@ function Category() {
         <Row className="justify-content-center pt-3"> {/* ✅ Row도 중앙 정렬 */}
           {categories.map((category, index) => (
             <Col key={index} xs={6} sm={4} md={3} lg={2} className="text-center">
-              <a href="#" className="text-hof d-flex flex-column align-items-center text-decoration-none">
+              <a href="/" className="text-hof d-flex flex-column align-items-center text-decoration-none">
                 <FontAwesomeIcon 
                   icon={category.icon} 
                   className="mb-2" 
