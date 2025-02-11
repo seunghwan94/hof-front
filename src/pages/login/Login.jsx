@@ -5,12 +5,15 @@ function Login(){
     <form>
       <div>
         <h1>Login index</h1>
-      </div>      
-      <div>
-
       </div>
-
-
+      <div >
+        <div>
+          <h1>l</h1>
+        </div>
+        <div>
+          <h1>r</h1>
+        </div>   
+      </div>
     </form>
   );
 }
