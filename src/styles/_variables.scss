@@ -20,6 +20,25 @@ $alert-danger-color: #7d2020;
 $alert-warning-color: #855400;
 $alert-info-color: #4c4c89;
 
+@font-face {
+  font-family: "CustomFont";
+  src: url("../assets/fonts/WantedSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "AnotherFont";
+  src: url("../assets/fonts/WantedSans-SemiBold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: italic;
+}
+
+/* 전체 적용 */
+body {
+  font-family: "CustomFont", sans-serif;
+}
+
 // ✅ 2. Bootstrap의 SCSS 불러오기 (변수 재정의 후 적용됨)
 @import "bootstrap/scss/bootstrap";
 
@@ -127,4 +146,5 @@ $alert-info-color: #4c4c89;
     border-radius: 50%;
     transform: translate(-50%, -50%);
   }
+
 }
