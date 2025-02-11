@@ -20,12 +20,10 @@ $alert-danger-color: #7d2020;
 $alert-warning-color: #855400;
 $alert-info-color: #4c4c89;
 
-
 @font-face {
   font-family: "CustomFont";
   src: url("../assets/fonts/MinSansVF.ttf") format("truetype");
 }
-
 
 /* 전체 적용 */
 body {
