@@ -23,10 +23,7 @@ function CssExample() {
   ];
 
   const buttons_alert = [
-    { type: "red", label: "성공 alert", message: "작업이 성공적으로 완료되었습니다!" },
-    { type: "green", label: "오류 alert", message: "오류가 발생했습니다!" },
     { type: "blue", label: "정보 alert", message: "이것은 정보 메시지입니다!" },
-    { type: "yellow", label: "경고 alert", message: "주의가 필요합니다!" },
   ];
   // Toast 알림 표시 함수
   const showToast = (type, message) => {
@@ -56,47 +53,26 @@ function CssExample() {
   return (
     <div>
       <h1>CssExample index</h1>
+      <p style={{ fontWeight: "bold" }}>이 텍스트가 AnotherFont로 표시되면 정상!</p>
+      
+      <hr/>
+      <button className="btn btn-hof">hof</button>
+      
+      <hr/>
+      <span className="text-hof">쇼핑</span>
+      
+      <hr/>
+      <span className={`text-hof ${activeCategory === "interior" ? "active" : ""}`} onClick={() => setActiveCategory("interior")} >
+        인테리어/생활
+      </span>
 
-      <div className="button-container">
-        <p style={{ fontWeight: "bold" }}>이 텍스트가 AnotherFont로 표시되면 정상!</p>
-        <button className="btn btn-hof">hof</button>
-        <span className="text-hof">쇼핑</span>
-        <span
-          className={`text-hof ${activeCategory === "interior" ? "active" : ""}`}
-          onClick={() => setActiveCategory("interior")}
-        >
-          인테리어/생활
-        </span>
-        <input type="checkbox" className="checkbox-hof" />
-        <input type="radio" name="category" className="radio-hof" />
-        <input type="radio" name="category" className="radio-hof" />
-        <br></br>
-        <hr></hr>
+      <hr/>
+      <input type="checkbox" className="checkbox-hof" />
+      <input type="radio" name="category" className="radio-hof" />
+      <input type="radio" name="category" className="radio-hof" />
 
-        {buttons_toast.map((btn) => (
-          <button
-            key={btn.type}
-            className={`btn btn-${btn.type}`}
-            onClick={() => showToast(btn.type, btn.message)}
-          >
-            {btn.label}
-          </button>
-        ))}
-      </div>
-      <hr></hr>
-      <div className="button-container">
-        {buttons_alert.map((btn) => (
-          <button
-            key={btn.type}
-            className={`btn btn-${btn.type}`}
-            onClick={() => showAlert(btn.type, btn.message)}
-          >
-            {btn.label}
-          </button>
-        ))}
-      </div>
-
-      {/* CustomAlert */}
+      <hr/>
+      <button className="btn btn-blue" onClick={() => showAlert("blue", "이것은 정보 메시지입니다!")}>정보 alert</button>
       {alertConfig.isVisible && (
         <CustomAlert
           isVisible={alertConfig.isVisible}
@@ -113,8 +89,20 @@ function CssExample() {
           onClose={closeAlert}
         />
       )}
+      <hr/>
 
-      {/* ToastContainer (Toast 알림을 한 번만 관리) */}
+      <div className="button-container">
+        {buttons_alert.map((btn) => (
+          <button
+            key={btn.type}
+            className={`btn btn-${btn.type}`}
+            onClick={() => showAlert(btn.type, btn.message)}
+          >
+            {btn.label}
+          </button>
+        ))}
+      </div>
+
       <ToastContainer />
     </div>
   );

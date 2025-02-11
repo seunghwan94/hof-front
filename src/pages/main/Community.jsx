@@ -1,11 +1,11 @@
 import React from "react";
 
-function Intro(){
+function Community(){
   return (
     <div className="container mt-4 pt-5">
-      <h1>Intro index</h1>
+      <h1>community index</h1>
     </div>
   );
 }
 
-export default Intro;
+export default Community;
