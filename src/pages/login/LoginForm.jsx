@@ -1,13 +1,29 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
+import axios from 'axios';
 import Logo from "../../components/layout/Logo";
 
 function LoginForm(){
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
+  // const [data, loading, error, req] = useAxios("http://localhost:8080/api/")
+  // const {login} = useAuth();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
+
+    try {
+      const resp = await axios.post("http://localhost:8080/login",{username:id,password:password});
+      if (resp.data.success){
+      // if (resp.status === 200){
+        window.location.href = "/intro";
+      } else {
+        alert("정보가 틀렸습니다")
+      }
+    }
+    catch(error) {
+      console.log("로그인 실패", error);
+    }
   }
 
   const socialLogins = [
