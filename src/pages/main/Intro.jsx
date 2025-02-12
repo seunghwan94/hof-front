@@ -38,12 +38,13 @@ const Intro = () => {
               <div className="video-container">
                 <video
                   ref={videoRef}
-                  src="/test.mp4"
+                  src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/intro.mp4"
                   className="video"
                   controls={false}
                   muted
                   onEnded={() => videoRef.current?.play()}
-                  preload=""
+                  preload="auto"
+                  poster="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/intro.png"
                 />
                 <div className="text-overlay">
                   <h1 style={{ marginRight: "2rem", fontSize: "10rem", fontWeight: "bold" }}>House of Furniture</h1>
@@ -59,7 +60,7 @@ const Intro = () => {
                 </h2>
                 <div  className="m-4 p-5">
                 <Card className="product-card" style={{ width: "400px", height: "500px" }}>
-                  <Card.Img variant="top" src="/test.png" style={{height: "265px" }} className="product-image" />
+                  <Card.Img variant="top" src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/intro.png" style={{height: "265px" }} className="product-image" />
                   {/* 상품 정보 */}
                   <Card.Body>
                     <Card.Title className="product-name" style={{ fontSize: "2.5rem" }} >House of Furniture <span style={{ fontSize: "1.5rem" }}>(우아한 3형제)</span></Card.Title>
@@ -85,11 +86,11 @@ const Intro = () => {
               <div className="container d-flex justify-content-start align-items-center">
                 <div className="m-4 p-5">
                   <Card className="community-card" style={{ width: "400px", height: "500px", borderRadius: "12px", overflow: "hidden" }}>
-                    <Card.Img variant="top" src="/test.png" className="community-image h-100" />
+                    <Card.Img variant="top" src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/intro.png" className="community-image h-100" />
                   </Card>
                   <div className="d-flex justify-content-between align-items-start mt-2">
                     <div className="d-flex align-items-center mb-2">
-                      <img src="/test.png" alt="Profile" className="profile-icon" />
+                      <img src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/intro.png" alt="Profile" className="profile-icon" />
                       <span className="ms-2 fw-bold" style={{color: "#222"}}>Home Design</span>
                     </div>
                     <div className="d-flex align-items-center text-muted">
@@ -114,7 +115,7 @@ const Intro = () => {
                   앱 다운로드
                 </h2>
                 <div className="m-4 p-5">
-                  <img src="/hoffviicon_fff.svg" alt="앱 다운로드 아이콘" style={{width: "150px", height: "auto"}} />
+                  <img src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo.svg" alt="앱 다운로드 아이콘" style={{width: "150px", height: "auto"}} />
                 </div>
               </div>
             </div>
@@ -136,9 +137,9 @@ const Intro = () => {
             </small>
           </div>
           <div>
-            <img src="/hoffviicon_fff.svg" alt="앱 다운로드 아이콘" style={{width: "50px", height: "auto"}} className="m-4" />
-            <img src="/hoffviicon_fff.svg" alt="앱 다운로드 아이콘" style={{width: "50px", height: "auto"}} className="m-4" />
-            <img src="/hoffviicon_fff.svg" alt="앱 다운로드 아이콘" style={{width: "50px", height: "auto"}} className="m-4" />
+            <img src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo.svg" alt="앱 다운로드 아이콘" style={{width: "50px", height: "auto"}} className="m-4" />
+            <img src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo.svg" alt="앱 다운로드 아이콘" style={{width: "50px", height: "auto"}} className="m-4" />
+            <img src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo.svg" alt="앱 다운로드 아이콘" style={{width: "50px", height: "auto"}} className="m-4" />
           </div>
         </div>
       </div>
