@@ -43,6 +43,7 @@ const Intro = () => {
                   controls={false}
                   muted
                   onEnded={() => videoRef.current?.play()}
+                  preload=""
                 />
                 <div className="text-overlay">
                   <h1 style={{ marginRight: "2rem", fontSize: "10rem", fontWeight: "bold" }}>House of Furniture</h1>
