@@ -602,6 +602,31 @@ body {
   border-radius: 50%;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+//여기서부터어드민
+/* 햄버거 버튼 */
+.hamburger-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: transparent; /* ✅ 배경 색상은 동적 변경 */
+  border: none;
+  cursor: pointer;
+  z-index: 1050;
+  padding: 8px 10px;
+  border-radius: 5px;
+}
+
+/* 컨텐츠 컨테이너 */
+.content-container {
+  flex: 1;
+  padding: 20px;
+  overflow-x: auto;
+}
+=======
+>>>>>>> feature/Admin
 .loading-container {
   position: fixed;
   top: 0;
@@ -697,3 +722,7 @@ body {
   font-weight: bold;
 }
 
+<<<<<<< HEAD
+=======
+>>>>>>> 1e06176fe04db8e29ae7092d79dde08ec9ec35b7
+>>>>>>> feature/Admin
