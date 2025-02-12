@@ -3,9 +3,11 @@ import { useRoutes, useLocation } from "react-router-dom";
 import Header from "./Header";
 import Intro from "../Intro";
 import Shop from "../shop/Shop";
-import Community from "../Community";
+import ShopDetail from "../shop/ShopDetail"; // ✅ ShopDetail 추가
+import Community from "../community/Community";
 import Interior from "../Interior";
 import NotFound from "../../not-found/NotFound"; 
+import Footer from "./Footer";
 
 function Index() {
   const location = useLocation(); // 현재 경로 가져오기
@@ -14,17 +16,27 @@ function Index() {
     { path: "/", element: <Intro /> },
     { path: "/Intro", element: <Intro /> },
     { path: "/shop", element: <Shop /> },
+    { path: "/shop/detail/:id", element: <ShopDetail /> }, // ✅ 상세 페이지 추가
     { path: "/community", element: <Community /> },
     { path: "/Interior", element: <Interior /> },
   ];
 
-  const isValidRoute = routesConfig.some(route => route.path === location.pathname);
+  // `location.pathname`이 `routesConfig` 중 하나와 일치하는지 확인
+  const isValidRoute = routesConfig.some(route => location.pathname.startsWith(route.path));
+  
+  // fullPage.js를 사용하는 페이지에서는 헤더를 고정
+  const isFullPageView = ["/", "/Intro"].includes(location.pathname);
+
+  // `useRoutes`를 사용하여 라우트 설정
   const routes = useRoutes([...routesConfig, { path: "*", element: <NotFound /> }]);
   
   return (
     <>
-      {!!isValidRoute && <Header fixed={location.pathname === "/" || location.pathname === "/Intro"} />}   
+      {!!isValidRoute && <Header fixed={isFullPageView}/>}
       {routes}
+      {!!isValidRoute &&    
+        <div className="footer" style={{ background: "white" }}><Footer /></div>
+      }
     </>
   );
 }
