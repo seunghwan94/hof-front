@@ -32,6 +32,11 @@ const Header = ({ fixed }) => {
                 </li>
               ))}
             </ul>
+            {/* ✅ 로그인/회원가입 버튼 추가 */}
+            <div className="ms-auto d-flex gap-3">
+              <Link to="/login" className="text-hof fw-bold" style={{textDecoration:"none"}}>로그인</Link>
+              <Link to="/signup"className="text-hof fw-bold" style={{textDecoration:"none"}}>회원가입</Link>
+            </div>
           </div>
         </div>
       </nav>
