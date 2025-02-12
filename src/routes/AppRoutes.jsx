@@ -4,7 +4,7 @@ import Login from "../pages/login/Login";
 import CssExample from "../components/custom/CssExample";
 import Index from "../pages/main/layout/Index";
 import BarRoutes from "../pages/admin/layout/BarRoutes";
-
+import "../util/ChartConfigjs";
 
 function AppRoutes(){
   return (

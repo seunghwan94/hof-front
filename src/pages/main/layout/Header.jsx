@@ -7,7 +7,7 @@ const Header = ({ fixed }) => {
 
   return (
     <>
-      <nav className={`navbar navbar-expand-lg ${fixed ? "fixed-top" : ""}`}>
+      <nav className={`navbar navbar-expand-lg mt-3 mb-2 ${fixed ? "fixed-top" : ""}`}>
         <div className="container">
           <Link className="navbar-brand" to="/"><Logo /></Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -32,6 +32,11 @@ const Header = ({ fixed }) => {
                 </li>
               ))}
             </ul>
+            {/* ✅ 로그인/회원가입 버튼 추가 */}
+            <div className="ms-auto d-flex gap-3">
+              <Link to="/login" className="text-hof fw-bold" style={{textDecoration:"none"}}>로그인</Link>
+              <Link to="/signup"className="text-hof fw-bold" style={{textDecoration:"none"}}>회원가입</Link>
+            </div>
           </div>
         </div>
       </nav>

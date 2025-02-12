@@ -294,7 +294,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(238, 238, 238, 0.5); /* 투명한 검정 오버레이 (0.5는 반투명) */
+  background: rgba(238, 238, 238, 0.6); /* 투명한 검정 오버레이 (0.5는 반투명) */
   pointer-events: none; /* 클릭 이벤트를 방해하지 않도록 설정 */
 }
 
@@ -305,11 +305,194 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   color: #222;
-  font-size: 3rem;
+  font-size: 5rem;
   font-weight: bold;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
   z-index: 2;
 }
+
+/* 반응형 설정 */
+@media (max-width: 1024px) {
+  .text-overlay {
+    font-size: 3rem; /* 태블릿에서는 글자 크기 줄이기 */
+  }
+}
+
+@media (max-width: 768px) {
+  .text-overlay {
+    font-size: 2rem; /* 모바일에서는 글자 크기 더 줄이기 */
+  }
+
+}
+
+
+/* 쇼핑 섹션 반응형 스타일 */
+.shopping-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+/* 제목 반응형 크기 */
+.shopping-title {
+  font-size: 6rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* 상품 카드 스타일 */
+.product-card {
+  width: 100%;
+  max-width: 400px; /* 최대 너비 제한 */
+  height: auto;
+  margin: 10px 0;
+}
+
+/* 반응형 조정 */
+@media (max-width: 1024px) {
+  .shopping-title {
+    font-size: 4rem;
+  }
+
+  .product-card {
+    max-width: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .shopping-title {
+    font-size: 3rem;
+  }
+
+  .product-card {
+    max-width: 300px;
+  }
+}
+
+/* 커뮤니티 섹션 */
+.community-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  gap: 60px; /* 카드와 텍스트 사이 간격 */
+}
+
+/* 제목 스타일 */
+.community-title {
+  font-size: 6rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* 카드 스타일 */
+.community-card {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* 카드 이미지 크기 조정 */
+.community-image {
+  width: 100%;
+  height: auto; /* 자동 조정 */
+  max-height: 400px; /* 최대 높이 설정 */
+  object-fit: cover; /* 비율 유지 및 잘리지 않게 */
+}
+
+/* 반응형 설정 */
+@media (max-width: 1024px) {
+  .community-title {
+    font-size: 4rem;
+  }
+
+  .community-section {
+    gap: 40px;
+  }
+
+  .community-image {
+    max-height: 300px; /* 태블릿에서 높이 조정 */
+  }
+}
+
+@media (max-width: 768px) {
+  .community-title {
+    font-size: 3rem;
+  }
+
+  .community-section {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .community-image {
+    max-height: 250px; /* 모바일에서 높이 조정 */
+  }
+}
+
+/* 앱 다운로드 섹션 */
+.app-download-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  gap: 60px; /* 텍스트와 아이콘 간격 */
+}
+
+/* 제목 스타일 */
+.app-download-title {
+  font-size: clamp(3rem, 5vw, 9rem); /* 화면 크기에 따라 자동 조정 */
+  font-weight: bold;
+  color: #222;
+  text-align: center;
+}
+
+/* 아이콘 크기 조정 */
+.app-download-icon {
+  width: 100%;
+  max-width: 120px; /* 최대 크기 설정 */
+  height: auto;
+}
+
+/* 반응형 설정 */
+@media (max-width: 1024px) {
+  .app-download-title {
+    font-size: 4rem;
+  }
+
+  .app-download-section {
+    gap: 40px;
+  }
+
+  .app-download-icon {
+    max-width: 100px; /* 태블릿에서 크기 조정 */
+  }
+}
+
+@media (max-width: 768px) {
+  .app-download-title {
+    font-size: 3rem;
+  }
+
+  .app-download-section {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .app-download-icon {
+    max-width: 80px; /* 모바일에서 크기 더 줄이기 */
+  }
+}
+
 
 /* 전체 섹션 스타일 */
 .section {
@@ -319,29 +502,88 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  // background-color: #fff;
   color: #222;
   text-align: center;
   transition: transform 0.5s ease-out;
 }
 
 /* Footer 스타일 */
-.footer {
-  position: absolute;  /* 처음에는 화면 밖에 위치 */
-  bottom: -181px;  /* 화면 밖에 위치 */
-  left: 0;
+.footer-intro {
   width: 100%;
   background-color: #222;
   color: #fff;
-  padding: 10px 0;
+  padding: 20px 0;
   text-align: center;
-  transition: bottom 0.5s ease-in-out;  /* 자연스러운 올라오는 애니메이션 */
+  position: absolute; /* 기본적으로 absolute 상태 */
+  bottom: 0;
+  transform: translateY(100%); /* 처음에는 화면 밖으로 밀어둠 */
+  transition: transform 0.5s ease-in-out; /* 자연스럽게 올라오는 효과 */
 }
 
-.footer.show {
-  bottom: 0;  /* 마지막 섹션에 도달했을 때 올라옴 */
+/* Footer가 보여질 때 */
+.footer-intro.show {
   position: fixed;
+  transform: translateY(0); /* 화면으로 부드럽게 등장 */
 }
+
+.footer {
+  width: 100%;
+  background-color: #222;
+  color: #fff;
+  padding: 20px 0;
+  text-align: center;
+  bottom: 0;
+}
+
+
+
+/* Footer 컨텐츠 스타일 */
+.footer-content {
+  display: flex;
+  flex-wrap: wrap; /* 모바일에서 자동 줄 바꿈 */
+  gap: 20px;
+  text-align: center;
+}
+
+/* Footer 회사 정보 */
+.footer-info {
+  font-size: clamp(0.8rem, 1vw, 1rem); /* 반응형 폰트 크기 */
+  max-width: 400px;
+}
+
+/* Footer 아이콘 스타일 */
+.footer-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.footer-icon {
+  width: 40px;
+  height: auto;
+  transition: transform 0.2s ease-in-out;
+}
+
+.footer-icon:hover {
+  transform: scale(1.1);
+}
+
+/* 반응형 설정 */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .footer-info {
+    text-align: center;
+  }
+}
+
+
 
 
 .category-bar {
@@ -360,6 +602,7 @@ body {
   border-radius: 50%;
 }
 
+<<<<<<< HEAD
 //여기서부터어드민
 /* 햄버거 버튼 */
 .hamburger-btn {
@@ -380,3 +623,100 @@ body {
   padding: 20px;
   overflow-x: auto;
 }
+=======
+.loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #35c5f0;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
+
+
+
+.product-card-shop {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+  width: 230px;
+}
+
+.product-card-shop:hover {
+  transform: translateY(-5px);
+}
+
+.product-image-shop {
+  height: 150px;
+  object-fit: cover;
+}
+
+.product-name-shop {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.star-icon-shop {
+  color: #ffcc00;
+  margin-right: 5px;
+}
+
+.rating-shop {
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.reviews-shop {
+  font-size: 12px;
+  color: gray;
+}
+
+.price-section-shop {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.discount-shop {
+  color: #35c5f0;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.price-shop {
+  font-size: 18px;
+  font-weight: bold;
+  color: black;
+}
+.active-category {
+  color: #35c5f0 !important;  /* 클릭한 카테고리 색상 고정 */
+  font-weight: bold;
+}
+
+>>>>>>> 1e06176fe04db8e29ae7092d79dde08ec9ec35b7

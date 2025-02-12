@@ -5,6 +5,7 @@ import { Card } from "react-bootstrap";
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faHeart } from "@fortawesome/free-solid-svg-icons";
+import PageLoader from "../../components/layout/PageLoader";
 
 const Intro = () => {
   const videoRef = useRef(null);
@@ -25,7 +26,19 @@ const Intro = () => {
 
 
   return (
-    <div>
+    <PageLoader>
+      <div className="video-container">
+        <video
+          ref={videoRef}
+          src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/intro.mp4"
+          className="video"
+          controls={false}
+          muted
+          onEnded={() => videoRef.current?.play()}
+          preload="auto"
+          poster="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/intro.png"
+        />
+      </div>
       <ReactFullpage
         scrollOverflow
         navigation
@@ -35,61 +48,72 @@ const Intro = () => {
           <div>
             {/* 첫 번째 섹션 - 비디오 */}
             <div className="section">
-              <div className="video-container">
-                <video
-                  ref={videoRef}
-                  src="/test.mp4"
-                  className="video"
-                  controls={false}
-                  muted
-                  onEnded={() => videoRef.current?.play()}
-                />
-                <div className="text-overlay">
-                  <h1 style={{ marginRight: "2rem", fontSize: "10rem", fontWeight: "bold" }}>House of Furniture</h1>
-                </div>
-              </div>
-            </div>
 
-            {/* 두 번째 섹션 - 쇼핑 + ProductCard 하나 */}
+                <div className="text-overlay">
+                  House of Furniture
+                </div>
+            </div>
+            {/* 두 번째 섹션 - 쇼핑 */}
             <div className="section">
-              <div className="container d-flex justify-content-start align-items-center">
-                <h2 className="m-4 p-5" style={{ marginRight: "2rem", fontSize: "10rem", fontWeight: "bold" }}>
+              <div className="container shopping-section d-flex flex-column flex-md-row align-items-center">
+                
+                {/* 쇼핑 제목 */}
+                <h2 className="shopping-title p-3 mx-5">
                   쇼핑
                 </h2>
-                <div  className="m-4 p-5">
-                <Card className="product-card" style={{ width: "400px", height: "500px" }}>
-                  <Card.Img variant="top" src="/test.png" style={{height: "265px" }} className="product-image" />
-                  {/* 상품 정보 */}
-                  <Card.Body>
-                    <Card.Title className="product-name" style={{ fontSize: "2.5rem" }} >House of Furniture <span style={{ fontSize: "1.5rem" }}>(우아한 3형제)</span></Card.Title>
-                    {/* 가격 및 할인 */}
-                    <div className="price-section mt-2">
-                      <span className="discount" style={{ fontSize: "1.5rem" }}>20%</span>
-                      <span className="price" style={{ fontSize: "2rem" }}>10,000 원</span>
-                    </div>
-                    {/* 별점 및 리뷰 수 */}
-                    <div className="d-flex align-items-center" style={{ fontSize: "1.5rem" }}>
-                      <FontAwesomeIcon icon={faStar} className="star-icon" />
-                      <span className="rating" style={{ fontSize: "1.5rem" }}>5.0</span>
-                      <span className="reviews" style={{ fontSize: "1.5rem" }}>(30)</span>
-                    </div>
-                  </Card.Body>
-                </Card>
+
+                {/* 쇼핑 카드 */}
+                <div className="p-3">
+                  <Card className="product-card">
+                    <Card.Img
+                      variant="top"
+                      src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/intro.png"
+                      className="product-image"
+                      loading="lazy"
+                    />
+                    <Card.Body className="d-flex flex-column justify-content-between">
+                      {/* 상품명 */}
+                      <Card.Title className="product-name text-center">
+                        House of Furniture
+                        <br />
+                        <span className="product-subtitle">(우아한 3형제)</span>
+                      </Card.Title>
+
+                      {/* 가격 및 할인 */}
+                      <div className="price-section d-flex justify-content-center align-items-center">
+                        <span className="discount">20%</span>
+                        <span className="price">10,000 원</span>
+                      </div>
+
+                      {/* 별점 및 리뷰 수 */}
+                      <div className="d-flex justify-content-center align-items-center rating-section mt-2">
+                        <FontAwesomeIcon icon={faStar} className="star-icon" />
+                        <span className="rating">5.0</span>
+                        <span className="reviews">(30)</span>
+                      </div>
+                    </Card.Body>
+                  </Card>
                 </div>
               </div>
             </div>
 
-            {/* 세 번째 섹션 */}
+            {/* 세 번째 섹션 - 커뮤니티 / 인테리어 */}
             <div className="section">
-              <div className="container d-flex justify-content-start align-items-center">
-                <div className="m-4 p-5">
-                  <Card className="community-card" style={{ width: "400px", height: "500px", borderRadius: "12px", overflow: "hidden" }}>
-                    <Card.Img variant="top" src="/test.png" className="community-image h-100" />
+              <div className="container community-section d-flex flex-column flex-md-row align-items-center gap-5">
+                {/* 커뮤니티 카드 */}
+                <div className="p-4">
+                  <Card className="community-card">
+                    <Card.Img 
+                      variant="top" 
+                      src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/intro.png"
+                      className="community-image"
+                      loading="lazy"
+                    />
                   </Card>
-                  <div className="d-flex justify-content-between align-items-start mt-2">
+                  <div className="d-flex justify-content-between align-items-start mt-3">
                     <div className="d-flex align-items-center mb-2">
-                      <img src="/test.png" alt="Profile" className="profile-icon" />
-                      <span className="ms-2 fw-bold" style={{color: "#222"}}>Home Design</span>
+                      <img src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/intro.png" alt="Profile" className="profile-icon" loading="lazy"/>
+                      <span className="ms-2 fw-bold text-dark">Home Design</span>
                     </div>
                     <div className="d-flex align-items-center text-muted">
                       <FontAwesomeIcon icon={faHeart} className="me-1" />
@@ -99,49 +123,74 @@ const Intro = () => {
                     </div>
                   </div>
                 </div>
-
-                <h2 className="m-4 p-5" style={{ marginRight: "2rem", fontSize: "9rem", fontWeight: "bold" }}>
-                  커뮤니티 / 인테리어
+                {/* 커뮤니티 텍스트 */}
+                <h2 className="community-title text-center text-md-start">
+                  커뮤니티 /<br/> 인테리어
                 </h2>
               </div>
             </div>
 
-            {/* 네 번째 섹션 */}
-            <div className="section">
-              <div className="container d-flex justify-content-start align-items-center">
-                <h2 className="m-4 p-5" style={{ marginRight: "2rem", fontSize: "9rem", fontWeight: "bold", color:"#222"}}>
+            {/* 네 번째 섹션 - 앱 다운로드 */}
+            <div className="section app-download-section">
+              <div className="container d-flex flex-column flex-md-row align-items-center gap-5">
+                {/* 앱 다운로드 텍스트 */}
+                <h2 className="app-download-title text-center text-md-start">
                   앱 다운로드
                 </h2>
-                <div className="m-4 p-5">
-                  <img src="/hoffviicon_fff.svg" alt="앱 다운로드 아이콘" style={{width: "150px", height: "auto"}} />
+                {/* 앱 다운로드 아이콘 */}
+                <div className="p-3 p-md-5">
+                  <img 
+                    src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo.svg" 
+                    alt="앱 다운로드 아이콘" 
+                    className="app-download-icon"
+                    loading="lazy"
+                  />
                 </div>
               </div>
             </div>
-
           </div>
         )}
       />
-      <div className={`footer ${isFooterVisible ? "show" : ""}`}>
-        <div className="d-flex container justify-content-around align-items-center">
-          <div>
-            <div className="mt-3 mb-4">
-              정의서 / WBS / ERD / 프로토타입 / PPT<br/>
-              Swagger / Jacoco / <br/>
+      {/* Footer */}
+      <div className={`footer-intro ${isFooterVisible ? "show" : ""}`}>
+        <div className="container footer-content d-flex flex-column flex-md-row justify-content-around align-items-center text-light">
+          
+          {/* 회사 정보 */}
+          <div className="footer-info text-center text-md-start">
+            <div className="mb-3">
+              정의서 / WBS / ERD / 프로토타입 / PPT <br/>
+              Swagger / Jacoco /
             </div>
-            <small style={{color:"999"}}>
+            <small>
               서울 구로구 디지털로 306 대륭포스트타워 2차 203호<br/>
-              대표번호: 010-xxxx-xxxx<br/>
-              Copyright ⓒ 2024 - 2024 dcinside. All rights reserved.<br/>
+              대표번호: 010-xxxx-xxxx<br />
+              Copyright ⓒ 2024 - 2024 dcinside. All rights reserved.
             </small>
           </div>
-          <div>
-            <img src="/hoffviicon_fff.svg" alt="앱 다운로드 아이콘" style={{width: "50px", height: "auto"}} className="m-4" />
-            <img src="/hoffviicon_fff.svg" alt="앱 다운로드 아이콘" style={{width: "50px", height: "auto"}} className="m-4" />
-            <img src="/hoffviicon_fff.svg" alt="앱 다운로드 아이콘" style={{width: "50px", height: "auto"}} className="m-4" />
+          {/* 앱 다운로드 아이콘 */}
+          <div className="footer-icons d-flex gap-3">
+            <img 
+              src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo.svg" 
+              alt="앱 다운로드 아이콘" 
+              className="footer-icon"
+              loading="lazy"
+            />
+            <img 
+              src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo.svg" 
+              alt="앱 다운로드 아이콘" 
+              className="footer-icon"
+              loading="lazy"
+            />
+            <img 
+              src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo.svg" 
+              alt="앱 다운로드 아이콘" 
+              className="footer-icon"
+              loading="lazy"
+            />
           </div>
         </div>
       </div>
-    </div>
+    </PageLoader>
   );
 };
 

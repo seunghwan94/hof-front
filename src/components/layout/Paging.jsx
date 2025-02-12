@@ -10,7 +10,7 @@ function Paging({ currentPage, totalPages, onPageChange }) {
   }
 
   return (
-    <Pagination className="custom-pagination">
+    <Pagination className="custom-pagination my-5">
       {/* 첫 페이지로 이동
       <Pagination.First onClick={() => onPageChange(1)} disabled={currentPage === 1} /> */}
 
