@@ -359,3 +359,24 @@ body {
   height: 30px;
   border-radius: 50%;
 }
+
+//여기서부터어드민
+/* 햄버거 버튼 */
+.hamburger-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: transparent; /* ✅ 배경 색상은 동적 변경 */
+  border: none;
+  cursor: pointer;
+  z-index: 1050;
+  padding: 8px 10px;
+  border-radius: 5px;
+}
+
+/* 컨텐츠 컨테이너 */
+.content-container {
+  flex: 1;
+  padding: 20px;
+  overflow-x: auto;
+}

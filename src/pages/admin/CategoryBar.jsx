@@ -1,11 +1,11 @@
 // src/components/CategoryBar.js
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome,  faCommentDots,faSackDollar,faSignsPost, faGift,faUser,faRectangleXmark,faArrowRightFromBracket,faDesktop} from "@fortawesome/free-solid-svg-icons";
+import { faHome,  faCommentDots,faSackDollar,faSignsPost, faGift,faUser,faRectangleXmark,faArrowRightFromBracket,faDesktop, faTimes} from "@fortawesome/free-solid-svg-icons";
 import Logo from "../../components/layout/Logo";
 
 
-const CategoryBar = () => {
+const CategoryBar = ({closeSidebar}) => {
   const location = useLocation();
   console.log(location);
 
@@ -22,7 +22,7 @@ const isActive = (path) => location.pathname.startsWith(path);
       maxHeight: "95vh",
       overflow: "hidden",
     }}>
-      
+
       {/* <HofLogo  style={{ width:"125", height:"50"}} className = ""/> */}
       <div className="d-flex justify-content-center align-items-center w-100">
         <Logo color="white" className="py-2 m-0" />
@@ -31,38 +31,38 @@ const isActive = (path) => location.pathname.startsWith(path);
       <hr />
       <ul className="nav nav-pills flex-column mb-auto">
 
-        <li className="nav-item" style={{ backgroundColor: isActive("/dashboard") ? "#35c5f0" : "transparent" }}>
-          <Link to="/dashboard" className="nav-link text-white d-flex align-items-center font-weight-bold">
+        <li className="nav-item" style={{ backgroundColor: isActive("/admin/dashboard") ? "#35c5f0" : "transparent" }}>
+          <Link to="/admin/dashboard" className="nav-link text-white d-flex align-items-center font-weight-bold">
             <FontAwesomeIcon icon={faHome} className="me-4 " style={{width : 16,height : 16}}/> Dashboard
           </Link>
         </li>
-        <li style={{ backgroundColor: isActive("/member") ? "#35c5f0" : "transparent" }} className="mt-3">
-          <Link to="/member" className="nav-link text-white d-flex align-items-center  font-weight-bold">
+        <li style={{ backgroundColor: isActive("/admin/member") ? "#35c5f0" : "transparent" }} className="mt-3">
+          <Link to="/admin/member" className="nav-link text-white d-flex align-items-center  font-weight-bold">
             <FontAwesomeIcon icon={faUser} className="me-4" style={{width : 16,height : 16}} /> 회원관리
           </Link>
         </li>
-        <li style={{ backgroundColor: isActive("/prod") ? "#35c5f0" : "transparent" }} className="mt-3">
-          <Link to="/prod" className="nav-link text-white d-flex align-items-center  font-weight-bold">
+        <li style={{ backgroundColor: isActive("/admin/prod") ? "#35c5f0" : "transparent" }} className="mt-3">
+          <Link to="/admin/prod" className="nav-link text-white d-flex align-items-center  font-weight-bold">
           <FontAwesomeIcon icon={faGift}  className="me-4" style={{width : 16,height : 16}} /> 상품관리
           </Link>
         </li>
-        <li style={{ backgroundColor: isActive("/popup") ? "#35c5f0" : "transparent" }} className="mt-3">
-          <Link to="/popup" className="nav-link text-white d-flex align-items-center  font-weight-bold">
+        <li style={{ backgroundColor: isActive("/admin/popup") ? "#35c5f0" : "transparent" }} className="mt-3">
+          <Link to="/admin/popup" className="nav-link text-white d-flex align-items-center  font-weight-bold">
           <FontAwesomeIcon icon={faSignsPost} className="me-4" style={{width : 16,height : 16}} /> 팝업관리
           </Link>
         </li>
-        <li style={{ backgroundColor: isActive("/cash") ? "#35c5f0" : "transparent" }} className="mt-3">
-          <Link to="/cash" className="nav-link text-white d-flex align-items-center  font-weight-bold">
+        <li style={{ backgroundColor: isActive("/admin/cash") ? "#35c5f0" : "transparent" }} className="mt-3">
+          <Link to="/admin/cash" className="nav-link text-white d-flex align-items-center  font-weight-bold">
             <FontAwesomeIcon icon={faSackDollar} className="me-4"style={{width : 16,height : 16}} /> 결제관리
           </Link>
         </li>
-        <li style={{ backgroundColor: isActive("/qna") ? "#35c5f0" : "transparent" }} className="mt-3">
-          <Link to="/qna" className="nav-link text-white d-flex align-items-center  font-weight-bold">
+        <li style={{ backgroundColor: isActive("/admin/qna") ? "#35c5f0" : "transparent" }} className="mt-3">
+          <Link to="/admin/qna" className="nav-link text-white d-flex align-items-center  font-weight-bold">
           <FontAwesomeIcon icon={faCommentDots}  className="me-4"style={{width : 16,height : 16}} /> QNA
           </Link>
         </li>
-        <li style={{ backgroundColor: isActive("/fwl") ? "#35c5f0" : "transparent" }} className="mt-3">
-          <Link to="/fwl" className="nav-link text-white d-flex align-items-center  font-weight-bold">
+        <li style={{ backgroundColor: isActive("/admin/fwl") ? "#35c5f0" : "transparent" }} className="mt-3">
+          <Link to="/admin/fwl" className="nav-link text-white d-flex align-items-center  font-weight-bold">
           <FontAwesomeIcon icon={faRectangleXmark}  className="me-4"style={{width : 16,height : 16}} /> FWL
           </Link>
         </li>
