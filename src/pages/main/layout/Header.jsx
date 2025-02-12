@@ -7,7 +7,7 @@ const Header = ({ fixed }) => {
 
   return (
     <>
-      <nav className={`navbar navbar-expand-lg ${fixed ? "fixed-top" : ""}`}>
+      <nav className={`navbar navbar-expand-lg mt-3 mb-2 ${fixed ? "fixed-top" : ""}`}>
         <div className="container">
           <Link className="navbar-brand" to="/"><Logo /></Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
