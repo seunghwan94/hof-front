@@ -17,6 +17,7 @@ const BarRoutes = () => {
   const [sidebarOpen,setSidebarOpen] = useState(false);
   // CategoryBar가 보일 경로 목록
   const routesConfig = [
+    { path: "", element: <Home />  },
     { path: "dashboard", element: <Home />  },
     { path: "member", element: <Member />},
     { path: "prod" , element: <Prod/>},
@@ -61,7 +62,7 @@ const BarRoutes = () => {
           <CategoryBar />
         </div>
   
-        <div className="ms-5 " style={{ flex: "1", padding: "20px", overflowX: "auto" }}>
+        <div className={`content-container ${window.innerWidth < 768 ? '' : 'ms-5'}`}  style={{ flex: "1", padding: "20px", overflowX: "auto" }}>
           {routes}
         </div>
   
