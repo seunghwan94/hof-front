@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Nav, Button, Container, Row, Col } from "react-bootstrap";
 import RestoredMember from "./RestoredMember";
 import CompanyList from "./CompanyList";
 import CompanyRequests from "./CompanyRequests";
+import useAxios from "../../hooks/useAxios";
 
 const Member = () => {
   const [activeTab, setActiveTab] = useState("members");
 
   return (
     <Container className="mt-4">
-      {/* ✅ 탭 버튼 */}
+
       <Nav variant="tabs" className="custom-nav mb-3 justify-content-end" activeKey={activeTab} onSelect={(tab) => setActiveTab(tab)}>
         <Nav.Item>
           <Nav.Link eventKey="members" className={`custom-tab ${activeTab === "members" ? "active-tab" : ""}`}>
@@ -33,7 +34,7 @@ const Member = () => {
         </Nav.Item>
       </Nav>
 
-      {/* ✅ 탭 콘텐츠 */}
+
       {activeTab === "members" && <MemberList />}
       {activeTab === "restored" && <RestoredMember />}
       {activeTab === "companies" && <CompanyList />}
@@ -43,28 +44,47 @@ const Member = () => {
 };
 
 const MemberList = () => {
-  const members = [
-    { id: 1, name: "김용태", email: "kyt@example.com", status: "Active" },
-    { id: 2, name: "새똥이", email: "sadddong@example.com", status: "Inactive" },
-    { id: 3, name: "개똥이", email: "gadddong@example.com", status: "Active" },
-    { id: 4, name: "소똥이", email: "soddong@example.com", status: "Active" },
-    { id: 5, name: "개소똥이", email: "nick@example.com", status: "Inactive" },
-  ];
+  const { data, loading, error, req } = useAxios();
+  // const [members, setMembers] = useState([]); 
 
+
+  // useEffect(async() => {
+  //   const val = await req('get','index/list');
+  //   console.log(val);
+    
+  //   // console.log(data);
+  //  },[req]);
+
+  //  API 호출 (정리 함수 제거)
+  useEffect(() => {
+    req('get', 'index/list');
+    console.log(data);
+  }, [req]);
+
+
+
+  if(error){
+    console.log(error);
+    return <div><h1>에러발생</h1></div>
+  }
+  if(loading){
+    return <div><h1>로딩중</h1></div>
+  }
+  // <span className={`badge ${members.status === "Active" ? "bg-success" : "bg-secondary"}`}>
   return (
     <Container>
       <h3 className="mb-3">회원관리</h3>
       <Row className="g-3 row-cols-1 row-cols-md-2 row-cols-lg-3">
-        {members.map((member) => (
-          <Col key={member.id}>
+        {data && data.map(b => (
+          <Col key={b.mno}>
             <Card className="p-3 shadow-sm h-100 d-flex flex-column justify-content-between">
               <div>
-                <h5>{member.name}</h5>
-                <p className="text-muted">{member.email}</p>
+                <h5>{b.name}</h5>
+                <p className="text-muted">{b.email}</p>
               </div>
               <div className="d-flex justify-content-between align-items-center">
-                <span className={`badge ${member.status === "Active" ? "bg-success" : "bg-secondary"}`}>
-                  {member.status}
+                <span>
+                  {b.pw}
                 </span>
                 <Button variant="primary" size="sm">
                   관리
