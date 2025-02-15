@@ -8,19 +8,23 @@ function Category() {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
-  const currentCategory = queryParams.get("category");
+  const currentCategory = queryParams.get("category") || ""; 
 
   const categories = [
+    { name: "전체", query: "", icon: faBoxes }, 
     { name: "침대", query: "bed", icon: faBed },
     { name: "의자", query: "chair", icon: faChair },
     { name: "책상", query: "desk", icon: faShop },
     { name: "수납장", query: "storage", icon: faToiletPortable },
     { name: "옷장", query: "wardrobe", icon: faShirt },
-    { name: "기타", query: "other", icon: faBoxes },
   ];
 
   const handleCategoryClick = (categoryQuery) => {
-    queryParams.set("category", categoryQuery);
+    if (categoryQuery === "") {
+      queryParams.delete("category"); 
+    } else {
+      queryParams.set("category", categoryQuery);
+    }
     navigate(`/shop?${queryParams.toString()}`, { replace: true });
   };
 
@@ -45,11 +49,7 @@ function Category() {
                   padding: "0",
                 }}
               >
-                <FontAwesomeIcon
-                  icon={category.icon}
-                  className="mb-2"
-                  style={{ fontSize: "2rem" }}
-                />
+                <FontAwesomeIcon icon={category.icon} className="mb-2" style={{ fontSize: "2rem" }} />
                 {category.name}
               </button>
             </Col>

@@ -163,75 +163,6 @@ body {
   -moz-appearance: none;
 }
 
-.product-card {
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
-  cursor: pointer;
-  width: 230px;
-  margin: 30px 0;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-}
-
-.product-image {
-  height: 150px;
-  object-fit: cover;
-}
-
-.product-name {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-}
-
-.star-icon {
-  color: #ffcc00;
-  margin-right: 5px;
-}
-
-.rating {
-  font-size: 14px;
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-.reviews {
-  font-size: 12px;
-  color: gray;
-}
-
-.price-section {
-  display: flex;
-  align-items: center;
-  margin-top: 5px;
-}
-
-.discount {
-  color: #35c5f0;
-  font-size: 14px;
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-.price {
-  font-size: 18px;
-  font-weight: bold;
-  color: black;
-}
-
-
-/* ✅ 카드 그리드 스타일 */
-.product-grid {
-  display: flex !important;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-  gap: 15px; /* 카드 간격 추가 */
-}
-
 .custom-pagination {
   display: flex;
   justify-content: center;
@@ -253,7 +184,10 @@ body {
   color: white !important;
 }
 
-
+.active-category {
+  color: #35c5f0 !important;  /* 클릭한 카테고리 색상 고정 */
+  font-weight: bold;
+}
 
 
 
@@ -344,34 +278,7 @@ body {
   margin-bottom: 20px;
 }
 
-/* 상품 카드 스타일 */
-.product-card {
-  width: 100%;
-  max-width: 400px; /* 최대 너비 제한 */
-  height: auto;
-  margin: 10px 0;
-}
 
-/* 반응형 조정 */
-@media (max-width: 1024px) {
-  .shopping-title {
-    font-size: 4rem;
-  }
-
-  .product-card {
-    max-width: 350px;
-  }
-}
-
-@media (max-width: 768px) {
-  .shopping-title {
-    font-size: 3rem;
-  }
-
-  .product-card {
-    max-width: 300px;
-  }
-}
 
 /* 커뮤니티 섹션 */
 .community-section {
@@ -651,69 +558,4 @@ body {
 
 
 
-
-
-
-.product-card-shop {
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
-  cursor: pointer;
-  width: 230px;
-}
-
-.product-card-shop:hover {
-  transform: translateY(-5px);
-}
-
-.product-image-shop {
-  height: 150px;
-  object-fit: cover;
-}
-
-.product-name-shop {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-}
-
-.star-icon-shop {
-  color: #ffcc00;
-  margin-right: 5px;
-}
-
-.rating-shop {
-  font-size: 14px;
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-.reviews-shop {
-  font-size: 12px;
-  color: gray;
-}
-
-.price-section-shop {
-  display: flex;
-  align-items: center;
-  margin-top: 5px;
-}
-
-.discount-shop {
-  color: #35c5f0;
-  font-size: 14px;
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-.price-shop {
-  font-size: 18px;
-  font-weight: bold;
-  color: black;
-}
-.active-category {
-  color: #35c5f0 !important;  /* 클릭한 카테고리 색상 고정 */
-  font-weight: bold;
-}
 
