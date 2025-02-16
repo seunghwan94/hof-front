@@ -60,7 +60,7 @@ function Shop() {
               <ProductCard
                 key={product.pno}
                 id={product.pno}
-                image={product.imageUrl || "https://via.placeholder.com/230"}
+                image={product.imageUrl}
                 name={product.title || "상품명 없음"}
                 rating={(product.avgStar ?? 4.5).toFixed(1)}
                 reviews={product.reviewCount ?? 0}
