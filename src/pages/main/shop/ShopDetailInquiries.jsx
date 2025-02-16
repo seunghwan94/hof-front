@@ -55,7 +55,7 @@ const ShopDetailInquiries = ({ pno }) => {
         value={inquiryText}
         onChange={(e) => setInquiryText(e.target.value)}
       />
-      <Button variant="secondary" className="mt-2" onClick={handleSubmitInquiry}>
+      <Button className="mt-2 btn-hof" onClick={handleSubmitInquiry}>
         문의 등록
       </Button>
     </div>

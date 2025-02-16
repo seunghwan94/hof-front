@@ -55,7 +55,7 @@ const ShopDetailReviews = ({ pno }) => {
         value={reviewText}
         onChange={(e) => setReviewText(e.target.value)}
       />
-      <Button variant="primary" className="mt-2" onClick={handleSubmitReview}>
+      <Button className="mt-2 btn-hof" onClick={handleSubmitReview}>
         리뷰 등록
       </Button>
     </div>

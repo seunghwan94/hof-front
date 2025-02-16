@@ -167,6 +167,76 @@ button {
   align-items: center;
 }
 
+.shop-detail-description {
+  .content-wrapper {
+    max-height: 10rem; // 기본적으로 3줄만 보이도록 설정
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+  }
+
+  .expanded {
+    height: auto;// 충분히 큰 값으로 설정 (자동 확장)
+  }
+
+  .toggle-btn {
+    display: block;
+    margin-top: 0.5rem;
+    color: #007bff;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    background: none;
+  }
+}
+.thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.main-image {
+  width: 100%;
+  max-width: 450px;
+  height: auto;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.shop-detail {
+  flex-wrap: wrap;  /* 너비가 부족하면 자동 줄바꿈 */
+}
+
+.shop-info {
+  min-width: 320px; /* 상품 정보가 너무 좁아지지 않도록 */
+}
+
+.product-content {
+  overflow-wrap: break-word; /* 긴 단어도 줄바꿈 */
+  word-break: keep-all;
+}
+
+/* 📱 모바일에서는 썸네일이 메인 이미지 아래로 */
+@media (max-width: 768px) {
+  .shop-detail {
+    flex-direction: column;
+  }
+
+  .thumbnail {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+
+
 /* 반응형 조정 */
 @media (max-width: 1024px) {
   .shopping-title {
