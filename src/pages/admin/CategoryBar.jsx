@@ -7,7 +7,7 @@ import Logo from "../../components/layout/Logo";
 
 const CategoryBar = ({closeSidebar}) => {
   const location = useLocation();
-  console.log(location);
+
 
 
 const isActive = (path) => location.pathname.startsWith(path);

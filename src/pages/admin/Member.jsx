@@ -70,7 +70,6 @@ const MemberList = () => {
   if(loading){
     return <div><h1>로딩중</h1></div>
   }
-  // <span className={`badge ${members.status === "Active" ? "bg-success" : "bg-secondary"}`}>
   return (
     <Container>
       <h3 className="mb-3">회원관리</h3>

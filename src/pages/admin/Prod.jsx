@@ -1,116 +1,143 @@
-import React, { useState } from 'react';
-import { Table, Nav, Container, Badge, Row, Col, Card } from "react-bootstrap";
-
+import React, { useEffect, useState } from "react";
+import { Table, Container, Row, Col, Card } from "react-bootstrap";
+import useAxios from "../../hooks/useAxios";
+import ProductModal from "./ProductModal"; // 모달 컴포넌트 import
 const Prod = () => {
-    const [activeTab, setActiveTab] = useState("payment");
+  const { data, loading, error, req } = useAxios();
+  const [products, setProducts] = useState([]); 
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  // 상품 목록 가져오기
+  useEffect(() => {
+    req("get", "index/prod");
+}, [req]);
 
-    return (
-        <Container className="mt-4">
-            {/* 탭 버튼 */}
-            <Nav variant="tabs" className="custom-nav mb-3 justify-content-end" activeKey={activeTab} onSelect={(tab) => setActiveTab(tab)}>
-                <Nav.Item>
-                    <Nav.Link eventKey="payment" className={`custom-tab ${activeTab === "payment" ? "active-tab" : ""}`}>
-                        결제
-                    </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                    <Nav.Link eventKey="refund" className={`custom-tab ${activeTab === "refund" ? "active-tab" : ""}`}>
-                        환불
-                    </Nav.Link>
-                </Nav.Item>
-            </Nav>
+// useEffect(() => {
+//     if (!loading && data) {
+//         setProducts(Array.isArray(data) ? data : []);
+//     }
+// }, [data, loading]);
+useEffect(() => {
+    if (!loading && data?.dtoList) {
+        console.log("서버에서 받은 데이터:", data);
+        setProducts(data.dtoList);
+    }
+}, [data, loading]);
 
-            {/*  탭 콘텐츠 */}
-            {activeTab === "payment" && <Payment />}
-            {activeTab === "refund" && <Refund />}
-        </Container>
-    );
-};
 
-const Payment = () => {
-    const payments = [
-        { id: 1, name: "김용태", amount: 50000, status: "결제완료" },
-        { id: 2, name: "새똥이", amount: 32000, status: "배송준비중" },
-        { id: 3, name: "개똥이", amount: 65000, status: "배송중" },
-        { id: 4, name: "소똥이", amount: 42000, status: "배송준비중" },
-        { id: 5, name: "개소똥이", amount: 87000, status: "결제완료" },
-    ];
 
-    // 상태별 색상 지정
-    const getStatusBadge = (status) => {
-        switch (status) {
-            case "결제완료":
-                return "success";  // 녹색
-            case "배송준비중":
-                return "warning";  // 주황색
-            case "배송중":
-                return "primary";  // 파란색
-            default:
-                return "secondary"; // 기본 회색
-        }
-    };
+	  // 상품 클릭 시 모달 열기
+  const handleShowModal = (product) => {
+    setSelectedProduct({ ...product });
+    setShowModal(true);
+  };
 
-    return (
-        <Container>
-            <h3 className="mb-3">결제 관리</h3>
-
-            {/* PC 화면에서는 테이블 형식 */}
-            <div className="d-none d-md-block">
-                <div className="table-responsive">
-                    <Table hover bordered className="align-middle">
-                        <thead className="table-light">
-                            <tr>
-                                <th>#</th>
-                                <th>이름</th>
-                                <th>결제 금액</th>
-                                <th>결제 상태</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {payments.map((payment) => (
-                                <tr key={payment.id}>
-                                    <td>{payment.id}</td>
-                                    <td>{payment.name}</td>
-                                    <td>{payment.amount.toLocaleString()}원</td>
-                                    <td>
-                                        <Badge bg={getStatusBadge(payment.status)}>
-                                            {payment.status}
-                                        </Badge>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                </div>
-            </div>
-
-            {/* 모바일 화면에서는 카드 형식 */}
-            <div className="d-md-none">
-                <Row className="g-3">
-                    {payments.map((payment) => (
-                        <Col xs={12} key={payment.id}>
-                            <Card className="p-3 shadow-sm">
-                                <Card.Body>
-                                    <h5>{payment.name}</h5>
-                                    <p className="text-muted">결제 금액: {payment.amount.toLocaleString()}원</p>
-                                    <Badge bg={getStatusBadge(payment.status)}>
-                                        {payment.status}
-                                    </Badge>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
-            </div>
-        </Container>
-    );
-};
-
-const Refund = () => (
+  // 모달 닫기
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedProduct(null);
+  };
+	  // 입력값 변경 핸들러
+		const handleChange = (e) => {
+			const { name, value } = e.target;
+			setSelectedProduct((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+		};
+	
+		// 상품 정보 수정 (API 요청)
+		const handleSaveChanges = async () => {
+			if (!selectedProduct) return;
+	
+			await req("put", `index/prod/${selectedProduct.pno}`, selectedProduct);
+			alert("상품 정보가 수정되었습니다.");
+			handleCloseModal();
+			req("get", "index/prod"); // 수정 후 목록 새로고침
+		};
+		  // 상품 삭제
+			const handleDelete = async () => {
+				if (!selectedProduct) return;
+		
+				if (window.confirm("정말 삭제하시겠습니까?")) {
+					await req("delete", `index/prod/${selectedProduct.pno}`);
+					alert("상품이 삭제되었습니다.");
+					handleCloseModal();
+					req("get", "index/prod"); // 삭제 후 목록 새로고침
+				}
+			};
+  return (
     <Container>
-        <h3 className="mb-3">환불 관리</h3>
-        <p>환불 내역이 없습니다.</p>
+      <h3 className="mb-3">상품 관리</h3>
+
+      {/* PC 화면에서는 테이블 형식 */}
+      <div className="d-none d-md-block">
+        <div className="table-responsive">
+          <Table hover bordered className="align-middle">
+            <thead className="table-light">
+              <tr>
+                <th>카테고리</th>
+                <th>상품명</th>
+                <th>가격</th>
+                <th>재고</th>
+                <th>옵션 재고</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.length > 0 ? (
+                products.map((p) => (
+                  <tr key={p.pno} onClick={() => handleShowModal(p)} style={{ cursor: "pointer" }}>
+                    <td>{p.category}</td>
+                    <td>{p.title.length > 30 ? p.title.slice(0, 30) + "..." : p.title}</td>
+                    <td>{p.price}원</td>
+                    <td>{p.stock}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-center">상품 데이터가 없습니다.</td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </div>
+      </div>
+
+      {/* 모바일 화면에서는 카드 형식 */}
+      <div className="d-md-none">
+        <Row className="g-3">
+          {products.length > 0 ? (
+            products.map((p) => (
+              <Col xs={12} key={p.pno}>
+                <Card className="p-3 shadow-sm" onClick={() => handleShowModal(p)} style={{ cursor: "pointer" }}>
+                  <Card.Body>
+                    <h5>{p.title}</h5>
+                    <p className="text-muted">가격: {p.price}원</p>
+                    <p>재고: {p.stock}</p>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))
+          ) : (
+            <Col xs={12} className="text-center">
+              <p>상품 데이터가 없습니다.</p>
+            </Col>
+          )}
+        </Row>
+      </div>
+
+      {/* 상품 상세 모달 */}
+      <ProductModal
+        show={showModal}
+        handleClose={handleCloseModal}
+        product={selectedProduct}
+        handleChange={handleChange}
+        handleSaveChanges={handleSaveChanges}
+        handleDelete={handleDelete}
+      />
     </Container>
-);
+
+  );
+};
 
 export default Prod;
