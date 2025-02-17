@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Container, Row, Col, Button, Form, Nav, Tab } from "react-bootstrap";
 import useAxios from "../../../hooks/useAxios";
 import "../../../styles/shop.scss";
@@ -15,10 +15,31 @@ const ShopDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState([]);
 
+  const navigate = useNavigate();
+
+  const handlePay = () => {
+    const orderData = {
+      product: product,
+      quantity: quantity,
+      options: selectedOptions,
+      total_price: totalPrice,
+      buyer: {
+        name: "홍길동", // 로그인 유저 데이터로 대체 가능
+        email: "user@example.com",
+        phone: "010-1234-5678",
+        address: "서울시 강남구",
+        zipcode: "12345",
+      },
+    };
+
+    navigate("/checkout", { state: { orderData } });
+  };
+
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const data = await req("GET", `prod/${id}`);
+        const data = await req("GET", `main/prod/${id}`);
         setProduct(data);
         if (data.imageUrls.length > 0) {
           setSelectedImage(data.imageUrls[0]);
@@ -150,7 +171,7 @@ const ShopDetail = () => {
           </div>
           <hr />
 
-          <Button className="w-100 fw-bold btn-hof">결제</Button>
+          <Button className="w-100 fw-bold btn-hof" onClick={handlePay}>결제</Button>
         </Col>
       </Row>
 
