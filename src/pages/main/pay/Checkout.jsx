@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
+import useAxios from "../../../hooks/useAxios"; // useAxios를 가져옴
 
 const Checkout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { orderData } = location.state;
+  const { req } = useAxios(); // useAxios 훅 사용
 
   useEffect(() => {
-    // IAMPORT 스크립트 추가
     const script = document.createElement("script");
     script.src = "https://cdn.iamport.kr/js/iamport.payment-1.2.0.js";
     script.async = true;
@@ -20,7 +21,7 @@ const Checkout = () => {
         IMP.init("imp17043604"); // 가맹점 식별 코드 입력
 
         const paymentData = {
-          pg: "html5_inicis", // PG사 선택
+          pg: "html5_inicis.INIpayTest", // PG사 선택
           pay_method: "card", // 결제 수단
           merchant_uid: `order_${new Date().getTime()}`, // 주문 고유번호
           name: orderData.product.title, // 상품명
@@ -35,16 +36,11 @@ const Checkout = () => {
         IMP.request_pay(paymentData, async (response) => {
           if (response.success) {
             try {
-              const res = await fetch("/pay/validate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  imp_uid: response.imp_uid,
-                  merchant_uid: response.merchant_uid,
-                }),
+              const result = await req("POST", "main/pay/validate", {
+                imp_uid: response.imp_uid,
+                merchant_uid: response.merchant_uid,
               });
 
-              const result = await res.json();
               if (result.success) {
                 navigate("/payment-success");
               } else {
@@ -68,7 +64,7 @@ const Checkout = () => {
     return () => {
       document.body.removeChild(script);
     };
-  }, [orderData, navigate]);
+  }, [orderData, navigate, req]);
 
   return (
     <div className="checkout">
