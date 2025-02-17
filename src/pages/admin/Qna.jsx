@@ -7,68 +7,118 @@ const Qna = () => {
   const { data, loading, error, req } = useAxios();
   const [qnaList, setQnaList] = useState([]); // 🔹 기본값 [] 설정
   const [replyCount, setReplyCount] = useState({}); // 답변 개수 저장
+  const [selectedQna, setSelectedQna] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
+  const fetchData = async () => {
+    const res = await req("get", "admin/fwl/qna");
+    if (res) {
+      const filteredQna = res.filter(qna => !qna.parentNo);
+      const replyCounter = {};
+      res.forEach(qna => {
+        if (qna.parentNo) {
+          replyCounter[qna.parentNo] = (replyCounter[qna.parentNo] || 0) + 1;
+        }
+      });
+      setQnaList(filteredQna);
+      setReplyCount(replyCounter);
+    }
+  };
+  
+  // ✅ useEffect에서 fetchData 호출
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await req("get", "admin/fwl/qna");
-      if (res) {
-          // 1️⃣ 답변(`parent_no`가 존재하는 항목) 제외하고 문의만 필터링
-          const filteredQna = res.filter(qna => !qna.parentNo);
-          // 2️⃣ 답변 개수 카운트
-        const replyCounter = {};
-        res.forEach(qna => {
-          if (qna.parentNo) {
-            replyCounter[qna.parentNo] = (replyCounter[qna.parentNo] || 0) + 1;
-          }});
-        setQnaList(filteredQna); // 🔹 undefined 방지
-        setReplyCount(replyCounter);
-      }
-    };
     fetchData();
   }, [req]);
   console.log(qnaList)
 
 
-    // // 상품 클릭 시 모달 열기
-    // const handleShowModal = (product) => {
-    //   setSelectedProduct({ ...product });
-    //   setShowModal(true);
-    // };
-  
-    // // 모달 닫기
-    // const handleCloseModal = () => {
-    //   setShowModal(false);
-    //   setSelectedProduct(null);
-    // };
-    //   // 입력값 변경 핸들러
-    //   const handleChange = (e) => {
-    //     const { name, value } = e.target;
-    //     setSelectedProduct((prev) => ({
-    //       ...prev,
-    //       [name]: value,
-    //     }));
-    //   };
+    // 상품 클릭 시 모달 열기
+    const handleShowModal = (selectedQna) => {
+      const replies = data.filter(q => q.parentNo === selectedQna.no);
     
-    //   // 상품 정보 수정 (API 요청)
-    //   const handleSaveChanges = async () => {
-    //     if (!selectedProduct) return;
+      setSelectedQna({
+        ...selectedQna,
+        existingReply: replies.length > 0 ? replies.map(r => r.content).join("\n\n") : "현재 작성된 답변이 없습니다."
+      });
+      setShowModal(true);
+    };
     
-    //     await req("put", `index/prod/${selectedProduct.pno}`, selectedProduct);
-    //     alert("상품 정보가 수정되었습니다.");
-    //     handleCloseModal();
-    //     req("get", "index/prod"); // 수정 후 목록 새로고침
-    //   };
-    //     // 상품 삭제
-    //     const handleDelete = async () => {
-    //       if (!selectedProduct) return;
+    
+    // 문의 등록 API 호출
+    const handleRegister = async () => {
+      if (!selectedQna || !selectedQna.replyContent) {
+        alert("답변 내용을 입력하세요.");
+        return;
+      }
+    
+      const replyData = {
+        memberId: "hof",  // ✅ 관리자 ID (임시, 서버에서 처리 가능)
+        content: selectedQna.replyContent,  // ✅ 답변 내용
+        parentNo: selectedQna.no,  // ✅ 부모 문의 번호 추가
+        status: "처리후"  // ✅ 상태 변경
+      };
+    
+      try {
+        const response = await req("post", "admin/fwl/qna", replyData);
+        
+        if (response) {
+          alert("답변이 등록되었습니다.");
+    
+          // ✅ 상태 업데이트 (새로운 답변 추가)
+          setQnaList(prevQnaList => prevQnaList.map(qna => 
+            qna.no === selectedQna.no ? { ...qna, status: "처리후" } : qna
+          ));
+    
+          setReplyCount(prevReplyCount => ({
+            ...prevReplyCount,
+            [selectedQna.no]: (prevReplyCount[selectedQna.no] || 0) + 1
+          }));
+        }
+    
+        handleCloseModal();
+
+          req("get", "admin/fwl/qna");
+
+      } catch (error) {
+        console.error("등록 오류:", error);
+        alert("등록 중 오류가 발생했습니다.");
+      }
+    };
+    
+    // 모달 닫기
+    const handleCloseModal = () => {
+      setShowModal(false);
+      setSelectedQna(null);
+    };
+      // 입력값 변경 핸들러
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setSelectedQna((prev) => ({
+          ...prev,
+          [name]: value,
+        }));
+      };
+    
+      // 상품 정보 수정 (API 요청)
+      const handleSaveChanges = async () => {
+        if (!selectedQna) return;
+    
+        await req("put", `admin/fwl/qna/${selectedQna.no}`, selectedQna);
+        alert("상품 정보가 수정되었습니다.");
+        handleCloseModal();
+        req("get", "admin/fwl"); // 수정 후 목록 새로고침
+      };
+        // 상품 삭제
+        const handleDelete = async () => {
+          if (!selectedQna) return;
       
-    //       if (window.confirm("정말 삭제하시겠습니까?")) {
-    //         await req("delete", `index/prod/${selectedProduct.pno}`);
-    //         alert("상품이 삭제되었습니다.");
-    //         handleCloseModal();
-    //         req("get", "index/prod"); // 삭제 후 목록 새로고침
-    //       }
-    //     };
+          if (window.confirm("정말 삭제하시겠습니까?")) {
+            await req("delete", `admin/fwl/qna/${selectedQna.no}`);
+            alert("문의글 이 삭제되었습니다.");
+            handleCloseModal();
+            await fetchData(); // ✅ 삭제 후 목록 다시 불러오기
+          }
+        };
 
   return (
     <Container>
@@ -90,7 +140,7 @@ const Qna = () => {
             <tbody>
               {qnaList?.length > 0 ? ( // 🔹 length 확인
                 qnaList.map((qna) => (
-                  <tr key={qna.no}>
+                  <tr key={qna.no} onClick={() => handleShowModal(qna)} style={{cursor : "pointer"}}>
                     <td>{qna.no}</td>
                     <td>{qna.memberId}</td>
                     <td>{qna.content.length > 30 ? qna.content.slice(0, 30) + "..." : qna.content}</td>
@@ -131,15 +181,15 @@ const Qna = () => {
           )}
         </Row>
       </div>
-       {/* 상품 상세 모달 */}
-       {/* <QnaModal
+       <QnaModal
         show={showModal}
         handleClose={handleCloseModal}
-        p={selectedProduct}
+        p={selectedQna}
         handleChange={handleChange}
         handleSaveChanges={handleSaveChanges}
         handleDelete={handleDelete}
-      /> */}
+        handleRegister = {handleRegister}
+      />
     </Container>
   );
 };
