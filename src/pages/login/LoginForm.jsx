@@ -1,30 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import axios from 'axios';
 import Logo from "../../components/layout/Logo";
+import useAxios from "../../hooks/useAxios";
+import { useNavigate } from "react-router-dom";
 
 function LoginForm(){
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  // const [data, loading, error, req] = useAxios("http://localhost:8080/api/")
-  // const {login} = useAuth();
+  const { data, loading, error, req } = useAxios();
 
-  const handleSubmit = async e => {
+  const navigate = useNavigate();
+  const handleSubmit = (e) => {
     e.preventDefault();
+    req("POST", "login", { username: id, password });
+  };
 
-    try {
-      const resp = await axios.post("http://localhost:8080/login",{username:id,password:password});
-      if (resp.data.success){
-      // if (resp.status === 200){
-        window.location.href = "/intro";
-      } else {
-        alert("정보가 틀렸습니다")
-      }
+  // 로그인 성공 시 accessToken 저장 및 페이지 이동
+  useEffect(() => {
+    if (data?.accessToken) {
+      localStorage.setItem("jwt", data.accessToken);
+      console.log("로그인 후 생성된 토큰", data);
+      navigate("/");
     }
-    catch(error) {
-      console.log("로그인 실패", error);
-    }
-  }
+  }, [data]);
+  
 
   const socialLogins = [
     { platform: "구글", icon: "google-icon.svg" },
@@ -49,7 +48,8 @@ function LoginForm(){
             <Form.Control className="mt-1 py-2" type="password" id="password" name="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="비밀번호" />
           </div>
           <div className="mb-4">
-            <button className="btn btn-hof w-100 my-3 py-2" >로그인</button>
+            <button className="btn btn-hof w-100 my-3 py-2" disabled={loading}>{loading ? "로그인 중" : "로그인"}</button>
+            {error && <p style={{ fontSize: "0.9rem", color: "red", textAlign: "center" }}>아이디 또는 비밀번호가 잘못 되었습니다.</p>}
             <div className="d-flex" style={{justifyContent: "space-between", alignItems: "center"}}>
               <div className="d-flex ps-1 pe-2" style={{alignItems: "center"}}>
                 <input type="checkbox" className="checkbox-hof me-1"/>

@@ -16,13 +16,14 @@ const useAxios = (baseUrl = BASE_URL) => {
         setError(null);
 
         try {
+          const token = localStorage.getItem("jwt");
           const resp = await axios({
             method,
             url:`${baseUrl}${endpoint}`,
             data: body,
             headers:{
               'Content-Type':'application/json',
-              // 'Authorization' : `Bearer ${token}`,
+              ...(token && { Authorization: `Bearer ${token}` }),
               ...addHeaders
             }
           });
