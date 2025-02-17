@@ -29,7 +29,7 @@ function Shop() {
   // API 요청 (카테고리에 따라 `cno` 값을 포함하여 요청)
   useEffect(() => {
     const cno = categoryMap[selectedCategory] || ""; // 해당하는 `cno` 값 설정
-    const endpoint = cno ? `prod/search?cno=${cno}` : "prod"; // 전체 or 카테고리별 조회
+    const endpoint = cno ? `main/prod?cno=${cno}` : "main/prod"; // 전체 or 카테고리별 조회
     req("GET", endpoint); 
   }, [selectedCategory]); 
 
