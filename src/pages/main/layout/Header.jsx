@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../../../components/layout/Logo";
+import LogoutButton from "../../login/LogoutButton";
 
 const Header = ({ fixed }) => {
   const location = useLocation(); // 현재 경로 가져오기
@@ -34,6 +35,7 @@ const Header = ({ fixed }) => {
             </ul>
             {/* ✅ 로그인/회원가입 버튼 추가 */}
             <div className="ms-auto d-flex gap-3">
+              <LogoutButton />
               <Link to="/login" className="text-hof fw-bold" style={{textDecoration:"none"}}>로그인</Link>
               <Link to="/signup"className="text-hof fw-bold" style={{textDecoration:"none"}}>회원가입</Link>
             </div>
