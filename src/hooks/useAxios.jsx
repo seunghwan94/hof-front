@@ -1,7 +1,14 @@
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 // import { useAuth } from './AuthContext';
-const BASE_URL = `${window.location.origin}/api/v1/`;
+
+const getBaseUrl = () => 
+  process.env.REACT_APP_API_BASE_URL || 
+  (window.location.hostname.includes('localhost') 
+    ? 'http://localhost:8080/api/v1/' 
+    : `${window.location.origin}/api/v1/`);
+
+const BASE_URL = getBaseUrl();
 
 const useAxios = (baseUrl = BASE_URL) => {
     const[data,setData] = useState(null);
