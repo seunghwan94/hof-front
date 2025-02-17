@@ -8,7 +8,7 @@ const FWL = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [newContent, setNewContent] = useState('');
   useEffect(() => {
-    req('get', 'index/fwl');
+    req('get', 'admin/fwl');
   }, [req]);
 
   useEffect(() => {
@@ -21,16 +21,16 @@ const FWL = () => {
     console.log(error);
     return <div><h1>에러 발생</h1></div>;
   }
-  if (loading) {
-    return <div><h1>로딩 중...</h1></div>;
-  }
+  // if (loading) {
+  //   return <div><h1>로딩 중...</h1></div>;
+  // }
 
   //  토글글
   const handleToggle = async (fno, isActive) => {
     setFwlData(prev =>
       prev.map(f => (f.fno === fno ? { ...f, isActive: !isActive } : f))
     );
-    await req('put', `index/fwl/update/${fno}`, { isActive: !isActive });
+    await req('put', `admin/fwl/${fno}`, { isActive: !isActive });
   };
 
   // 체크박스
@@ -40,31 +40,44 @@ const FWL = () => {
     );
   };
   // 삭제
+  // const handleDeleteSelected = async () => {
+  //   if (selectedIds.length === 0) return alert('삭제할 항목을 선택하세요.');
+
+  //   const updatedData = fwlData.filter(f => !selectedIds.includes(f.fno));
+  //   setFwlData(updatedData);
+  //   setSelectedIds([]);
+  //   await req('delete', '/', { ids: selectedIds });
+  // };
   const handleDeleteSelected = async () => {
     if (selectedIds.length === 0) return alert('삭제할 항목을 선택하세요.');
 
-    const updatedData = fwlData.filter(f => !selectedIds.includes(f.fno));
-    setFwlData(updatedData);
-    setSelectedIds([]);
-    await req('delete', 'index/fwl/delete', { ids: selectedIds });
+    const idString = selectedIds.join(','); // ID 리스트를 ','로 연결
+
+    try {
+        await req('delete', `admin/fwl/${idString}`);
+        setFwlData(prev => prev.filter(f => !selectedIds.includes(f.fno)));
+        setSelectedIds([]);
+    } catch (error) {
+        console.error("삭제 실패", error);
+    }
   };
+
 
   //등록
   const handleAdd = async () => {
     if (!newContent.trim()) return alert('내용을 입력하세요.');
   
     try {
-      await req('post', 'index/fwl/add', { content: newContent, isActive: true });
+      await req('post', 'admin/fwl', { content: newContent, isActive: true });
   
       setNewContent(''); // ✅ 입력 필드 초기화
   
 
-      req('get', 'index/fwl'); 
+      req('get', 'admin/fwl'); 
     } catch (error) {
       console.error("등록 실패", error);
     }
   };
-
 
   return (
     <Container>
@@ -73,43 +86,47 @@ const FWL = () => {
       {/* PC 화면에서는 테이블 형식 */}
       <div className="d-none d-md-block">
         <div className="table-responsive">
-          <Table hover bordered className="align-middle">
+          <Table hover bordered className="align-middle text-center">
             <thead className="table-light">
               <tr>
-                <th>
-                  <Form.Check
-                    type="checkbox"
+                <th style={{width : "40px"}}>
+                <input type="checkbox" className="checkbox-hof" 
+                    
+                    
                     onChange={() => setSelectedIds(
                       selectedIds.length ? [] : fwlData.map(f => f.fno)
                     )}
                   />
                 </th>
-                <th>no</th>
-                <th>내용</th>
-                <th>활성화상태</th>
-                <th>등록일자</th>
+                <th style={{width : "50px"}}>no</th>
+                <th className='text-start'>내용</th>
+                
+                <th style={{width : "125px"}}>등록일자</th>
+                <th  style={{width : "60px"}}>적용</th>
               </tr>
             </thead>
             <tbody>
               {fwlData.map((f) => (
                 <tr key={f.fno}>
                   <td>
-                    <Form.Check
-                      type="checkbox"
+                  <input type="checkbox" className="checkbox-hof" 
+
                       checked={selectedIds.includes(f.fno)}
                       onChange={() => handleCheckboxChange(f.fno)}
                     />
                   </td>
                   <td>{f.fno}</td>
-                  <td>{f.content}</td>
+                  <td className='text-start'>{f.content}</td>
+
+                  <td>{f.regDate}</td>
                   <td>
                     <Form.Check
                       type="switch"
+
                       checked={f.isActive}
                       onChange={() => handleToggle(f.fno, f.isActive)}
                     />
                   </td>
-                  <td>{f.regDate}</td>
                 </tr>
               ))}
             </tbody>
@@ -124,11 +141,9 @@ const FWL = () => {
             <Col xs={12} key={f.fno}>
               <Card className="p-3 shadow-sm">
                 <Card.Body>
-                  <Form.Check
-                    type="checkbox"
+                <input type="checkbox" className="mb-2 checkbox-hof" 
                     checked={selectedIds.includes(f.fno)}
                     onChange={() => handleCheckboxChange(f.fno)}
-                    className="mb-2"
                   />
                   <p className="text-muted">no: {f.fno}</p>
                   <h5>{f.content}</h5>

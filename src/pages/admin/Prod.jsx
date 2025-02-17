@@ -2,6 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Table, Container, Row, Col, Card } from "react-bootstrap";
 import useAxios from "../../hooks/useAxios";
 import ProductModal from "./ProductModal"; // 모달 컴포넌트 import
+
+const categoryMap = {
+  1: "침대",
+  2: "의자",
+  3: "책상",
+  4: "수납장",
+  5: "옷장"
+}
+
 const Prod = () => {
   const { data, loading, error, req } = useAxios();
   const [products, setProducts] = useState([]); 
@@ -9,21 +18,23 @@ const Prod = () => {
   const [showModal, setShowModal] = useState(false);
   // 상품 목록 가져오기
   useEffect(() => {
-    req("get", "index/prod");
+    const axios = async () => {
+      await req("get", "main/prod");
+
+    };
+    axios();
+    
 }, [req]);
 
+
+console.log(data);
 // useEffect(() => {
-//     if (!loading && data) {
-//         setProducts(Array.isArray(data) ? data : []);
+//     if (!loading && data?.dtoList) {
+//         console.log("서버에서 받은 데이터:", data);
+//         setProducts(data.dtoList);
 //     }
 // }, [data, loading]);
-useEffect(() => {
-    if (!loading && data?.dtoList) {
-        console.log("서버에서 받은 데이터:", data);
-        setProducts(data.dtoList);
-    }
-}, [data, loading]);
-
+// console.log(products);
 
 
 	  // 상품 클릭 시 모달 열기
@@ -66,7 +77,7 @@ useEffect(() => {
 					req("get", "index/prod"); // 삭제 후 목록 새로고침
 				}
 			};
-  return (
+  return data && (
     <Container>
       <h3 className="mb-3">상품 관리</h3>
 
@@ -80,24 +91,19 @@ useEffect(() => {
                 <th>상품명</th>
                 <th>가격</th>
                 <th>재고</th>
-                <th>옵션 재고</th>
               </tr>
             </thead>
             <tbody>
-              {products.length > 0 ? (
-                products.map((p) => (
+              {
+                data.map((p) => (
                   <tr key={p.pno} onClick={() => handleShowModal(p)} style={{ cursor: "pointer" }}>
-                    <td>{p.category}</td>
+                    <td>{categoryMap[p.cno] || "기타"}</td>
                     <td>{p.title.length > 30 ? p.title.slice(0, 30) + "..." : p.title}</td>
                     <td>{p.price}원</td>
                     <td>{p.stock}</td>
                   </tr>
                 ))
-              ) : (
-                <tr>
-                  <td colSpan="5" className="text-center">상품 데이터가 없습니다.</td>
-                </tr>
-              )}
+              }
             </tbody>
           </Table>
         </div>
@@ -106,8 +112,8 @@ useEffect(() => {
       {/* 모바일 화면에서는 카드 형식 */}
       <div className="d-md-none">
         <Row className="g-3">
-          {products.length > 0 ? (
-            products.map((p) => (
+          {data.length > 0 ? (
+            data.map((p) => (
               <Col xs={12} key={p.pno}>
                 <Card className="p-3 shadow-sm" onClick={() => handleShowModal(p)} style={{ cursor: "pointer" }}>
                   <Card.Body>
@@ -130,7 +136,7 @@ useEffect(() => {
       <ProductModal
         show={showModal}
         handleClose={handleCloseModal}
-        product={selectedProduct}
+        p={selectedProduct}
         handleChange={handleChange}
         handleSaveChanges={handleSaveChanges}
         handleDelete={handleDelete}

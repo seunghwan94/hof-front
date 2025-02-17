@@ -8,6 +8,7 @@ import useAxios from "../../hooks/useAxios";
 const Member = () => {
   const [activeTab, setActiveTab] = useState("members");
 
+
   return (
     <Container className="mt-4">
 
@@ -45,22 +46,26 @@ const Member = () => {
 
 const MemberList = () => {
   const { data, loading, error, req } = useAxios();
-  // const [members, setMembers] = useState([]); 
+  const [members,setMembers] = useState([]);
 
 
-  // useEffect(async() => {
-  //   const val = await req('get','index/list');
-  //   console.log(val);
-    
-  //   // console.log(data);
-  //  },[req]);
 
-  //  API 호출 (정리 함수 제거)
+
+
   useEffect(() => {
-    req('get', 'index/list');
-    console.log(data);
+    const fetchData = async () => {
+      await req('get', 'admin/fwl/list'); // 비동기 요청
+    };
+    fetchData();
   }, [req]);
 
+  useEffect(() => {
+    if (!loading && data) {
+      console.log("서버에서 받은 데이터:", data);
+      setMembers(Array.isArray(data) ? data : data.dtoList || []);
+    }
+  }, [data, loading]);
+  console.log(members)
 
 
   if(error){
@@ -74,7 +79,7 @@ const MemberList = () => {
     <Container>
       <h3 className="mb-3">회원관리</h3>
       <Row className="g-3 row-cols-1 row-cols-md-2 row-cols-lg-3">
-        {data && data.map(b => (
+        {data && members.map(b => (
           <Col key={b.mno}>
             <Card className="p-3 shadow-sm h-100 d-flex flex-column justify-content-between">
               <div>
