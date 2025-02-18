@@ -32,7 +32,7 @@ const ShopDetail = () => {
       },
     };
 
-    navigate("/checkout", { state: { orderData } });
+    navigate("/PayInfo", { state: { orderData } });
   };
 
 

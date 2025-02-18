@@ -22,11 +22,11 @@ $alert-info-color: #4c4c89;
 
 @font-face {
   font-family: "CustomFont";
-  src: url("../assets/fonts/MinSansVF.ttf") format("truetype");
+  src: url("https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/MinSansVF.ttf") format("truetype");
 }
 @font-face {
   font-family: "KCC-Ganpan";
-  src: url('../assets/fonts/KCC-Ganpan.ttf') format('truetype');
+  src: url('https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/KCC-Ganpan.ttf') format('truetype');
 }
 
 

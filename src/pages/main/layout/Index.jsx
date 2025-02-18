@@ -8,7 +8,8 @@ import Community from "../community/Community";
 import Interior from "../Interior";
 import NotFound from "../../not-found/NotFound"; 
 import Footer from "./Footer";
-import Checkout from "../pay/Checkout";
+import Pay from "../pay/Pay";
+import PayInfo from "../pay/PayInfo";
 
 function Index() {
   const location = useLocation(); // 현재 경로 가져오기
@@ -20,7 +21,8 @@ function Index() {
     { path: "/shop/detail/:id", element: <ShopDetail /> },
     { path: "/community", element: <Community /> },
     { path: "/Interior", element: <Interior /> },
-    { path: "/Checkout", element: <Checkout /> },
+    { path: "/Pay", element: <Pay /> },
+    { path: "/PayInfo", element: <PayInfo /> },
   ];
 
   // `location.pathname`이 `routesConfig` 중 하나와 일치하는지 확인
