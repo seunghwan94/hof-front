@@ -8,8 +8,8 @@ function LoginForm(){
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const { data, loading, error, req } = useAxios();
-
   const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     req("POST", "login", { username: id, password });
@@ -19,11 +19,24 @@ function LoginForm(){
   useEffect(() => {
     if (data?.accessToken) {
       localStorage.setItem("jwt", data.accessToken);
-      console.log("로그인 후 생성된 토큰", data);
-      navigate("/");
+      console.log("로그인 후 생성된 토큰:", data);
+      console.log("data.member:", data.member);
+      console.log("data.member.role:", data.member?.role)
+
+      const role = data.member?.role; // 서버응답시role가져오기
+      console.log("로그인한 유저 롤:", role);
+
+      if(role === "admin" || role === "master") {
+        console.log("관리자 페이지로 이동")
+        navigate("/admin"); 
+      }
+      else {
+        console.log("일반 사용자 홈으로 이동");
+        navigate("/");
+      }
+
     }
-  }, [data]);
-  
+  }, [data, navigate]);
 
   const socialLogins = [
     { platform: "구글", icon: "google-icon.svg" },
