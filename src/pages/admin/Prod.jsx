@@ -13,13 +13,19 @@ const categoryMap = {
 
 const Prod = () => {
   const { data, loading, error, req } = useAxios();
-  const [products, setProducts] = useState([]); 
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [products, setProducts] = useState([]); //상품목록
+  const [pcno,setPcno] = useState("");
+
+  const [selectedProduct, setSelectedProduct] = useState(null); //상품 상세정보
+
   const [showModal, setShowModal] = useState(false);
   // 상품 목록 가져오기
   useEffect(() => {
     const axios = async () => {
-      await req("get", "main/prod");
+    const response = await req("get", "main/prod");
+    if(response){
+      setProducts(response);
+    }
 
     };
     axios();
@@ -27,7 +33,7 @@ const Prod = () => {
 }, [req]);
 
 
-console.log(data);
+
 // useEffect(() => {
 //     if (!loading && data?.dtoList) {
 //         console.log("서버에서 받은 데이터:", data);
@@ -38,13 +44,34 @@ console.log(data);
 
 
 	  // 상품 클릭 시 모달 열기
-  const handleShowModal = (product) => {
-    setSelectedProduct({ ...product });
-    setShowModal(true);
+    const handleShowModal = async (product) => {
+    try {
+      setSelectedProduct(null); // 🔹 기존 데이터 초기화 (잠깐 로딩 UI 표시용)
+
+
+      const productDetail = await req("get", `main/prod/${product.pno}`);
+
+
+      if (!productDetail) {
+        alert("상품 상세 정보를 불러오지 못했습니다.");
+        return;
+      }
+
+      // ✅ 상품 상세 정보 상태 업데이트
+      setSelectedProduct({...productDetail, cno: product.cno});
+
+      // ✅ 모달 열기
+      setShowModal(true);
+    } catch (error) {
+      console.error("상품 상세 정보를 가져오는 중 오류 발생:", error);
+      alert("상품 정보를 불러오는데 실패했습니다.");
+    }
   };
+    
 
   // 모달 닫기
   const handleCloseModal = () => {
+
     setShowModal(false);
     setSelectedProduct(null);
   };
@@ -61,23 +88,32 @@ console.log(data);
 		const handleSaveChanges = async () => {
 			if (!selectedProduct) return;
 	
-			await req("put", `index/prod/${selectedProduct.pno}`, selectedProduct);
+			await req("put", `main/prod/${selectedProduct.pno}`, selectedProduct);
 			alert("상품 정보가 수정되었습니다.");
 			handleCloseModal();
-			req("get", "index/prod"); // 수정 후 목록 새로고침
+			req("get", "main/prod"); // 수정 후 목록 새로고침
 		};
 		  // 상품 삭제
 			const handleDelete = async () => {
 				if (!selectedProduct) return;
 		
 				if (window.confirm("정말 삭제하시겠습니까?")) {
-					await req("delete", `index/prod/${selectedProduct.pno}`);
+					await req("delete", `main/prod/${selectedProduct.pno}`);
 					alert("상품이 삭제되었습니다.");
 					handleCloseModal();
-					req("get", "index/prod"); // 삭제 후 목록 새로고침
+					req("get", "main/prod"); // 삭제 후 목록 새로고침
 				}
 			};
-  return data && (
+
+      const handleOptionChange = (updatedOptions) => {
+        setSelectedProduct((prev) => ({
+          ...prev,
+          options: updatedOptions,
+        }));
+        console.log(selectedProduct)
+      };
+
+  return products && (
     <Container>
       <h3 className="mb-3">상품 관리</h3>
 
@@ -95,11 +131,11 @@ console.log(data);
             </thead>
             <tbody>
               {
-                data.map((p) => (
+                products.map((p) => (
                   <tr key={p.pno} onClick={() => handleShowModal(p)} style={{ cursor: "pointer" }}>
                     <td>{categoryMap[p.cno] || "기타"}</td>
                     <td>{p.title.length > 30 ? p.title.slice(0, 30) + "..." : p.title}</td>
-                    <td>{p.price}원</td>
+                    <td>{p.price.toLocaleString()}원</td>
                     <td>{p.stock}</td>
                   </tr>
                 ))
@@ -112,13 +148,13 @@ console.log(data);
       {/* 모바일 화면에서는 카드 형식 */}
       <div className="d-md-none">
         <Row className="g-3">
-          {data.length > 0 ? (
-            data.map((p) => (
+          {products.length > 0 ? (
+            products.map((p) => (
               <Col xs={12} key={p.pno}>
                 <Card className="p-3 shadow-sm" onClick={() => handleShowModal(p)} style={{ cursor: "pointer" }}>
                   <Card.Body>
                     <h5>{p.title}</h5>
-                    <p className="text-muted">가격: {p.price}원</p>
+                    <p className="text-muted">가격: {p.price.toLocaleString()}원</p>
                     <p>재고: {p.stock}</p>
                   </Card.Body>
                 </Card>
@@ -140,6 +176,7 @@ console.log(data);
         handleChange={handleChange}
         handleSaveChanges={handleSaveChanges}
         handleDelete={handleDelete}
+        handleOptionChange={handleOptionChange}
       />
     </Container>
 

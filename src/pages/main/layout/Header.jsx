@@ -5,7 +5,7 @@ import LogoutButton from "../../login/LogoutButton";
 
 const Header = ({ fixed }) => {
   const location = useLocation(); // 현재 경로 가져오기
-
+  console.log(localStorage.getItem("jwt"));
   return (
     <>
       <nav className={`navbar navbar-expand-lg mt-3 mb-2 ${fixed ? "fixed-top" : ""}`}>
