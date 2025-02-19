@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Login from "../pages/login/Login";
 import CssExample from "../components/custom/CssExample";
-import Index from "../pages/main/layout/Index";
+import Index from "../pages/main/Index";
 import BarRoutes from "../pages/admin/layout/BarRoutes";
 import "../util/ChartConfigjs";
 
