@@ -73,7 +73,7 @@ const Pay = () => {
         IMP.init("imp17043604"); // 아임포트 가맹점 코드
 
         // ✅ `orderData.paymentMethod` 값에 따라 `pg` 및 `pay_method` 설정
-        const paymentMethod = orderData.paymentMethod;
+        // const paymentMethod = orderData.paymentMethod;
         // const paymentPg = paymentMethod === "신용카드" ?  : "kcp";
         // const payMethod = paymentMethod === "신용카드" ? "card" : "trans";
 

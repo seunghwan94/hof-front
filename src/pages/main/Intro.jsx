@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import ReactFullpage from "@fullpage/react-fullpage";
-import ProductCard from "./shop/ProductCard"; // ProductCard 가져오기
+// import ProductCard from "./shop/ProductCard"; // ProductCard 가져오기
 import { Card } from "react-bootstrap";
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
