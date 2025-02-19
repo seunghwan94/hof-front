@@ -31,15 +31,16 @@ const ShopDetail = () => {
         address: "서울시 강남구",
         zipcode: "12345",
       },
-      items: selectedOptions.map((option) => ({
+      items: selectedOptions.map((option, idx) => ({
         pno: product.pno,
         count: quantity,
         basePrice: product.price,
         subtotalPrice: product.price + option.addPrice,
+        optionNo : option.optionNo  
       })),
     };
   
-    console.log("🛒 생성된 주문 데이터:", orderData); // ✅ 콘솔에서 확인
+    console.log("생성된 주문 데이터:", orderData); // ✅ 콘솔에서 확인
     navigate("/PayInfo", { state: { orderData } });
   };
   
@@ -92,7 +93,7 @@ const ShopDetail = () => {
 
   /** 최종 가격 계산 */
   const totalPrice =
-    selectedOptions.reduce((acc, option) => acc + (product.price + option.addPrice), 0) * quantity;
+    selectedOptions.reduce((acc, option) => acc + (product.price + option.addPrice), 0) ;
 
   if (loading) return <h2 className="text-center mt-5">로딩 중...</h2>;
   if (error) return <h2 className="text-center mt-5 text-danger">상품을 불러오는 중 오류 발생</h2>;

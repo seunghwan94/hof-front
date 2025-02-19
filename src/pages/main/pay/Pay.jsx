@@ -43,17 +43,20 @@ const Pay = () => {
       if (isProcessingRef.current) return;
       isProcessingRef.current = true;
 
-      console.log("🔹 mno:", orderData.buyer.mno);
-      console.log("🔹 orderData:", orderData);
+      // console.log("orderData:", orderData);
 
       try {
         // 1️⃣ 주문 생성 요청
         const orderResponse = await req("POST", "main/order/create", {
           mno: orderData.buyer.mno,
-          items: orderData.items,
+          items: orderData.items.map(item => ({
+            pno: item.pno,
+            count: item.count,
+            basePrice: item.basePrice,
+            subtotalPrice: item.subtotalPrice,
+            optionNo:  item.optionNo // ✅ 옵션 번호 리스트 전달
+          }))
         });
-
-        console.log("🔹 서버 응답:", orderResponse);
 
         if (!orderResponse || !orderResponse.no) {
           alert(`❌ 주문 생성 실패\n서버 응답: ${JSON.stringify(orderResponse)}`);
@@ -62,20 +65,15 @@ const Pay = () => {
         }
 
         const orderNo = orderResponse.no;
-        console.log("✅ 생성된 orderNo:", orderNo);
+        console.log("생성된 orderNo:", orderNo);
 
         const IMP = await loadIamportScript();
         if (!IMP) {
           alert("❌ 결제 모듈 로딩 실패");
           return;
         }
-
-        IMP.init("imp17043604"); // 아임포트 가맹점 코드
-
-        // ✅ `orderData.paymentMethod` 값에 따라 `pg` 및 `pay_method` 설정
-        // const paymentMethod = orderData.paymentMethod;
-        // const paymentPg = paymentMethod === "신용카드" ?  : "kcp";
-        // const payMethod = paymentMethod === "신용카드" ? "card" : "trans";
+        // 아임포트 가맹점 코드
+        IMP.init("imp17043604"); 
 
         // 2️⃣ 결제 요청
         const paymentData = {
@@ -86,15 +84,12 @@ const Pay = () => {
           amount: orderData.total_price,
         };
 
-        console.log("🔹 결제 요청 데이터:", paymentData);
-
         IMP.request_pay(paymentData, async (response) => {
           if (response.success) {
-            console.log("✅ 결제 성공, imp_uid:", response.imp_uid);
-            console.log("✅ orderNo :", orderNo);
+            console.log("결제 성공, imp_uid:", response.imp_uid);
         
             try {
-              // 3️⃣ 결제 요청 저장 (🔥 추가됨!)
+              // 3️⃣ 결제 요청 저장
               const payResponse = await req("POST", "main/pay/pay", {
                 orderNo,
                 method: "카드",
@@ -109,8 +104,8 @@ const Pay = () => {
                 return;
               }
         
-              console.log("✅ 결제 요청, imp_uid:", response.imp_uid);
-              console.log("✅ orderNo :", orderNo);
+              console.log("결제 요청, imp_uid:", response.imp_uid);
+              console.log("orderNo :", orderNo);
 
               // 4️⃣ 결제 검증 요청
               const paymentResponse = await req("POST", "main/pay/complete", {
@@ -146,7 +141,7 @@ const Pay = () => {
     };
 
     createOrder();
-  }, [orderData, navigate, req]); // ✅ `isProcessing` 제거하여 무한 루프 방지
+  }, [orderData, navigate, req]);
 
   return (
     <Container className="checkout mt-5 text-center">

@@ -14,13 +14,9 @@ const PaymentInfo = () => {
     return <h2 className="text-center mt-5">결제 정보를 불러올 수 없습니다.</h2>;
   }
 
-  console.log(orderData.product.price);
-
   // ✅ 결제 버튼 클릭 시 실행 (결제 방법 포함)
   const handlePayment = () => {
     console.log("결제 진행", orderData.buyer);
-
-    // ✅ orderData에 paymentMethod 추가 후 Pay 페이지로 이동
     navigate("/Pay", { state: { orderData: { ...orderData, paymentMethod } } });
   };
 
@@ -73,18 +69,18 @@ const PaymentInfo = () => {
             type="radio"
             label="신용카드"
             name="paymentMethod"
-            value="신용카드"
+            value="카드"
             checked={paymentMethod === "신용카드"}
             onChange={(e) => setPaymentMethod(e.target.value)}
           />
-          <Form.Check
+          {/* <Form.Check
             type="radio"
             label="계좌이체"
             name="paymentMethod"
             value="계좌이체"
             checked={paymentMethod === "계좌이체"}
             onChange={(e) => setPaymentMethod(e.target.value)}
-          />
+          /> */}
         </Form>
 
         <Button className="w-100 mt-4 fw-bold btn-hof" onClick={handlePayment}>
