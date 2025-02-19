@@ -1,77 +1,161 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
-import useAxios from "../../../hooks/useAxios"; // useAxios를 가져옴
+import { Button, Container } from "react-bootstrap";
+import useAxios from "../../../hooks/useAxios";
 
-const Checkout = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { orderData } = location.state;
-  const { req } = useAxios(); // useAxios 훅 사용
+const loadIamportScript = () => {
+  return new Promise((resolve, reject) => {
+    if (window.IMP) {
+      resolve(window.IMP);
+      return;
+    }
 
-  useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://cdn.iamport.kr/js/iamport.payment-1.2.0.js";
     script.async = true;
+    script.onload = () => resolve(window.IMP);
+    script.onerror = () => reject(new Error("❌ Iamport 스크립트 로딩 실패"));
     document.body.appendChild(script);
+  });
+};
 
-    script.onload = () => {
-      if (window.IMP) {
-        const IMP = window.IMP;
-        IMP.init("imp17043604"); // 가맹점 식별 코드 입력
+const Pay = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const orderData = location.state?.orderData;
+  const { req } = useAxios();
+  const isProcessingRef = useRef(false); // ✅ 중복 요청 방지
 
+  useEffect(() => {
+    if (!orderData?.items?.length) {
+      alert("❌ 주문 정보가 없습니다.");
+      navigate("/payment-failed");
+      return;
+    }
+
+    if (!orderData.buyer?.mno) {
+      alert("❌ 회원 정보가 올바르지 않습니다.");
+      navigate("/payment-failed");
+      return;
+    }
+
+    const createOrder = async () => {
+      if (isProcessingRef.current) return;
+      isProcessingRef.current = true;
+
+      console.log("🔹 mno:", orderData.buyer.mno);
+      console.log("🔹 orderData:", orderData);
+
+      try {
+        // 1️⃣ 주문 생성 요청
+        const orderResponse = await req("POST", "main/order/create", {
+          mno: orderData.buyer.mno,
+          items: orderData.items,
+        });
+
+        console.log("🔹 서버 응답:", orderResponse);
+
+        if (!orderResponse || !orderResponse.no) {
+          alert(`❌ 주문 생성 실패\n서버 응답: ${JSON.stringify(orderResponse)}`);
+          navigate("/payment-failed");
+          return;
+        }
+
+        const orderNo = orderResponse.no;
+        console.log("✅ 생성된 orderNo:", orderNo);
+
+        const IMP = await loadIamportScript();
+        if (!IMP) {
+          alert("❌ 결제 모듈 로딩 실패");
+          return;
+        }
+
+        IMP.init("imp17043604"); // 아임포트 가맹점 코드
+
+        // ✅ `orderData.paymentMethod` 값에 따라 `pg` 및 `pay_method` 설정
+        const paymentMethod = orderData.paymentMethod;
+        // const paymentPg = paymentMethod === "신용카드" ?  : "kcp";
+        // const payMethod = paymentMethod === "신용카드" ? "card" : "trans";
+
+        // 2️⃣ 결제 요청
         const paymentData = {
-          pg: "html5_inicis.INIpayTest", // PG사 선택
-          pay_method: "card", // 결제 수단
-          merchant_uid: `order_${new Date().getTime()}`, // 주문 고유번호
-          name: orderData.product.title, // 상품명
-          amount: orderData.total_price, // 가격
-          buyer_email: orderData.buyer.email,
-          buyer_name: orderData.buyer.name,
-          buyer_tel: orderData.buyer.phone,
-          buyer_addr: orderData.buyer.address,
-          buyer_postcode: orderData.buyer.zipcode,
+          pg: "html5_inicis.INIpayTest",
+          pay_method: "card",
+          merchant_uid: `order_${orderNo}_${new Date().getTime()}`,
+          name: orderData.product.title,
+          amount: orderData.total_price,
         };
+
+        console.log("🔹 결제 요청 데이터:", paymentData);
 
         IMP.request_pay(paymentData, async (response) => {
           if (response.success) {
+            console.log("✅ 결제 성공, imp_uid:", response.imp_uid);
+            console.log("✅ orderNo :", orderNo);
+        
             try {
-              const result = await req("POST", "main/pay/validate", {
-                imp_uid: response.imp_uid,
-                merchant_uid: response.merchant_uid,
+              // 3️⃣ 결제 요청 저장 (🔥 추가됨!)
+              const payResponse = await req("POST", "main/pay/pay", {
+                orderNo,
+                method: "카드",
+                totalPrice: orderData.total_price,
               });
-
-              if (result.success) {
-                navigate("/payment-success");
-              } else {
-                alert("결제 검증 실패");
+        
+              console.log("🔹 결제 요청 저장 응답:", payResponse);
+        
+              if (!payResponse || !payResponse.no) {
+                alert("❌ 결제 정보 저장 실패");
                 navigate("/payment-failed");
+                return;
               }
-            } catch (err) {
-              console.error(err);
-              alert("결제 검증 중 오류 발생");
+        
+              console.log("✅ 결제 요청, imp_uid:", response.imp_uid);
+              console.log("✅ orderNo :", orderNo);
+
+              // 4️⃣ 결제 검증 요청
+              const paymentResponse = await req("POST", "main/pay/complete", {
+                orderNo,
+                imp_uid: response.imp_uid,
+                method: "카드",
+              });
+        
+              console.log("🔹 결제 완료 응답:", paymentResponse);
+        
+              // 5️⃣ 결제 성공 검증
+              if (!paymentResponse || paymentResponse.status !== "완료") {
+                alert("❌ 결제 완료 처리 실패. 고객센터에 문의하세요.");
+                navigate("/payment-failed");
+                return;
+              }
+        
+              // 6️⃣ 최종 결제 성공 처리
+              navigate("/payment-success");
+            } catch (error) {
+              alert(`❌ 결제 확인 요청 중 오류 발생: ${error.message}`);
+              navigate("/payment-failed");
             }
           } else {
-            alert(`결제 실패: ${response.error_msg}`);
+            alert(`❌ 결제 실패: ${response.error_msg}`);
             navigate("/payment-failed");
           }
         });
-      } else {
-        alert("결제 모듈 로딩 실패. 페이지를 새로고침 해주세요.");
+      } catch (error) {
+        alert(`❌ 주문 생성 중 오류 발생: ${error.message}`);
+        navigate("/payment-failed");
       }
     };
 
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, [orderData, navigate, req]);
+    createOrder();
+  }, [orderData, navigate, req]); // ✅ `isProcessing` 제거하여 무한 루프 방지
 
   return (
-    <div className="checkout">
+    <Container className="checkout mt-5 text-center">
       <h2>결제 진행 중...</h2>
-      <Button onClick={() => navigate("/shop")}>돌아가기</Button>
-    </div>
+      <Button className="mt-3" onClick={() => navigate("/shop")} disabled={isProcessingRef.current}>
+        돌아가기
+      </Button>
+    </Container>
   );
 };
 
-export default Checkout;
+export default Pay;

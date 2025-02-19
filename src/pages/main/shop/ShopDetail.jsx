@@ -24,16 +24,25 @@ const ShopDetail = () => {
       options: selectedOptions,
       total_price: totalPrice,
       buyer: {
-        name: "홍길동", // 로그인 유저 데이터로 대체 가능
-        email: "user@example.com",
+        mno : 24,
+        name: "우아한삼형제1", // 로그인 유저 데이터로 대체 가능
+        email: "hof1",
         phone: "010-1234-5678",
         address: "서울시 강남구",
         zipcode: "12345",
       },
+      items: selectedOptions.map((option) => ({
+        pno: product.pno,
+        count: quantity,
+        basePrice: product.price,
+        subtotalPrice: product.price + option.addPrice,
+      })),
     };
-
+  
+    console.log("🛒 생성된 주문 데이터:", orderData); // ✅ 콘솔에서 확인
     navigate("/PayInfo", { state: { orderData } });
   };
+  
 
 
   useEffect(() => {
