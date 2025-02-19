@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import useAxios from "../../hooks/useAxios";
@@ -11,14 +10,12 @@ const categoryMap = {
   5: "옷장"
 };
 
-const ProductModal = ({ show, handleClose, p, handleChange, handleSaveChanges, handleDelete, handleOptionChange }) => {
-  p = p && { ...p, price: p.price.toLocaleString() };
-
+const ProductCreateModal = ({ show, handleClose,handleChange }) => {
   const {  req } = useAxios();
 
   const [previewImages, setPreviewImages] = useState([]);
   const [contentUpdated, setContentUpdated] = useState(false);
-  console.log(p);
+
   // 🔹 새로운 옵션 입력 상태
   const [newOption, setNewOption] = useState({
     type: "",
@@ -49,10 +46,6 @@ const ProductModal = ({ show, handleClose, p, handleChange, handleSaveChanges, h
       return;
     }
 
-    const updatedOptions = [...(p.options || []), newOption];
-
-    handleOptionChange(updatedOptions); // 부모 컴포넌트로 전달
-
     // 입력 필드 초기화
     setNewOption({
       type: "",
@@ -74,10 +67,6 @@ const handleDeleteOption = async (index, optionNo) => {
     console.log(optionNo);
     const response = await req('delete',`main/prod/${optionNo}`);
     console.log(response)
-
-
-    const updatedOptions = p.options.filter((_, i) => i !== index);
-    handleOptionChange(updatedOptions);
     
     alert("옵션이 삭제되었습니다.");
   } catch (error) {
@@ -86,13 +75,7 @@ const handleDeleteOption = async (index, optionNo) => {
   }
 };
   const handleExistingOptionChange = (e, index) => {
-    const { name, value } = e.target;
 
-    const updatedOptions = p.options.map((option, i) =>
-      i === index ? { ...option, [name]: name === "addPrice" || name === "stock" ? Number(value) : value } : option
-    );
-
-    handleOptionChange(updatedOptions);
   };
 
 
@@ -118,13 +101,12 @@ const handleDeleteOption = async (index, optionNo) => {
   /**  최종 저장 함수 */
 const handleFinalSave = async () => {
   try {
-    let content = p.content; // 🔹 현재 content 가져오기
     const imgRegex = /<img[^>]+src=["'](.*?)["']/g;
     let match;
     const imgUrls = [];
 
     // Base64 이미지 URL 추출
-    while ((match = imgRegex.exec(content)) !== null) {
+    while ((match = imgRegex.exec()) !== null) {
       imgUrls.push(match[1]);
     }
 
@@ -142,10 +124,6 @@ const handleFinalSave = async () => {
         const formData = new FormData();
         formData.append("file", blob, "image.jpg");
 
-        if (p.pno) {
-          formData.append("pno", p.pno);
-        }
-
         const response = await req("post", "file/upload", formData, {
           "Content-Type": "multipart/form-data",
         });
@@ -158,18 +136,6 @@ const handleFinalSave = async () => {
 
     console.log(" S3 업로드 완료:", uploadedUrls);
 
-    //  기존 content에서 Base64 URL을 S3 URL로 변경
-    imgUrls.forEach((oldUrl, index) => {
-      content = content.replace(oldUrl, uploadedUrls[index]);
-      console.log(content);
-    });
-
-    //  최종적으로 <div> 태그 감싸서 저장
-    const updatedContent = `<div class='product-images'>${content}</div>`;
-
-    setContentUpdated(true); // ✅ 상태 업데이트 완료 플래그 설정
-    // 부모 컴포넌트로 업데이트된 content 전달
-    handleChange({ target: { name: "content", value: updatedContent } });
 
   } catch (error) {
     console.error("❌ 이미지 최종 업로드 오류:", error);
@@ -180,39 +146,36 @@ const handleFinalSave = async () => {
 useEffect(() => {
   if (contentUpdated) {
     console.log("🟢 상태 변경 후 API 요청 실행!");
-    handleSaveChanges();
     setContentUpdated(false);
   }
 }, [contentUpdated]);
 
   
-  
-  
 
   return (
-    <Modal show={show} onHide={handleClose}>
+ <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>상품 상세 정보</Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ backgroundColor: "#eee" }}>
-        {p && (
+        
           <Form>
             <div className="border p-2 rounded" style={{ backgroundColor: "#fff" }}>
               <Form.Group className="mb-3">
                 <Form.Label>카테고리</Form.Label>
-                <Form.Control type="text" name="category" value={categoryMap[p.cno] || "기타"} onChange={handleChange} />
+                <Form.Control type="text" name="category"  onChange={handleChange} />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>상품명</Form.Label>
-                <Form.Control type="text" name="title" value={p.title} onChange={handleChange} />
+                <Form.Control type="text" name="title"onChange={handleChange} />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>가격</Form.Label>
-                <Form.Control type="text" name="price" value={p.price} onChange={handleChange} />
+                <Form.Control type="text" name="price" onChange={handleChange} />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>재고</Form.Label>
-                <Form.Control type="number" name="stock" value={p.stock} onChange={handleChange} />
+                <Form.Control type="number" name="stock"  onChange={handleChange} />
               </Form.Group>
 
               {/*  TinyMCE (상품 설명 입력) */}
@@ -220,7 +183,6 @@ useEffect(() => {
               <Form.Label>상품 설명</Form.Label>
               <Editor
                 apiKey="trgnbu8snkmw5p1ktqkfz87cxleiphn5div5xeo0n1tnrhxm"
-                value={p.content || ""}
                 init={{
                   height: 300,
                   menubar: false,
@@ -247,18 +209,14 @@ useEffect(() => {
             </div>
 
             {/* 옵션 목록 렌더링 */}
-            <h5 className="mt-4">상품 옵션</h5>
-            {p.options && p.options.length > 0 ? (
-              p.options.map((option, index) => (
-                
-                <div key={index} className="border p-2 mb-4 rounded" style={{ backgroundColor: "#fff" }}>
+            <h5 className="mt-4">상품 옵션</h5>  
+                <div className="border p-2 mb-4 rounded" style={{ backgroundColor: "#fff" }}>
                   <Form.Group className="mb-3">
-                    <Form.Label>옵션명&#40; {option.type} :::::{option.optionNo} &#41;</Form.Label>
+                    <Form.Label>옵션명&#40;  &#41;</Form.Label>
                     <Form.Control
                       type="text"
                       name="value"
-                      value={option.value}
-                      onChange={(e) => handleExistingOptionChange(e, index)}
+                      onChange={(e) => handleExistingOptionChange(e)}
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
@@ -266,8 +224,7 @@ useEffect(() => {
                     <Form.Control
                       type="text"
                       name="addPrice"
-                      value={Number(option.addPrice).toLocaleString()}
-                      onChange={(e) => handleExistingOptionChange(e, index)}
+                      onChange={(e) => handleExistingOptionChange(e)}
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
@@ -275,56 +232,46 @@ useEffect(() => {
                     <Form.Control
                       type="number"
                       name="stock"
-                      value={option.stock}
-                      onChange={(e) => handleExistingOptionChange(e, index)}
+
+                      onChange={(e) => handleExistingOptionChange(e)}
                     />
                   </Form.Group>
-                  <Button variant="danger" size="sm" onClick={() => handleDeleteOption(index,option.optionNo)}>
+                  <Button variant="danger" size="sm" onClick={() => handleDeleteOption()}>
                     옵션 삭제
                   </Button>
                 </div>
-              ))
-            ) : (
-              <p>옵션 데이터가 없습니다.</p>
-            )}
 
             {/* 옵션 입력 폼 */}
-            {showOptionForm && (
               <div className="border p-3 mt-3 rounded bg-white">
                 <h6>새 옵션 추가</h6>
                 <Form.Group className="mb-2">
                   <Form.Label>옵션 타입</Form.Label>
-                  <Form.Control type="text" name="type" value={newOption.type} onChange={handleNewOptionChange} />
+                  <Form.Control type="text" name="type"  onChange={handleNewOptionChange} />
                 </Form.Group>
                 <Form.Group className="mb-2">
                   <Form.Label>옵션명</Form.Label>
-                  <Form.Control type="text" name="value" value={newOption.value} onChange={handleNewOptionChange} />
+                  <Form.Control type="text" name="value"  onChange={handleNewOptionChange} />
                 </Form.Group>
                 <Form.Group className="mb-2">
                   <Form.Label>추가 가격</Form.Label>
-                  <Form.Control type="number" name="addPrice" value={newOption.addPrice} onChange={handleNewOptionChange} />
+                  <Form.Control type="number" name="addPrice"  onChange={handleNewOptionChange} />
                 </Form.Group>
                 <Form.Group className="mb-2">
                   <Form.Label>재고</Form.Label>
-                  <Form.Control type="number" name="stock" value={newOption.stock} onChange={handleNewOptionChange} />
+                  <Form.Control type="number" name="stock" onChange={handleNewOptionChange} />
                 </Form.Group>
                 <Button variant="primary" size="sm" onClick={handleSaveOption}>
                   옵션 저장
                 </Button>
               </div>
-            )}
 
             {/* 옵션 추가 버튼 */}
             <Button variant="success" className="mt-3" onClick={handleAddOptionClick}>
               옵션 추가
             </Button>
           </Form>
-        )}
-      </Modal.Body>
+        </Modal.Body>
       <Modal.Footer>
-        <Button variant="danger" onClick={handleDelete}>
-          삭제
-        </Button>
         <Button variant="primary" onClick={handleFinalSave}>
           저장
         </Button>
@@ -333,4 +280,4 @@ useEffect(() => {
   );
 };
 
-export default ProductModal;
+export default ProductCreateModal;
