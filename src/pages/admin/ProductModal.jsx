@@ -18,7 +18,6 @@ const ProductModal = ({ show, handleClose, p, handleChange, handleSaveChanges, h
 
   const [previewImages, setPreviewImages] = useState([]);
   const [contentUpdated, setContentUpdated] = useState(false);
-  console.log(p);
   // 🔹 새로운 옵션 입력 상태
   const [newOption, setNewOption] = useState({
     type: "",
@@ -119,6 +118,7 @@ const handleDeleteOption = async (index, optionNo) => {
 const handleFinalSave = async () => {
   try {
     let content = p.content; // 🔹 현재 content 가져오기
+    console.log("::::::content:"+p.content);
     const imgRegex = /<img[^>]+src=["'](.*?)["']/g;
     let match;
     const imgUrls = [];
@@ -146,11 +146,12 @@ const handleFinalSave = async () => {
           formData.append("pno", p.pno);
         }
 
-        const response = await req("post", "file/upload", formData, {
+        const response = await req("post", `file/upload/${p.pno}`, formData, {
           "Content-Type": "multipart/form-data",
         });
-
+        console.log(":::::::::::::::::::::::::",p.pno);
         console.log(" S3 업로드 응답:", response);
+        console.log(":::::::::::::::::::::::"+p.pno);
 
         return response?.location || response?.data?.url || response[0]; // 🔹 API 응답 확인
       })
