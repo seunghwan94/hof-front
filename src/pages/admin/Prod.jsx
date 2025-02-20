@@ -71,7 +71,6 @@ const Prod = () => {
 
   // 모달 닫기
   const handleCloseModal = () => {
-
     setShowModal(false);
     setSelectedProduct(null);
   };
@@ -90,18 +89,29 @@ const Prod = () => {
 	
 			await req("put", `main/prod/${selectedProduct.pno}`, selectedProduct);
 			alert("상품 정보가 수정되었습니다.");
+      const updatedProducts  = await req("get", "main/prod"); // 수정 후 목록 새로고침
+      console.log(updatedProducts);
+      if (Array.isArray(updatedProducts)) {
+        setProducts(updatedProducts);  // 🔹 올바른 방식으로 업데이트
+      } 
 			handleCloseModal();
-			req("get", "main/prod"); // 수정 후 목록 새로고침
+
 		};
 		  // 상품 삭제
 			const handleDelete = async () => {
 				if (!selectedProduct) return;
 		
 				if (window.confirm("정말 삭제하시겠습니까?")) {
-					await req("delete", `main/prod/${selectedProduct.pno}`);
+					const aaa = await req("delete", `main/prod/prod/${selectedProduct.pno}`);
+          console.log(aaa)
 					alert("상품이 삭제되었습니다.");
 					handleCloseModal();
-					req("get", "main/prod"); // 삭제 후 목록 새로고침
+					const updatedProducts = req("get", "main/prod"); // 삭제 후 목록 새로고침
+
+          if (Array.isArray(updatedProducts)) {
+            setProducts(updatedProducts);  // 🔹 올바른 방식으로 업데이트
+          } 
+          handleCloseModal();
 				}
 			};
 
