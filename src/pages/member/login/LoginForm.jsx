@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import Logo from "../../components/layout/Logo";
-import useAxios from "../../hooks/useAxios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useAxios from "../../../hooks/useAxios";
+import Logo from "../../../components/layout/Logo";
 
 function LoginForm(){
   const [id, setId] = useState('');
@@ -47,12 +47,11 @@ function LoginForm(){
 
   return (    
 
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} >
       <div>
-        <div className="py-5" style={{border: "solid 2px #fff", backgroundColor: "#fff", borderRadius:"25px" , padding: "35px 25px", width:"60%"}}>
-        {/* <div className="py-5" style={{padding: "35px 25px", width:"60%"}}> */}
+        <div className="py-5 " style={{border: "solid 2px #fff", backgroundColor: "#fff", borderRadius:"25px" , padding: "35px 25px", width:"60%"}}>
           <div className="mt-2 mb-5" style={{textAlign: "center"}}>
-            <Logo />
+            <Link to="/"className="text-hof" style={{textDecoration:"none"}}><Logo /></Link>
           </div>
           <div>
             <Form.Control className="mt-1 py-2" type="text" id="id" name="id" value={id} onChange={e => setId(e.target.value)} placeholder="아이디" />
@@ -69,8 +68,9 @@ function LoginForm(){
                 <label>자동로그인</label>
               </div>
               <div className="pe-1">
-                <a href="#" className="px-2 text-hof" style={{textDecoration: "none"}}>아이디찾기/비밀번호변경</a>
-                <a href="#" className="text-hof" style={{textDecoration: "none"}}>회원가입</a>
+                {/* <a href="#" className="px-2 text-hof" style={{textDecoration: "none"}}>아이디찾기/비밀번호변경</a> */}
+                <Link to="/signup"className="text-hof" style={{textDecoration:"none"}}>아이디찾기/비밀번호변경</Link>
+                <Link to="/signup"className="text-hof" style={{textDecoration:"none"}}>회원가입</Link>
               </div>
             </div>
           </div>
@@ -80,7 +80,7 @@ function LoginForm(){
           <div className="mt-4">
             {socialLogins.map((login, index) => (
               <button key={index} className="btn btn-outline-hof w-100 mt-2">               
-              <img src={`https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/${login.icon}`} style={{width: "23px", marginRight: "10px"}} />{login.platform}로 로그인</button>
+              <img src={`https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/${login.icon}`} style={{width: "23px", marginRight: "10px"}} alt="로그인"/>{login.platform}로 로그인</button>
             ))}
           </div>                            
         </div>
