@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../../../components/layout/Logo";
-import LogoutButton from "../../login/LogoutButton";
+import LogoutButton from "../../member/login/LogoutButton";
 
 const Header = ({ fixed }) => {
   const location = useLocation(); // 현재 경로 가져오기

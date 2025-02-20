@@ -94,6 +94,7 @@ const Pay = () => {
                 orderNo,
                 method: "카드",
                 totalPrice: orderData.total_price,
+                impUid: response.imp_uid,
               });
         
               console.log("🔹 결제 요청 저장 응답:", payResponse);

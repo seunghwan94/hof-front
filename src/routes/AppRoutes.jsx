@@ -1,26 +1,25 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Login from "../pages/login/Login";
+import Login from "../pages/member/login/Login";
 import CssExample from "../components/custom/CssExample";
 import Index from "../pages/main/Index";
 import BarRoutes from "../pages/admin/layout/BarRoutes";
 import "../util/ChartConfigjs";
-import { Provider } from "react-redux";
-import store from "../pages/redux/Store";
+import Signup from "../pages/member/signup/Signup";
 
 function AppRoutes(){
   return (
     // <>
  
     // <BarRoutes/>
-    <Provider store={store}>
+
     <Routes>
       <Route path="/*" element={<Index />} /> 
       <Route path="/Login" element={<Login />} />
       <Route path="/admin/*" element={<BarRoutes />} />
       <Route path="/CssExample" element={<CssExample/>} />
+      <Route path="/Signup" element={<Signup />} />
     </Routes>
-    </Provider>
     // </>
   );
 };
