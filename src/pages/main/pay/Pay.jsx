@@ -80,7 +80,7 @@ const Pay = () => {
           pg: "html5_inicis.INIpayTest",
           pay_method: "card",
           merchant_uid: `order_${orderNo}_${new Date().getTime()}`,
-          name: orderData.product.title,
+          name: orderData.products.title,
           amount: orderData.total_price,
         };
 

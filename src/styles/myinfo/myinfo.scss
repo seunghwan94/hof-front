@@ -1,0 +1,50 @@
+// 공통 스타일
+.myinfo-container,
+.myinfo-mobile {
+  padding: 20px;
+}
+
+// 데스크탑 레이아웃
+.myinfo-container {
+  .myinfo-row {
+    display: flex;
+  }
+
+  .sidebar-col {
+    border: 2px solid red;
+    padding: 20px;
+  }
+
+  .content-col {
+    border: 2px solid red;
+    padding: 20px;
+  }
+}
+
+// 모바일 레이아웃
+.myinfo-mobile {
+  display: flex;
+  flex-direction: column;
+
+  .sidebar {
+    border: 2px solid red;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .main-content {
+    border: 2px solid red;
+    padding: 20px;
+  }
+}
+
+// 반응형 추가 (768px 이하)
+@media (max-width: 768px) {
+  .myinfo-container {
+    display: none; // 데스크탑 레이아웃 숨김
+  }
+
+  .myinfo-mobile {
+    display: flex;
+  }
+}

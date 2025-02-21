@@ -19,32 +19,30 @@ const ShopDetail = () => {
 
   const handlePay = () => {
     const orderData = {
-      product: product,
-      quantity: quantity,
-      options: selectedOptions,
-      total_price: totalPrice,
       buyer: {
-        mno : 24,
+        mno: 24,
         name: "우아한삼형제1", // 로그인 유저 데이터로 대체 가능
         email: "hof1",
         phone: "010-1234-5678",
         address: "서울시 강남구",
         zipcode: "12345",
       },
-      items: selectedOptions.map((option, idx) => ({
-        pno: product.pno,
-        count: quantity,
-        basePrice: product.price,
-        subtotalPrice: product.price + option.addPrice,
-        optionNo : option.optionNo  
-      })),
+      products: [
+        {
+          pno: product.pno,
+          title: product.title,
+          price: product.price,
+          quantity: quantity,
+          options: selectedOptions.map(option => option.optionNo), // 선택한 옵션 번호 배열
+          availableOptions: product.options, // 전체 옵션 목록
+        }
+      ],
+      total_price:totalPrice
     };
-  
-    console.log("생성된 주문 데이터:", orderData); // ✅ 콘솔에서 확인
+
+    console.log("생성된 주문 데이터:", orderData); // ✅ 디버깅
     navigate("/PayInfo", { state: { orderData } });
   };
-  
-
 
   useEffect(() => {
     const fetchProduct = async () => {

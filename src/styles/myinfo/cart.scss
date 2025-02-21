@@ -1,0 +1,85 @@
+/* Cart 전체 컨테이너 */
+.cart-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 30px;
+  }
+}
+
+/* 장바구니 아이템 리스트 */
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 카드 형태 */
+.cart-card {
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  .product-image {
+    width: 40%;
+    object-fit: cover;
+  }
+
+  .product-details {
+    padding: 15px;
+    flex: 1;
+
+    .product-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .base-price {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .quantity-select,
+    .option-select {
+      margin-bottom: 10px;
+
+      label {
+        display: block;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+      }
+
+      select {
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+    }
+
+    .total-price {
+      margin-top: 15px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: blue;
+    }
+  }
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .cart-card {
+    flex-direction: column;
+
+    .product-image {
+      width: 100%;
+      height: 200px;
+    }
+  }
+}

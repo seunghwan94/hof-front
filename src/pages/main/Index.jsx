@@ -10,6 +10,12 @@ import NotFound from "../not-found/NotFound";
 import Footer from "./layout/Footer";
 import Pay from "./pay/Pay";
 import PayInfo from "./pay/PayInfo";
+import Myinfo from "./myinfo/Myinfo";
+import Profile from "./myinfo/content/Profile";
+import PayList from "./myinfo/content/PayList";
+import IntegratedAccount from "./myinfo/content/IntegratedAccount";
+import Cart from "./myinfo/content/Cart";
+import Pick from "./myinfo/content/Pick";
 
 function Index() {
   const location = useLocation(); // 현재 경로 가져오기
@@ -23,6 +29,18 @@ function Index() {
     { path: "/Interior", element: <Interior /> },
     { path: "/Pay", element: <Pay /> },
     { path: "/PayInfo", element: <PayInfo /> },
+    {
+      path: "/myinfo",
+      element: <Myinfo />,
+      children: [
+        { path: "profile", element: <Profile /> },
+        { path: "paylist", element: <PayList /> },
+        { path: "integratedaccount", element: <IntegratedAccount /> },
+        { path: "cart", element: <Cart /> },
+        { path: "pick", element: <Pick /> },
+        { index: true, element: <Profile /> }, // 기본 페이지
+      ],
+    },
   ];
 
   // `location.pathname`이 `routesConfig` 중 하나와 일치하는지 확인
