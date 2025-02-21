@@ -13,9 +13,9 @@ const categoryMap = {
 }
 
 const Prod = () => {
-  const { data, loading, error, req } = useAxios();
+  const {req } = useAxios();
   const [products, setProducts] = useState([]); //상품목록
-  const [pcno,setPcno] = useState("");
+  const [] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false); // 🔹 등록 모달 상태 추가
   const [selectedProduct, setSelectedProduct] = useState(null); //상품 상세정보
 

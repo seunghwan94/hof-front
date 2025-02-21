@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Image } from "react-bootstrap";
 import useAxios from "../../hooks/useAxios";
 import { Editor } from "@tinymce/tinymce-react";
 
@@ -16,15 +16,46 @@ const ProductCreateModal = ({ show, handleClose }) => {
   const [previewImages, setPreviewImages] = useState([]);
   const [contentUpdated, setContentUpdated] = useState(false);
   const [newOptionForm, setNewOptionForm] = useState(false); // 옵션 입력 필드 표시 여부
+  const [previewThumbnail, setPreviewThumbnail] = useState([]); //  썸네일 미리보기
+  const [thumbnailUrl, setThumbnailUrl] = useState([]); // 썸네일 URL 저장
   // 🔹 상품 등록을 위한 상태
   const [newProduct, setNewProduct] = useState({
     title: "",
     content: "",
     price: 0,
     stock: 0,
-    cno: "", // 카테고리 번호
+    cno: 1, // 카테고리 번호
     options: [] // 옵션 리스트
   });
+  const handleThumbnailUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const uploadedUrls = [...thumbnailUrl]; // 기존 업로드된 URL 유지
+    const previewUrls = [...previewThumbnail]; // 기존 미리보기 유지
+
+    for (let file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await req("post", "file/upload/thumnail", formData, {
+                "Content-Type": "multipart/form-data",
+            });
+
+            if (response) {
+                uploadedUrls.push(response); // 업로드된 URL 추가
+                previewUrls.push(URL.createObjectURL(file)); // 미리보기 추가
+            }
+        } catch (error) {
+            console.error("썸네일 업로드 실패", error);
+        }
+    }
+
+    // 상태 업데이트 (기존 미리보기 & 업로드된 파일 유지)
+    setThumbnailUrl(uploadedUrls);
+    setPreviewThumbnail(previewUrls);
+};
 
   const [newOption, setNewOption] = useState({
     type: "",
@@ -80,24 +111,33 @@ const ProductCreateModal = ({ show, handleClose }) => {
         setPreviewImages((prev) => [...prev, imageUrl]);
         success(imageUrl);
       };
+      
       reader.readAsDataURL(blobInfo.blob());
     } catch (error) {
       console.error("이미지 미리보기 오류:", error);
       failure("이미지 미리보기에 실패했습니다.");
     }
   };
+  
 
   const handleFinalSave = async () => {
+    if (newProduct.options.length === 0 ) {
+      alert("최소 한 개의 옵션을 추가해야 합니다.");
+      return;
+    }else if(newProduct.title == ""){
+      alert("상품명은 반드시 입력해야합니다.")
+      return;
+    }
     try {
       let content = newProduct.content;
       const imgRegex = /<img[^>]+src=["'](.*?)["']/g;
       let match;
       const imgUrls = [];
-  
+      //tinymce 이미지찾기
+    
       while ((match = imgRegex.exec(content)) !== null) {
         imgUrls.push(match[1]);
       }
-  
 
       const uploadedUrls = await Promise.all(
         imgUrls.map(async (url) => {
@@ -106,32 +146,36 @@ const ProductCreateModal = ({ show, handleClose }) => {
           const blob = await fetch(url).then((res) => res.blob());
           const formData = new FormData();
           formData.append("file", blob, "image.jpg");
-  
+          
           const response = await req("post", "file/upload", formData, {
             "Content-Type": "multipart/form-data",
           });
+
+          console.log(response);
   
           return response?.location || response?.data?.url || response[0];
         })
       );
-  
+      //tinymce content내 이미지 url로 변경
       imgUrls.forEach((oldUrl, index) => {
         content = content.replace(oldUrl, uploadedUrls[index]);
       });
 
       const updatedProduct = {
         ...newProduct,
-        content: `<div class='product-images'>${content}</div>`,
-        imageUrls: uploadedUrls, // 업로드된 이미지 URL들
+        content: `${content}`,
+        imageUrls: uploadedUrls, // 본문 내 업로드된 이미지들
+        thumbnailUrl: thumbnailUrl, // 썸네일 URL 포함
       };
   
+      console.log("::::::::::::::::" + updatedProduct)
 
       await req("post", "main/prod", updatedProduct);
       alert("상품이 등록되었습니다!");
       handleClose();
       window.location.reload(); 
     } catch (error) {
-      console.error("❌ 상품 등록 오류:", error);
+      console.error("상품 등록 오류:", error);
       alert("상품 등록 중 오류가 발생했습니다.");
     }
   };
@@ -147,7 +191,6 @@ const ProductCreateModal = ({ show, handleClose }) => {
           <Form.Group className="mb-3">
             <Form.Label>카테고리</Form.Label>
             <Form.Select name="cno" value={newProduct.cno} onChange={handleChange}>
-              <option value="">카테고리 선택</option>
               {Object.entries(categoryMap).map(([key, value]) => (
                 <option key={key} value={key}>
                   {value}
@@ -155,23 +198,32 @@ const ProductCreateModal = ({ show, handleClose }) => {
               ))}
             </Form.Select>
           </Form.Group>
-
+          <Form.Group className="mb-3">
+            <Form.Label>썸네일 업로드</Form.Label>
+            <Form.Control type="file" accept="image/*" onChange={handleThumbnailUpload} />
+             {/* 썸네일 미리보기 (여러 개 표시) */}
+          <div className="d-flex flex-wrap mt-2">
+            {previewThumbnail.length > 0 ? (
+              previewThumbnail.map((thumb, index) => (
+                <Image key={index} src={thumb} alt={`썸네일 ${index + 1}`} fluid className="me-2"
+                  style={{ width: "80px", height: "80px", objectFit: "cover" }} />
+              ))
+            ) : (
+              <p className="text-muted">썸네일을 업로드해주세요.</p> 
+            )}
+          </div>
+          </Form.Group>
           {/* 🔹 상품명 입력 */}
           <Form.Group className="mb-3">
             <Form.Label>상품명</Form.Label>
             <Form.Control type="text" name="title" value={newProduct.title} onChange={handleChange} />
           </Form.Group>
 
+
           {/* 🔹 가격 입력 */}
           <Form.Group className="mb-3">
             <Form.Label>가격</Form.Label>
             <Form.Control type="text" name="price" value={newProduct.price.toLocaleString()} onChange={handleChange} />
-          </Form.Group>
-
-          {/* 🔹 재고 입력 */}
-          <Form.Group className="mb-3">
-            <Form.Label>재고</Form.Label>
-            <Form.Control type="number" name="stock" value={newProduct.stock} onChange={handleChange} />
           </Form.Group>
 
           {/* 🔹 상품 설명 입력 (TinyMCE Editor) */}

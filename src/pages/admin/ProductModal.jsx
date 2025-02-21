@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Image } from "react-bootstrap";
 import useAxios from "../../hooks/useAxios";
 import { Editor } from "@tinymce/tinymce-react";
 const categoryMap = {
@@ -11,14 +11,18 @@ const categoryMap = {
   5: "옷장"
 };
 
-const ProductModal = ({ show, handleClose, p, handleChange, handleSaveChanges, handleDelete, handleOptionChange }) => {
-  p = p && { ...p, price: p.price.toLocaleString() };
+const ProductModal = ({ show, handleClose, p = {}, handleChange, handleSaveChanges, handleDelete, handleOptionChange }) => {
 
+  p = p && { ...p, price: p.price ? p.price.toLocaleString() : 0 };
+  
+  for(let k  in p){
+    console.log(`${k}`,p[k]);
+  }
   const {  req } = useAxios();
 
   const [previewImages, setPreviewImages] = useState([]);
   const [contentUpdated, setContentUpdated] = useState(false);
-  // 🔹 새로운 옵션 입력 상태
+  //  새로운 옵션 입력 상태
   const [newOption, setNewOption] = useState({
     type: "",
     value: "",
@@ -26,13 +30,13 @@ const ProductModal = ({ show, handleClose, p, handleChange, handleSaveChanges, h
     stock: 0
   });
 
-  // 🔹 옵션 입력 폼 보이기 여부
+  //  옵션 입력 폼 보이기 여부
   const [showOptionForm, setShowOptionForm] = useState(false);
 
-  // 🔹 옵션 추가 버튼 클릭 시 입력 폼 보이기
+  //  옵션 추가 버튼 클릭 시 입력 폼 보이기
   const handleAddOptionClick = () => setShowOptionForm(true);
 
-  // 🔹 옵션 입력값 변경 핸들러
+  //  옵션 입력값 변경 핸들러
   const handleNewOptionChange = (e) => {
     const { name, value } = e.target;
     setNewOption((prev) => ({
@@ -41,7 +45,7 @@ const ProductModal = ({ show, handleClose, p, handleChange, handleSaveChanges, h
     }));
   };
 
-  // 🔹 옵션 저장 버튼 클릭 시 추가
+  //  옵션 저장 버튼 클릭 시 추가
   const handleSaveOption = () => {
     if (!newOption.type || !newOption.value) {
       alert("옵션 타입과 값을 입력해주세요.");
@@ -149,11 +153,10 @@ const handleFinalSave = async () => {
         const response = await req("post", `file/upload/${p.pno}`, formData, {
           "Content-Type": "multipart/form-data",
         });
-        console.log(":::::::::::::::::::::::::",p.pno);
         console.log(" S3 업로드 응답:", response);
-        console.log(":::::::::::::::::::::::"+p.pno);
 
-        return response?.location || response?.data?.url || response[0]; // 🔹 API 응답 확인
+
+        return response?.location || response?.data?.url || response[0]; //  API 응답 확인
       })
     );
 
@@ -168,26 +171,31 @@ const handleFinalSave = async () => {
     //  최종적으로 <div> 태그 감싸서 저장
     const updatedContent = `<div class='product-images'>${content}</div>`;
 
-    setContentUpdated(true); // ✅ 상태 업데이트 완료 플래그 설정
+    setContentUpdated(true); //  상태 업데이트 완료 플래그 설정
     // 부모 컴포넌트로 업데이트된 content 전달
     handleChange({ target: { name: "content", value: updatedContent } });
 
   } catch (error) {
-    console.error("❌ 이미지 최종 업로드 오류:", error);
+    console.error("이미지 최종 업로드 오류:", error);
   }
 };
 
 // ✅ 상태 업데이트 후 `handleSaveChanges` 실행
 useEffect(() => {
   if (contentUpdated) {
-    console.log("🟢 상태 변경 후 API 요청 실행!");
+    console.log("상태 변경 후 API 요청 실행!");
     handleSaveChanges();
     setContentUpdated(false);
   }
 }, [contentUpdated]);
 
   
-  
+useEffect(() => {
+  if (!p || !Array.isArray(p.options)) return;
+  const totalStock = p.options.reduce((sum, option) => sum + (option.stock || 0), 0);
+  handleChange({ target: { name: "stock", value: totalStock } });
+}, [p]);
+
   
 
   return (
@@ -201,8 +209,28 @@ useEffect(() => {
             <div className="border p-2 rounded" style={{ backgroundColor: "#fff" }}>
               <Form.Group className="mb-3">
                 <Form.Label>카테고리</Form.Label>
-                <Form.Control type="text" name="category" value={categoryMap[p.cno] || "기타"} onChange={handleChange} />
+                <Form.Control type="text" name="category" value={categoryMap[p.cno] || "기타"} onChange={handleChange} readOnly/>
               </Form.Group>
+              <Form.Group className="mb-3">
+              <Form.Label>썸네일</Form.Label>
+              <div className="d-flex flex-wrap">
+                {p.imageUrls && p.imageUrls.length > 0 ? (
+                  p.imageUrls.map((thumb, index) => (
+                    <Image
+                      key={index}
+                      src={thumb}
+                      alt={`썸네일 ${index + 1}`}
+                      fluid
+                      className="me-2 rounded border"
+                      style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                    />
+                  ))
+                ) : (
+                  <p className="text-muted">썸네일 이미지가 없습니다.</p>
+                )}
+              </div>
+            </Form.Group>
+
               <Form.Group className="mb-3">
                 <Form.Label>상품명</Form.Label>
                 <Form.Control type="text" name="title" value={p.title} onChange={handleChange} />
@@ -213,7 +241,7 @@ useEffect(() => {
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>재고</Form.Label>
-                <Form.Control type="number" name="stock" value={p.stock} onChange={handleChange} />
+                <Form.Control type="number" name="stock" value={p.stock} onChange={handleChange} readOnly/>
               </Form.Group>
 
               {/*  TinyMCE (상품 설명 입력) */}
