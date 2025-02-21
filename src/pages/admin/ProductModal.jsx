@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import useAxios from "../../hooks/useAxios";
 import { Editor } from "@tinymce/tinymce-react";
@@ -14,10 +14,10 @@ const categoryMap = {
 const ProductModal = ({ show, handleClose, p, handleChange, handleSaveChanges, handleDelete, handleOptionChange }) => {
   p = p && { ...p, price: p.price.toLocaleString() };
 
-  const { data = [], loading, error, req } = useAxios();
+  const {  req } = useAxios();
 
   const [previewImages, setPreviewImages] = useState([]);
-  console.log(p);
+  const [contentUpdated, setContentUpdated] = useState(false);
   // 🔹 새로운 옵션 입력 상태
   const [newOption, setNewOption] = useState({
     type: "",
@@ -96,10 +96,10 @@ const handleDeleteOption = async (index, optionNo) => {
 
 
 
-  /** 🔹 TinyMCE 이미지 핸들러 (미리보기만) */
+  /** (미리보기) */
   const handleImageUpload = async (blobInfo, success, failure) => {
     try {
-      // 📌 FileReader를 사용하여 로컬 미리보기 생성
+
       const reader = new FileReader();
       reader.onload = () => {
         const imageUrl = reader.result;
@@ -113,30 +113,31 @@ const handleDeleteOption = async (index, optionNo) => {
     }
   };
   
-  /**  저장 버튼 클릭 시 <img> 태그의 src 값 추출 후 S3에 업로드 */
-  /** 🔹 최종 저장 함수 */
+
+  /**  최종 저장 함수 */
 const handleFinalSave = async () => {
   try {
     let content = p.content; // 🔹 현재 content 가져오기
+    console.log("::::::content:"+p.content);
     const imgRegex = /<img[^>]+src=["'](.*?)["']/g;
     let match;
     const imgUrls = [];
 
-    // 🔹 Base64 이미지 URL 추출
+    // Base64 이미지 URL 추출
     while ((match = imgRegex.exec(content)) !== null) {
       imgUrls.push(match[1]);
     }
 
-    console.log("🔹 추출된 이미지:", imgUrls);
 
-    // 🔹 이미지 업로드 후 S3 URL 반환
+
+    //  이미지 업로드 후 S3 URL 반환
     const uploadedUrls = await Promise.all(
       imgUrls.map(async (url) => {
         if (!url.startsWith("data:image")) {
-          return url; // 🔹 기존 URL이면 업로드 안 함
+          return url; //  기존 URL이면 업로드 안 함
         }
 
-        // 🔹 Base64 → Blob 변환
+        //  Base64 → Blob 변환
         const blob = await fetch(url).then((res) => res.blob());
         const formData = new FormData();
         formData.append("file", blob, "image.jpg");
@@ -145,39 +146,45 @@ const handleFinalSave = async () => {
           formData.append("pno", p.pno);
         }
 
-        const response = await req("post", "file/upload", formData, {
+        const response = await req("post", `file/upload/${p.pno}`, formData, {
           "Content-Type": "multipart/form-data",
         });
-
-        console.log("🔹 S3 업로드 응답:", response);
+        console.log(":::::::::::::::::::::::::",p.pno);
+        console.log(" S3 업로드 응답:", response);
+        console.log(":::::::::::::::::::::::"+p.pno);
 
         return response?.location || response?.data?.url || response[0]; // 🔹 API 응답 확인
       })
     );
 
-    console.log("🔹 S3 업로드 완료:", uploadedUrls);
+    console.log(" S3 업로드 완료:", uploadedUrls);
 
-    // 🔹 기존 content에서 Base64 URL을 S3 URL로 변경
+    //  기존 content에서 Base64 URL을 S3 URL로 변경
     imgUrls.forEach((oldUrl, index) => {
       content = content.replace(oldUrl, uploadedUrls[index]);
+      console.log(content);
     });
 
-    // 🔹 최종적으로 <div> 태그 감싸서 저장
+    //  최종적으로 <div> 태그 감싸서 저장
     const updatedContent = `<div class='product-images'>${content}</div>`;
 
-    console.log("🔹 최종 저장될 content:", updatedContent);
-
-    // 🔹 부모 컴포넌트로 업데이트된 content 전달
+    setContentUpdated(true); // ✅ 상태 업데이트 완료 플래그 설정
+    // 부모 컴포넌트로 업데이트된 content 전달
     handleChange({ target: { name: "content", value: updatedContent } });
 
-    // 🔹 최종 저장 실행
-    setTimeout(() => {
-      handleSaveChanges();
-    }, 100);
   } catch (error) {
     console.error("❌ 이미지 최종 업로드 오류:", error);
   }
 };
+
+// ✅ 상태 업데이트 후 `handleSaveChanges` 실행
+useEffect(() => {
+  if (contentUpdated) {
+    console.log("🟢 상태 변경 후 API 요청 실행!");
+    handleSaveChanges();
+    setContentUpdated(false);
+  }
+}, [contentUpdated]);
 
   
   

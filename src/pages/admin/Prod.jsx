@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Table, Container, Row, Col, Card } from "react-bootstrap";
+import { Table, Container, Row, Col, Card, Button } from "react-bootstrap";
 import useAxios from "../../hooks/useAxios";
 import ProductModal from "./ProductModal"; // 모달 컴포넌트 import
+import ProductCreateModal from "./ProductCreateModal";
 
 const categoryMap = {
   1: "침대",
@@ -15,7 +16,7 @@ const Prod = () => {
   const { data, loading, error, req } = useAxios();
   const [products, setProducts] = useState([]); //상품목록
   const [pcno,setPcno] = useState("");
-
+  const [showCreateModal, setShowCreateModal] = useState(false); // 🔹 등록 모달 상태 추가
   const [selectedProduct, setSelectedProduct] = useState(null); //상품 상세정보
 
   const [showModal, setShowModal] = useState(false);
@@ -77,9 +78,13 @@ const Prod = () => {
 	  // 입력값 변경 핸들러
 		const handleChange = (e) => {
 			const { name, value } = e.target;
+      let updatedValue = value;
+      if (name === "price") {
+        updatedValue = Number(value.replace(/,/g, "")); // 쉼표 제거 후 숫자로 변환
+      }
 			setSelectedProduct((prev) => ({
 				...prev,
-				[name]: value,
+				[name]: updatedValue,
 			}));
 		};
 	
@@ -122,7 +127,14 @@ const Prod = () => {
         }));
         console.log(selectedProduct)
       };
+      const handleShowCreateModal = () => {
+        setShowCreateModal(true);
+      };
 
+
+      const handleCloseCreateModal = () => {
+        setShowCreateModal(false);
+      };
   return products && (
     <Container>
       <h3 className="mb-3">상품 관리</h3>
@@ -176,8 +188,12 @@ const Prod = () => {
             </Col>
           )}
         </Row>
+        
       </div>
-
+    {/* 🔹 상품 등록 버튼 추가 */}
+    <Button variant="primary" className="mb-3" onClick={handleShowCreateModal}>
+      상품 등록
+    </Button>
       {/* 상품 상세 모달 */}
       <ProductModal
         show={showModal}
@@ -188,7 +204,9 @@ const Prod = () => {
         handleDelete={handleDelete}
         handleOptionChange={handleOptionChange}
       />
-    </Container>
+          {/* 🔹 상품 등록 모달 추가 */}
+    <ProductCreateModal show={showCreateModal} handleClose={handleCloseCreateModal} />
+  </Container>
 
   );
 };
