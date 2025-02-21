@@ -5,7 +5,7 @@ import Intro from "./Intro";
 import Shop from "./shop/Shop";
 import ShopDetail from "./shop/ShopDetail"; // ✅ ShopDetail 추가
 import Community from "./community/Community";
-import Interior from "./Interior";
+import Interior from "./interior/Interior";
 import NotFound from "../not-found/NotFound"; 
 import Footer from "./layout/Footer";
 import Pay from "./pay/Pay";
