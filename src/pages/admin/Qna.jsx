@@ -12,6 +12,7 @@ const Qna = () => {
 
   const fetchData = async () => {
     const res = await req("get", "admin/fwl/qna");
+    console.log(res);
     if (res) {
       const filteredQna = res.filter(qna => !qna.parentNo);
       const replyCounter = {};
@@ -55,6 +56,7 @@ const Qna = () => {
         memberId: "hof",  // ✅ 관리자 ID (임시, 서버에서 처리 가능)
         content: selectedQna.replyContent,  // ✅ 답변 내용
         parentNo: selectedQna.no,  // ✅ 부모 문의 번호 추가
+        pno: selectedQna.pno,
         status: "처리후"  // ✅ 상태 변경
       };
     
@@ -131,9 +133,11 @@ const Qna = () => {
             <thead className="table-light">
               <tr>
                 <th>문의 번호</th>
+
                 <th>회원 ID</th>
                 <th>내용</th>
                 <th>상태</th>
+                <th>상품명</th>
                 <th>답변갯수</th>
               </tr>
             </thead>
@@ -145,6 +149,7 @@ const Qna = () => {
                     <td>{qna.memberId}</td>
                     <td>{qna.content.length > 30 ? qna.content.slice(0, 30) + "..." : qna.content}</td>
                     <td>{qna.status}</td>
+                    <td>{qna.prodTitle.length > 15 ? qna.prodTitle.slice(0,15) + "..." : qna.prodTitle}</td>
                     <td>{replyCount[qna.no] || 0}개</td>
                   </tr>
                 ))

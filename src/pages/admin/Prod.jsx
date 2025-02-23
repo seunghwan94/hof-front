@@ -20,15 +20,16 @@ const Prod = () => {
   const [selectedProduct, setSelectedProduct] = useState(null); //상품 상세정보
 
   const [showModal, setShowModal] = useState(false);
-  // 상품 목록 가져오기
-  useEffect(() => {
-    const axios = async () => {
+  const axios = async () => {
     const response = await req("get", "main/prod");
     if(response){
       setProducts(response);
     }
 
     };
+    
+  // 상품 목록 가져오기
+  useEffect(() => {
     axios();
     
 }, [req]);
@@ -111,11 +112,12 @@ const Prod = () => {
           console.log(aaa)
 					alert("상품이 삭제되었습니다.");
 					handleCloseModal();
-					const updatedProducts = req("get", "main/prod"); // 삭제 후 목록 새로고침
+					// const updatedProducts = req("get", "main/prod"); // 삭제 후 목록 새로고침
 
-          if (Array.isArray(updatedProducts)) {
-            setProducts(updatedProducts);  // 🔹 올바른 방식으로 업데이트
-          } 
+          // if (Array.isArray(updatedProducts)) {
+          //   setProducts(updatedProducts);  // 🔹 올바른 방식으로 업데이트
+          // } 
+          axios();
           handleCloseModal();
 				}
 			};

@@ -6,6 +6,7 @@ import ProductCard from "./ProductCard";
 import PaginationComponent from "../../../components/layout/Paging";
 import Category from "./Category";
 import Search from "./Search";
+import NoticePopup from "../../admin/NoticePopup";
 
 function Shop() {
   const location = useLocation();
@@ -45,7 +46,9 @@ function Shop() {
 
   return (
     <>
+
       <Container>
+
         <Category />
         <div className="mb-4">
           <Search />
@@ -77,7 +80,9 @@ function Shop() {
           totalPages={Math.ceil((apiProducts?.length || 0) / itemsPerPage)}
           onPageChange={setCurrentPage}
         />
+
       </Container>
+      <NoticePopup />
     </>
   );
 }

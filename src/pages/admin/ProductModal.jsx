@@ -288,6 +288,7 @@ useEffect(() => {
                       name="value"
                       value={option.value}
                       onChange={(e) => handleExistingOptionChange(e, index)}
+                      readOnly
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
@@ -297,6 +298,7 @@ useEffect(() => {
                       name="addPrice"
                       value={Number(option.addPrice).toLocaleString()}
                       onChange={(e) => handleExistingOptionChange(e, index)}
+                      readOnly
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
@@ -306,6 +308,7 @@ useEffect(() => {
                       name="stock"
                       value={option.stock}
                       onChange={(e) => handleExistingOptionChange(e, index)}
+                      readOnly
                     />
                   </Form.Group>
                   <Button variant="danger" size="sm" onClick={() => handleDeleteOption(index,option.optionNo)}>

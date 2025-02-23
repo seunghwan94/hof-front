@@ -15,6 +15,10 @@ const QnaModal = ({ show, handleClose, p, handleChange, handleRegister,handleDel
               <Form.Label>회원 아이디</Form.Label>
               <Form.Control type="text" name="memberId" value={p.memberId} readOnly />
             </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>상품명명</Form.Label>
+              <Form.Control type="text" name="prodTitle" value={p.prodTitle} readOnly />
+            </Form.Group>
 
             {/* 문의 내용 (읽기 전용) */}
             <Form.Group className="mb-3">

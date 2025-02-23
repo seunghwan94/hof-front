@@ -1,117 +1,168 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { Table, Nav, Container, Badge, Row, Col, Card } from "react-bootstrap";
+import useAxios from "../../hooks/useAxios";
+
 const Cash = () => {
   const [activeTab, setActiveTab] = useState("payment");
 
-    return (
-        <Container className="mt-4">
-            {/* 탭 버튼 */}
-            <Nav variant="tabs" className="custom-nav mb-3 justify-content-end" activeKey={activeTab} onSelect={(tab) => setActiveTab(tab)}>
-                <Nav.Item>
-                    <Nav.Link eventKey="payment" className={`custom-tab ${activeTab === "payment" ? "active-tab" : ""}`}>
-                        결제
-                    </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                    <Nav.Link eventKey="refund" className={`custom-tab ${activeTab === "refund" ? "active-tab" : ""}`}>
-                        환불
-                    </Nav.Link>
-                </Nav.Item>
-            </Nav>
+  return (
+    <Container className="mt-4">
+      {/* 탭 버튼 */}
+      <Nav
+        variant="tabs"
+        className="custom-nav mb-3 justify-content-end"
+        activeKey={activeTab}
+        onSelect={(tab) => setActiveTab(tab)}
+      >
+        <Nav.Item>
+          <Nav.Link
+            eventKey="payment"
+            className={`custom-tab ${activeTab === "payment" ? "active-tab" : ""}`}
+          >
+            결제
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link
+            eventKey="refund"
+            className={`custom-tab ${activeTab === "refund" ? "active-tab" : ""}`}
+          >
+            환불
+          </Nav.Link>
+        </Nav.Item>
+      </Nav>
 
-            {/*  탭 콘텐츠 */}
-            {activeTab === "payment" && <Payment />}
-            {activeTab === "refund" && <Refund />}
-        </Container>
-    );
+      {/* 탭 콘텐츠 */}
+      {activeTab === "payment" && <Payment />}
+      {activeTab === "refund" && <Refund />}
+    </Container>
+  );
 };
 
 const Payment = () => {
-    const payments = [
-        { id: 1, name: "김용태", amount: 50000, status: "결제완료" },
-        { id: 2, name: "새똥이", amount: 32000, status: "배송준비중" },
-        { id: 3, name: "개똥이", amount: 65000, status: "배송중" },
-        { id: 4, name: "소똥이", amount: 42000, status: "배송준비중" },
-        { id: 5, name: "개소똥이", amount: 87000, status: "결제완료" },
-    ];
+  const { data, loading, error, req } = useAxios();
+  const [payments, setPayments] = useState([]);
 
-    // 상태별 색상 지정
-    const getStatusBadge = (status) => {
-        switch (status) {
-            case "결제완료":
-                return "success";  // 녹색
-            case "배송준비중":
-                return "warning";  // 주황색
-            case "배송중":
-                return "primary";  // 파란색
-            default:
-                return "secondary"; // 기본 회색
-        }
+  useEffect(() => {
+    const fetchData = async () => {
+      // 결제 데이터를 불러오는 API 엔드포인트 (예: "main/pay")
+      await req("get", "main/pay");
     };
+    fetchData();
+  }, [req]);
 
-    return (
-        <Container>
-            <h3 className="mb-3">결제 관리</h3>
+  useEffect(() => {
+    if (!loading && data) {
+      console.log("서버에서 받은 결제 데이터:", data);
+      // data가 배열이 아니라면 data.dtoList 또는 빈 배열로 처리
+      setPayments(Array.isArray(data) ? data : data.dtoList || []);
+    }
+  }, [data, loading]);
 
-            {/* PC 화면에서는 테이블 형식 */}
-            <div className="d-none d-md-block">
-                <div className="table-responsive">
-                    <Table hover bordered className="align-middle">
-                        <thead className="table-light">
-                            <tr>
-                                <th>#</th>
-                                <th>이름</th>
-                                <th>결제 금액</th>
-                                <th>결제 상태</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {payments.map((payment) => (
-                                <tr key={payment.id}>
-                                    <td>{payment.id}</td>
-                                    <td>{payment.name}</td>
-                                    <td>{payment.amount.toLocaleString()}원</td>
-                                    <td>
-                                        <Badge bg={getStatusBadge(payment.status)}>
-                                            {payment.status}
-                                        </Badge>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                </div>
-            </div>
+  if (error) {
+    console.log(error);
+    return <div><h1>에러발생</h1></div>;
+  }
+  if (loading) {
+    return <div><h1>로딩중</h1></div>;
+  }
 
-            {/* 모바일 화면에서는 카드 형식 */}
-            <div className="d-md-none">
-                <Row className="g-3">
-                    {payments.map((payment) => (
-                        <Col xs={12} key={payment.id}>
-                            <Card className="p-3 shadow-sm">
-                                <Card.Body>
-                                    <h5>{payment.name}</h5>
-                                    <p className="text-muted">결제 금액: {payment.amount.toLocaleString()}원</p>
-                                    <Badge bg={getStatusBadge(payment.status)}>
-                                        {payment.status}
-                                    </Badge>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
-            </div>
-        </Container>
-    );
+  // 결제 상태별 Badge 색상 함수 (상태에 따라 색상을 조정)
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "완료":
+        return "success";
+      case "실패":
+        return "danger";
+      default:
+        return "secondary";
+    }
+  };
+
+  return (
+    <Container>
+      <h3 className="mb-3">결제 관리</h3>
+
+      {/* PC 화면: 테이블 형식 */}
+      <div className="d-none d-md-block">
+        <div className="table-responsive">
+          <Table hover bordered className="align-middle">
+            <thead className="table-light">
+              <tr>
+                <th>No</th>
+                <th>이름</th>
+                <th>아이디</th>
+                <th>결제 금액</th>
+                <th>결제 수단</th>
+                <th>결제 상태</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+              {payments && payments.length > 0 ? (
+                payments.map((payment) => (
+                  <tr key={payment.no}>
+                    <td>{payment.no}</td>
+                    <td>{payment.memberName}</td>
+                    <td>{payment.memberId}</td>
+                    <td>{payment.totalPrice.toLocaleString()}원</td>
+                    <td>{payment.method}</td>
+                    <td>
+                      <Badge bg={getStatusBadge(payment.status)}>
+                        {payment.status}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="text-center">
+                    결제 데이터가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </div>
+      </div>
+
+      {/* 모바일 화면: 카드 형식 */}
+      <div className="d-md-none">
+        <Row className="g-3">
+          {payments && payments.length > 0 ? (
+            payments.map((payment) => (
+              <Col xs={12} key={payment.no}>
+                <Card className="p-3 shadow-sm">
+                  <Card.Body>
+                    <h5>{payment.memberName}</h5>
+                    <h4>{payment.memberId}</h4>
+                    <p className="text-muted">
+                      결제 금액: {payment.totalPrice.toLocaleString()}원
+                    </p>
+                    <p>{payment.method}</p>
+                    <Badge bg={getStatusBadge(payment.status)}>
+                      {payment.status}
+                    </Badge>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))
+          ) : (
+            <Col xs={12} className="text-center">
+              <p>결제 데이터가 없습니다.</p>
+            </Col>
+          )}
+        </Row>
+      </div>
+    </Container>
+  );
 };
 
 const Refund = () => (
-    <Container>
-        <h3 className="mb-3">환불 관리</h3>
-        <p>환불 내역이 없습니다.</p>
-    </Container>
+  <Container>
+    <h3 className="mb-3">환불 관리</h3>
+    <p>환불 내역이 없습니다.</p>
+  </Container>
 );
 
 export default Cash;
-
-
