@@ -146,27 +146,24 @@ const SignupForm = () => {
       setEmailValidCheck('이메일을 확인해주세요.');
       return;
     }
-
+  
     // 이메일 인증 여부 확인
     if (!verificationValid) {
       alert('이메일 인증을 완료해주세요.');
       return;
     }
-
+  
     const reqMemberData = {
       id,
       pw,
-      email,
       name,
-      gender,
       memberDetail: {
         email,
         gender
       }
     };
-    // 기타 유효성 검사 및 회원가입 처리
+  
     try {
-      // const response = await req('POST', 'signup', { id, password, email, name, gender });
       const response = await req('POST', 'signup', reqMemberData);
       console.log(reqMemberData);
       alert(response);  // 회원가입 성공 여부를 알림으로 표시
@@ -174,7 +171,6 @@ const SignupForm = () => {
       console.error("회원가입 실패:", error);
       alert("회원가입에 실패했습니다.");
     }
-    // req('POST', 'signup', { id, password, email, name, gender });
   };
 
   // 이메일 인증 요청
@@ -197,13 +193,26 @@ const SignupForm = () => {
   // 이메일 인증 코드 검증 처리
   const handleVerifyCodeSubmit = async () => {
     try {
-      const response = await req('POST', 'signup/verify', { verificationCode });
+      const response = await req('POST', 'signup/verify', {
+        email,
+        verificationCode
+      });
       alert(response);  // 인증 코드 검증 성공 여부를 알림으로 표시
+      setVerificationValid(true); // 인증 성공 시 회원가입 가능 상태로 변경
     } catch (error) {
       console.error("이메일 인증 코드 검증 실패:", error);
       alert("인증 코드 검증에 실패했습니다.");
     }
   };
+  // const handleVerifyCodeSubmit = async () => {
+  //   try {
+  //     const response = await req('POST', 'signup/verify', { verificationCode });
+  //     alert(response);  // 인증 코드 검증 성공 여부를 알림으로 표시
+  //   } catch (error) {
+  //     console.error("이메일 인증 코드 검증 실패:", error);
+  //     alert("인증 코드 검증에 실패했습니다.");
+  //   }
+  // };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -232,9 +241,9 @@ const SignupForm = () => {
 
         <Form.Control className="mt-1 py-2" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="이름(닉네임)" />
         <div className="d-flex justify-content-around mt-3 mb-4">
-          <button type="button" className={`btn ${gender === 'male' ? 'btn-hof' : 'btn-outline-hof'}`} onClick={() => setGender('male')}>남자</button>
-          <button type="button" className={`btn ${gender === 'female' ? 'btn-hof' : 'btn-outline-hof'}`} onClick={() => setGender('female')}>여자</button>
-          <button type="button" className={`btn ${gender === 'none' ? 'btn-hof' : 'btn-outline-hof'}`} onClick={() => setGender('none')}>선택하지 않음</button>
+          <button type="button" className={`btn ${gender === 'MALE' ? 'btn-hof' : 'btn-outline-hof'}`} onClick={() => setGender('MALE')}>남자</button>
+          <button type="button" className={`btn ${gender === 'FEMALE' ? 'btn-hof' : 'btn-outline-hof'}`} onClick={() => setGender('FEMALE')}>여자</button>
+          <button type="button" className={`btn ${gender === 'OTHER' ? 'btn-hof' : 'btn-outline-hof'}`} onClick={() => setGender('OTHER')}>선택하지 않음</button>
         </div>
 
         <button className="btn btn-hof w-100 my-3 py-2">회원가입</button>

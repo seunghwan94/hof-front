@@ -19,6 +19,7 @@ function LoginForm(){
   useEffect(() => {
     if (data?.accessToken) {
       localStorage.setItem("jwt", data.accessToken);
+      localStorage.setItem("member", data.member);
       console.log("로그인 후 생성된 토큰:", data);
       console.log("data.member:", data.member);
       console.log("data.member.role:", data.member?.role)
@@ -69,7 +70,7 @@ function LoginForm(){
               </div>
               <div className="pe-1">
                 {/* <a href="#" className="px-2 text-hof" style={{textDecoration: "none"}}>아이디찾기/비밀번호변경</a> */}
-                <Link to="/signup"className="text-hof" style={{textDecoration:"none"}}>아이디찾기/비밀번호변경</Link>
+                <Link to="/signup"className="text-hof me-1" style={{textDecoration:"none"}}>아이디찾기/비밀번호변경</Link>
                 <Link to="/signup"className="text-hof" style={{textDecoration:"none"}}>회원가입</Link>
               </div>
             </div>
