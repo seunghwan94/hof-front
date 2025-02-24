@@ -24,7 +24,7 @@ const PaymentInfo = () => {
           pno: product.pno || 0,
           count: product.quantity,
           basePrice: product.price,
-          subtotalPrice: (product.price + (option?.addPrice || 0)) * product.quantity,
+          subtotalPrice: (product.price + (option?.addPrice || 0)),
           optionNo: optionNo,
         };
       })
