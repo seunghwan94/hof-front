@@ -7,7 +7,7 @@ import { faHeart, faComment } from "@fortawesome/free-solid-svg-icons";
 import "../../../styles/community.scss";
 
 const Community = () => {
-  const { data, loading, error, req } = useAxios();
+  const { loading, error, req } = useAxios();
   const [selectedPostId, setSelectedPostId] = useState(null); // 게시글 ID만 저장
   const [posts, setPosts] = useState([]);
 
