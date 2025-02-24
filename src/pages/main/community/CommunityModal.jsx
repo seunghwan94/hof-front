@@ -22,15 +22,15 @@ const CommunityModal = ({ nno, onHide }) => {
   if (!post) return null;
 
   return (
-    <Modal show={true} onHide={onHide} size="lg" centered>
-      <Modal.Body className="d-flex">
+    <Modal show={true} onHide={onHide} size="xl" centered>
+      <Modal.Body className="d-flex" >
         {/* 왼쪽: 이미지 */}
         <div className="modal-image-container">
           <img src={post.imageUrls?.[0]} alt="Post" className="modal-image" />
         </div>
 
         {/* 오른쪽: 게시물 정보 */}
-        <div className="modal-info-container p-3" style={{ height: "85vh", overflowY: "auto" }}>
+        <div className="modal-info-container p-3" style={{ height: "85vh", overflowY: "auto"}}>
           <div className="d-flex align-items-center border-bottom pb-2 mb-2">
             <img src="https://via.placeholder.com/40" alt="Profile" className="profile-icon me-2" />
             <div>

@@ -1,0 +1,145 @@
+// 변수
+$primary-color: #007bff;
+$hover-bg: rgba(0, 0, 0, 0.05);
+$menu-bg: #fff;
+$backdrop-bg: rgba(0, 0, 0, 0.3);
+
+// Mixin
+@mixin transition($props...) {
+  transition: $props 0.3s ease-in-out;
+}
+
+/* 배경 흐림 효과 */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(0);
+  background: rgba(0, 0, 0, 0);
+  @include transition(backdrop-filter, background);
+  z-index: 998;
+  pointer-events: none;
+
+  &.active {
+    backdrop-filter: blur(5px);
+    background: $backdrop-bg;
+    pointer-events: all;
+  }
+}
+
+/* Navbar */
+.navbar {
+  z-index: 999;
+  background-color: transparent;
+
+  .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: $primary-color;
+    @include transition(color);
+
+    &:hover {
+      color: darken($primary-color, 10%);
+    }
+  }
+
+  .navbar-toggler {
+    border: none;
+    @include transition(transform);
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  /* 모바일용 슬라이드 메뉴 */
+  .navbar-collapse {
+    @include transition(transform);
+    transform: translateX(0); // 웹 기본
+    position: relative;
+
+    @media (max-width: 991px) { // 모바일용
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 70%;
+      height: 100%;
+      background-color: $menu-bg;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      transform: translateX(100%);
+      z-index: 999;
+
+      &.show {
+        transform: translateX(0);
+      }
+
+      /* 애니메이션 효과 */
+      .navbar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        opacity: 0;
+        transform: translateY(20px);
+        @include transition(opacity, transform);
+
+        &.show {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .nav-link {
+          font-size: 1.2rem;
+          color: #333;
+          font-weight: 500;
+          @include transition(color, background);
+
+          &:hover {
+            color: $primary-color;
+            background-color: $hover-bg;
+            border-radius: 5px;
+            padding: 0.5rem;
+          }
+
+          &.active {
+            color: $primary-color;
+            font-weight: bold;
+          }
+        }
+      }
+
+      /* 로그인/회원가입 링크 */
+      .ms-auto {
+        display: flex;
+        flex-direction: column;
+        margin-top: auto;
+        opacity: 0;
+        transform: translateY(20px);
+        @include transition(opacity, transform);
+
+        &.show {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        a {
+          color: #333;
+          font-weight: 600;
+          text-decoration: none;
+          @include transition(color);
+
+          &:hover {
+            color: $primary-color;
+          }
+        }
+      }
+    }
+  }
+}

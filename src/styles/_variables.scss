@@ -197,40 +197,8 @@ body {
   width: 100vw !important;
 }
 
-/* 전체 화면을 덮는 비디오 컨테이너 */
-.video-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-}
 
-/* 비디오 스타일 수정 */
-.video {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 100vw;
-  min-height: 100vh;
-  width: auto;
-  height: auto;
-  object-fit: cover;
-}
 
-/* 비디오를 어둡게 만드는 오버레이 */
-.video-container::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(238, 238, 238, 0.6); /* 투명한 검정 오버레이 (0.5는 반투명) */
-  pointer-events: none; /* 클릭 이벤트를 방해하지 않도록 설정 */
-}
 
 /* 텍스트 오버레이 스타일 */
 .text-overlay {
@@ -415,24 +383,6 @@ body {
   transition: transform 0.5s ease-out;
 }
 
-/* Footer 스타일 */
-.footer-intro {
-  width: 100%;
-  background-color: #222;
-  color: #fff;
-  padding: 20px 0;
-  text-align: center;
-  position: absolute; /* 기본적으로 absolute 상태 */
-  bottom: 0;
-  transform: translateY(100%); /* 처음에는 화면 밖으로 밀어둠 */
-  transition: transform 0.5s ease-in-out; /* 자연스럽게 올라오는 효과 */
-}
-
-/* Footer가 보여질 때 */
-.footer-intro.show {
-  position: fixed;
-  transform: translateY(0); /* 화면으로 부드럽게 등장 */
-}
 
 .footer {
   width: 100%;
