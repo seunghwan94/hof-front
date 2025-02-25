@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Button, Card, Form } from "react-bootstrap";
 
@@ -6,6 +6,19 @@ const PaymentInfo = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const orderData = location.state?.orderData;
+  const member = localStorage.getItem("member");
+  const hasRun = useRef(false);
+
+  useEffect(() => {
+    if (!hasRun.current) {
+      hasRun.current = true; // 첫 실행 이후에는 false로 유지
+      if (!member) {
+        alert("로그인이 필요한 페이지 입니다.");
+        navigate("/login");
+      }
+    }
+  }, [member, navigate]);
+
 
   // ✅ 선택된 결제 방법 상태 관리
   const [paymentMethod, setPaymentMethod] = useState("신용카드");

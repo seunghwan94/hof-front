@@ -10,7 +10,7 @@ function LogoutButton() {
     navigate("/login");
   };
 
-  return <Link to="/login" className="text-hof fw-bold" style={{textDecoration:"none"}} onClick={handleLogout}>로그아웃</Link>
+  return <Link to="/login" className="nav-link text-hof fw-bold" style={{textDecoration:"none"}} onClick={handleLogout}>로그아웃</Link>
   
 
 }

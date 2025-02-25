@@ -16,9 +16,12 @@ import PayList from "./myinfo/content/PayList";
 import IntegratedAccount from "./myinfo/content/IntegratedAccount";
 import Cart from "./myinfo/content/Cart";
 import Pick from "./myinfo/content/Pick";
+import InteriorDetail from "./interior/InteriorDetail";
 
 function Index() {
   const location = useLocation(); // 현재 경로 가져오기
+
+
 
   const routesConfig = [
     { path: "/", element: <Intro /> },
@@ -27,6 +30,7 @@ function Index() {
     { path: "/shop/detail/:id", element: <ShopDetail /> },
     { path: "/community", element: <Community /> },
     { path: "/Interior", element: <Interior /> },
+    { path: "/Interior/detail/:id", element: <InteriorDetail /> },
     { path: "/Pay", element: <Pay /> },
     { path: "/PayInfo", element: <PayInfo /> },
     {

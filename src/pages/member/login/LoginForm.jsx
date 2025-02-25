@@ -19,7 +19,7 @@ function LoginForm(){
   useEffect(() => {
     if (data?.accessToken) {
       localStorage.setItem("jwt", data.accessToken);
-      localStorage.setItem("member", data.member);
+      localStorage.setItem("member", JSON.stringify(data.member));
       console.log("로그인 후 생성된 토큰:", data);
       console.log("data.member:", data.member);
       console.log("data.member.role:", data.member?.role)
