@@ -4,11 +4,18 @@ import LoginLeft from "../login/LoginLeft";
 import SignupForm from "./SignupForm";
 
 function Signup(){
-  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  const [step, setStep] = useState(1); // 1은 약관 동의 화면, 2는 회원가입 폼 화면
+  const [termsAccepted, setTermsAccepted] = useState({
+    privacyConsent: false,
+    marketingConsent: false,
+    allowNotification: false,
+  });
 
-  const handleSignupNext = () => {
-    setIsTermsAccepted(true);
+  const handleNext = (privacyConsent, marketingConsent, allowNotification) => {
+    setTermsAccepted({ privacyConsent, marketingConsent, allowNotification });
+    setStep(2);  // 약관 동의 후 회원가입 폼 화면으로 이동
   };
+
 
   return (
     <div style={{position: "relative", width: "100%", height: "100vh" }}>
@@ -21,13 +28,16 @@ function Signup(){
           <LoginLeft />
         </div>
         <div style={{ flexShrink: 0, width: "700px", minHeight: "500px" }}>
-          {/* <SignupTerms /> */}
-          {isTermsAccepted ? <SignupForm /> : <SignupTerms onNext={handleSignupNext} />}
+        {step === 1 ? (
+            <SignupTerms onNext={handleNext} />
+          ) : (
+            <SignupForm termsAccepted={termsAccepted} />
+          )}
         </div>
       </div>
     </div>  
   );
-}
+};
 
 
 

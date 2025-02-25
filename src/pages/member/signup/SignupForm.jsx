@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../../../components/layout/Logo';
 import useAxios from '../../../hooks/useAxios';
 
@@ -16,14 +16,20 @@ const SignupForm = () => {
 
   const [email, setEmail] = useState('');
   const [emailValidCheck, setEmailValidCheck] = useState('');
-  const [verificationToken, setVerificationToken] = useState('');
+  // const [verificationToken, setVerificationToken] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [verificationValid, setVerificationValid] = useState(false);
+
+  const [privacyConsent, setPrivacyConsent] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
+  const [allowNotification, setAllowNotification] = useState(false);
 
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
   const { data, error, req } = useAxios();
-  // const navigate = useNavigate();
+
+  const location = useLocation();
+  const { state } = location;
 
   // id 유효성 검사
   const validId = (enteredID) => {
@@ -42,6 +48,15 @@ const SignupForm = () => {
     const regex = /^[a-zA-Z0-9_+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{1,7}$/;
     return regex.test(enteredEmail);
   };
+
+  // 약관 동의 상태 가져오기
+  useEffect(() => {
+    if (state) {
+      setPrivacyConsent(state.privacyConsent || false);
+      setMarketingConsent(state.marketingConsent || false);
+      setAllowNotification(state.allowNotification || false);
+    }
+  }, [state]);
 
   // id 입력 처리
   const handleIdChange = (e) => {
@@ -127,6 +142,8 @@ const SignupForm = () => {
     }
   };
 
+  
+
   // 회원가입 처리
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -146,6 +163,11 @@ const SignupForm = () => {
       setEmailValidCheck('이메일을 확인해주세요.');
       return;
     }
+
+    if (!privacyConsent) {
+      alert('필수 약관에 동의해야 합니다.');
+      return;
+    }
   
     // 이메일 인증 여부 확인
     if (!verificationValid) {
@@ -159,13 +181,17 @@ const SignupForm = () => {
       name,
       memberDetail: {
         email,
-        gender
+        gender,
+        privacyConsent,
+        marketingConsent,
+        allowNotification
       }
     };
   
     try {
       const response = await req('POST', 'signup', reqMemberData);
       console.log(reqMemberData);
+      console.log("reqMemberData확인")
       alert(response);  // 회원가입 성공 여부를 알림으로 표시
     } catch (error) {
       console.error("회원가입 실패:", error);
@@ -246,7 +272,7 @@ const SignupForm = () => {
           <button type="button" className={`btn ${gender === 'OTHER' ? 'btn-hof' : 'btn-outline-hof'}`} onClick={() => setGender('OTHER')}>선택하지 않음</button>
         </div>
 
-        <button className="btn btn-hof w-100 my-3 py-2">회원가입</button>
+        <button type='submit' className="btn btn-hof w-100 my-3 py-2">회원가입</button>
         {error && <p style={{ fontSize: '0.9rem', color: 'red', textAlign: 'center' }}>회원가입에 실패했습니다.</p>}
       </div>
     </form>

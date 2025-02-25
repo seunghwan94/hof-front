@@ -8,7 +8,6 @@ const SignupTerms = ({onNext}) => {
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [allowNotification, setAllowNotification] = useState(false);
-  // const navigate = useNavigate();
 
   const handleAllChecked = () => {
     const newValue = !allChecked;
@@ -18,15 +17,10 @@ const SignupTerms = ({onNext}) => {
     setMarketingConsent(newValue);
   };
 
-  const handleNext = () => {
-    if (!privacyConsent) {
-      alert('필수 약관에 동의해야 합니다.');
-      return;
-    }
-    onNext();
-    // navigate('/signup');
+  const handleNext = (e) => {
+    e.preventDefault();
+    onNext(privacyConsent, marketingConsent, allowNotification);
   };
-
 
   return (
 
@@ -76,11 +70,12 @@ const SignupTerms = ({onNext}) => {
             </Form.Group>
           </div>
 
-          <button className="btn btn-hof w-100 my-3 py-2" onClick={handleNext}>다음</button>
+          <button className="btn btn-hof w-100 my-3 py-2" onClick={handleNext} disabled={!privacyConsent}>다음</button>
         </div>
       </div>
     </form>
   );
 };
+
 
 export default SignupTerms;

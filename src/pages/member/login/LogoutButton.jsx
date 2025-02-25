@@ -5,6 +5,7 @@ function LogoutButton() {
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("jwt");
+    localStorage.removeItem("member");
     console.log("로그아웃 후 로컬스토리지:", localStorage.getItem("jwt"));
     navigate("/login");
   };
