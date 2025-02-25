@@ -1,45 +1,147 @@
-import React from 'react';
-import '../../../styles/interior.scss';
-import { Container } from 'react-bootstrap';
+import React, { useEffect, useState, Component } from "react";
+import { useNavigate } from "react-router-dom"; // 추가
+import useAxios from "../../../hooks/useAxios";
+import "../../../styles/interior.scss";
+import { Container } from "react-bootstrap";
+import SliderPage from "./SliderPage";
+
+/* 슬라이더 컴포넌트 (레거시 방식) */
+class ImageSlider extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentIndex: 0,
+    };
+    this.nextSlide = this.nextSlide.bind(this);
+    this.prevSlide = this.prevSlide.bind(this);
+  }
+
+  nextSlide() {
+    const { images } = this.props;
+    this.setState((prevState) => ({
+      currentIndex: (prevState.currentIndex + 1) % images.length,
+    }));
+  }
+
+  prevSlide() {
+    const { images } = this.props;
+    this.setState((prevState) => ({
+      currentIndex:
+        (prevState.currentIndex - 1 + images.length) % images.length,
+    }));
+  }
+
+  render() {
+    const { images } = this.props;
+    const { currentIndex } = this.state;
+
+    return (
+      <div className="slider-container">
+        <button className="slider-btn prev" onClick={this.prevSlide}>
+          &#10094;
+        </button>
+        <div className="slider-image">
+          <img src={images[currentIndex]} alt={`Slide ${currentIndex}`} />
+        </div>
+        <button className="slider-btn next" onClick={this.nextSlide}>
+          &#10095;
+        </button>
+      </div>
+    );
+  }
+}
 
 const Interior = () => {
-  const companies = [
-    { id: 1, name: "업체명1", info: "업체 정보1", phone: "010-1234-5678", rating: 4 },
-    { id: 2, name: "업체명2", info: "업체 정보2", phone: "010-2345-6789", rating: 5 },
-    { id: 3, name: "업체명3", info: "업체 정보3", phone: "010-3456-7890", rating: 3 },
-    { id: 4, name: "업체명4", info: "업체 정보4", phone: "010-4567-8901", rating: 2 },
-  ];
+  const { data, loading, error, req } = useAxios();
+  const [companies, setCompanies] = useState([]);
+  const navigate = useNavigate(); // 네비게이션 추가
+
+  // API 호출
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      const response = await req("GET", "common/company");
+      if (response) {
+        console.log(response);
+        setCompanies(response); // API에서 받은 데이터로 상태 업데이트
+      }
+    };
+
+    fetchCompanies();
+  }, [req]);
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
-      <span key={i} className={`star ${i < rating ? 'filled' : ''}`}>&#9733;</span>
+      <span key={i} className={`star ${i < rating ? "filled" : ""}`}>
+        &#9733;
+      </span>
     ));
   };
 
+  const handleCompanyClick = (companyId) => {
+    navigate(`/Interior/${companyId}`);
+  };
+
+  if (loading) return <p className="loading-text">로딩 중...</p>;
+  if (error) return <p className="error-text">오류가 발생했습니다: {error.message}</p>;
+
   return (
     <Container>
+      <SliderPage />
       <div className="company-list-container">
-        {/* 상단 주요 업체 */}
-        <div className="main-company">
-          <div className="main-company-image">업체사진</div>
-          <div className="main-company-info">
-            <h2>업체명</h2>
-            <p>업체 정보</p>
-            <p>업체 전화번호</p>
-            <div className="rating">
-              {renderStars(4)} <span>(13)</span>
+        {/* 상단 주요 업체 (첫 번째 업체를 메인으로 표시) */}
+        {companies.length > 0 && (
+          <div
+            className="main-company"
+            onClick={() => handleCompanyClick(companies[0].no)}
+            style={{ cursor: "pointer" }}
+          >
+            <div className="main-company-image">
+              {companies[0].imageUrls && companies[0].imageUrls.length > 0 ? (
+                <img src={companies[0].imageUrls[0]} alt={companies[0].name} />
+              ) : (
+                <div className="placeholder-image">업체사진 없음</div>
+              )}
+            </div>
+            <div className="main-company-info">
+              <h2 className="company-name">{companies[0].name}</h2>
+              <p className="company-info">{companies[0].info}</p>
+              <p className="company-tel">📞 {companies[0].tel}</p>
+              <div className="rating">
+                {renderStars(companies[0].rating || 0)}{" "}
+                <span className="rating-count">(13)</span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* 하단 업체 리스트 */}
         <div className="company-grid">
-          {companies.map((company) => (
-            <div className="company-card" key={company.id}>
-              <div className="company-image">업체사진</div>
-              <h3>{company.name}</h3>
-              <div className="rating">
-                {renderStars(company.rating)} <span>(13)</span>
+          {companies.slice(1).map((company) => (
+            <div
+              className="company-card"
+              key={company.no}
+              onClick={() => handleCompanyClick(company.no)}
+              style={{ cursor: "pointer" }}
+            >
+              <div className="company-image">
+                {company.imageUrls && company.imageUrls.length > 0 ? (
+                  <img
+                    src={company.imageUrls[0]}
+                    alt={company.name}
+                    className="company-img"
+                  />
+                ) : (
+                  <div className="placeholder-image">업체사진 없음</div>
+                )}
+              </div>
+              <div className="company-details">
+                <h3 className="company-name">{company.name}</h3>
+                <p className="company-info">{company.info}</p>
+                <p className="company-tel">📞 {company.tel}</p>
+                <div className="rating">
+                  {renderStars(company.rating || 0)}{" "}
+                  <span className="rating-count">(13)</span>
+                </div>
               </div>
             </div>
           ))}

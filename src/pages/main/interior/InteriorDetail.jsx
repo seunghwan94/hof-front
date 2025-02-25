@@ -1,84 +1,76 @@
-import React, { useState } from 'react';
-import '../../../styles/interiorDetail.scss';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import useAxios from "../../../hooks/useAxios";
+import "../../../styles/interiorDetail.scss";
 
 const InteriorDetail = () => {
-  const [currentImage, setCurrentImage] = useState(0);
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
+  const { companyId } = useParams();
+  const { req } = useAxios();
+  const [company, setCompany] = useState(null);
+  const [loading, setLoading] = useState(true);
+  console.log(company)
+  useEffect(() => {
+    const fetchCompany = async () => {
+      const response = await req("GET", `common/company/${companyId}`);
+      if (response) {
+        setCompany(response);
+      }
+      setLoading(false);
+    };
 
-  const images = [
-    'https://via.placeholder.com/600x400?text=시공사진1',
-    'https://via.placeholder.com/600x400?text=시공사진2',
-    'https://via.placeholder.com/600x400?text=시공사진3',
-  ];
+    fetchCompany();
+  }, [companyId, req]);
 
-  const handlePrev = () => {
-    setCurrentImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setCurrentImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
-  const handleCommentSubmit = (e) => {
-    e.preventDefault();
-    if (newComment.trim() !== '') {
-      setComments([...comments, newComment]);
-      setNewComment('');
-    }
-  };
+  if (loading) return <p>로딩 중...</p>;
+  if (!company) return <p>업체 정보를 불러오지 못했습니다.</p>;
 
   return (
     <>
-      <div className="main-image">
-        <img src="https://via.placeholder.com/800x300?text=메인사진" alt="메인사진" />
+    <div className="main-intro-image">
+        {company.imageUrls && company.imageUrls.length > 0 ? (
+          <img src={company.imageUrls[0]} alt={company.name} />
+        ) : (
+          <div className="placeholder-image">이미지가 없습니다.</div>
+        )}
       </div>
+    <div className="interior-detail-container">
+      {/* 메인 커버 이미지 */}
+      
 
-      <div className="company-detail-container">
-        {/* 업체 정보 */}
-        <h2 className="specialization">소형 아파트 인테리어 전문</h2>
+      {/* 제목 및 서브타이틀 */}
+      <div className="content-container">
+        <h1 className="title">{company.title || "인테리어 프로젝트 제목"}</h1>
+        <h3 className="subtitle">{company.info || "서브 타이틀 설명"}</h3>
+
+        {/* 업체 정보 및 태그 */}
         <div className="company-info">
-          <span className="company-name">업체명</span>
-          <span className="company-phone">010-1234-1234</span>
+          <p><strong>{company.name}</strong> | {company.location || "위치 정보 없음"}</p>
         </div>
 
-        {/* 시공 사진 슬라이더 */}
-        <div className="slider">
-          <button className="nav-button" onClick={handlePrev}>
-            &#10094;
-          </button>
-          <div className="slider-image">
-            <img src={images[currentImage]} alt={`시공사진 ${currentImage + 1}`} />
-          </div>
-          <button className="nav-button" onClick={handleNext}>
-            &#10095;
-          </button>
+        {/* 태그 정보 */}
+        <div className="tags">
+          <span className="tag">아파트</span>
+          <span className="tag">30평</span>
+          <span className="tag">리모델링</span>
+          <span className="tag">가족형</span>
         </div>
 
-        {/* 업체 정보 상세 */}
-        <div className="detailed-info">
-          <p>업체 정보: 고품질 인테리어 서비스 제공</p>
+        {/* 본문 설명 */}
+        <div className="description">
+          <p>{company.content || "인테리어 상세 설명이 여기에 표시됩니다."}</p>
         </div>
 
-        {/* 댓글 섹션 */}
-        <div className="comments-section">
-          <h3>댓글</h3>
-          <form onSubmit={handleCommentSubmit}>
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="댓글을 입력하세요..."
-            ></textarea>
-            <button type="submit">등록</button>
-          </form>
-
-          <ul className="comments-list">
-            {comments.map((comment, index) => (
-              <li key={index}>{comment}</li>
-            ))}
+        {/* 포인트 리스트 */}
+        <div className="highlight-points">
+          <h4>이 집의 핵심 포인트</h4>
+          <ul>
+            <li>✅ 주방을 방으로 옮긴 멀티 다이닝 공간!</li>
+            <li>✅ 편리한 동선으로 꾸민 주방</li>
+            <li>✅ 가족 모두가 함께하는 리빙룸</li>
           </ul>
         </div>
       </div>
+    </div>
     </>
   );
 };

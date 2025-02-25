@@ -30,7 +30,7 @@ function Index() {
     { path: "/shop/detail/:id", element: <ShopDetail /> },
     { path: "/community", element: <Community /> },
     { path: "/Interior", element: <Interior /> },
-    { path: "/Interior/detail/:id", element: <InteriorDetail /> },
+    { path: "/Interior/:companyId", element: <InteriorDetail /> },
     { path: "/Pay", element: <Pay /> },
     { path: "/PayInfo", element: <PayInfo /> },
     {
