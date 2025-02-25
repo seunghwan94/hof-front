@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Form, Image } from "react-bootstrap";
 import useAxios from "../../hooks/useAxios";
-import { Editor } from "@tinymce/tinymce-react";
+import CustomEditor from "../../components/layout/CustomEditor";
 const categoryMap = {
   1: "침대",
   2: "의자",
@@ -15,9 +15,9 @@ const ProductModal = ({ show, handleClose, p = {}, handleChange, handleSaveChang
 
   p = p && { ...p, price: p.price ? p.price.toLocaleString() : 0 };
   
-  for(let k  in p){
-    console.log(`${k}`,p[k]);
-  }
+  // for(let k  in p){
+  //   console.log(`${k}`,p[k]);
+  // }
   const {  req } = useAxios();
 
   const [previewImages, setPreviewImages] = useState([]);
@@ -100,23 +100,10 @@ const handleDeleteOption = async (index, optionNo) => {
 
 
 
-  /** (미리보기) */
-  const handleImageUpload = async (blobInfo, success, failure) => {
-    try {
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const imageUrl = reader.result;
-        setPreviewImages((prev) => [...prev, imageUrl]); // 미리보기 상태 업데이트
-        success(imageUrl);
-      };
-      reader.readAsDataURL(blobInfo.blob());
-    } catch (error) {
-      console.error("이미지 미리보기 오류:", error);
-      failure("이미지 미리보기에 실패했습니다.");
-    }
-  };
-  
+ /**  TinyMCE에서 받아온 최종 content 반영 */
+ const handleEditorChange = (newContent) => {
+  handleChange({ target: { name: "content", value: newContent } });
+};
 
   /**  최종 저장 함수 */
 const handleFinalSave = async () => {
@@ -171,30 +158,46 @@ const handleFinalSave = async () => {
     //  최종적으로 <div> 태그 감싸서 저장
     const updatedContent = `<div class='product-images'>${content}</div>`;
 
-    setContentUpdated(true); //  상태 업데이트 완료 플래그 설정
-    // 부모 컴포넌트로 업데이트된 content 전달
-    handleChange({ target: { name: "content", value: updatedContent } });
 
-  } catch (error) {
-    console.error("이미지 최종 업로드 오류:", error);
-  }
+
+    setContentUpdated(true); //  상태 업데이트 완료 플래그 설정
+  //   // 부모 컴포넌트로 업데이트된 content 전달
+  //   handleChange({ target: { name: "content", value: updatedContent } });
+  //   setTimeout(() => setContentUpdated(true), 0);
+  // } catch (error) {
+  //   console.error("이미지 최종 업로드 오류:", error);
+  // }
+      // ** 상태 업데이트 중복 방지**
+      if (p.content !== updatedContent) {
+        handleChange({ target: { name: "content", value: updatedContent } });
+      }
+  
+      //  직접 `handleSaveChanges()` 호출하여 업데이트
+      await handleSaveChanges();
+    } catch (error) {
+      console.error("이미지 최종 업로드 오류:", error);
+    }
 };
 
-// ✅ 상태 업데이트 후 `handleSaveChanges` 실행
+//  상태 업데이트 후 `handleSaveChanges` 실행
 useEffect(() => {
   if (contentUpdated) {
     console.log("상태 변경 후 API 요청 실행!");
     handleSaveChanges();
-    setContentUpdated(false);
   }
 }, [contentUpdated]);
 
   
-useEffect(() => {
-  if (!p || !Array.isArray(p.options)) return;
-  const totalStock = p.options.reduce((sum, option) => sum + (option.stock || 0), 0);
-  handleChange({ target: { name: "stock", value: totalStock } });
-}, [p]);
+  useEffect(() => {
+    if (!p || !Array.isArray(p.options)) return;
+
+    const totalStock = p.options.reduce((sum, option) => sum + (option.stock || 0), 0);
+
+    // 기존 값과 다를 때만 업데이트 (불필요한 setState 방지)
+    if (p.stock !== totalStock) {
+      handleChange({ target: { name: "stock", value: totalStock } });
+    }
+  }, [p?.options]);
 
   
 
@@ -244,33 +247,11 @@ useEffect(() => {
                 <Form.Control type="number" name="stock" value={p.stock} onChange={handleChange} readOnly/>
               </Form.Group>
 
-              {/*  TinyMCE (상품 설명 입력) */}
+            {/* TinyMCE 컴포넌트 적용 */}
             <Form.Group className="mt-4">
-              <Form.Label>상품 설명</Form.Label>
-              <Editor
-                apiKey="trgnbu8snkmw5p1ktqkfz87cxleiphn5div5xeo0n1tnrhxm"
-                value={p.content || ""}
-                init={{
-                  height: 300,
-                  menubar: false,
-                  plugins: ["image", "link", "media", "codesample", "lists", "visualblocks"],
-                  toolbar:
-                    "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image",
-                  images_upload_handler: handleImageUpload, //  로컬 미리보기 기능 적용
-                  automatic_uploads: false, //  즉시 업로드 방지 (로컬 미리보기 후 업로드)
-                  image_uploadtab: true, //  이미지 업로드 탭 활성화
-                  image_advtab: true, //  이미지 편집 활성화
-                  file_picker_types: "image",
-                  image_dimensions: false, //  이미지 크기 자동 적용 방지
-                }}
-                onEditorChange={(content) =>
-                  handleChange({ target: { name: "content", value: content } })
-                }
-              />
-
-
-              
-            </Form.Group>
+                <Form.Label>상품 설명</Form.Label>
+                <CustomEditor initialValue={p.content || ""} onContentChange={handleEditorChange} pno={p.pno} />
+              </Form.Group>
 
 
             </div>
