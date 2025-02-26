@@ -6,6 +6,7 @@ import "../../../styles/shop.scss";
 import ShopDetailDescription from "./ShopDetailDescription";
 import ShopDetailReviews from "./ShopDetailReviews";
 import ShopDetailInquiries from "./ShopDetailInquiries";
+import CartButton from "./CartButton";
 
 const ShopDetail = () => {
   const { id } = useParams();
@@ -14,19 +15,47 @@ const ShopDetail = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [buyer, setBuyer] = useState(null);
 
   const navigate = useNavigate();
 
+  // ✅ 로컬 스토리지에서 회원 정보 가져오기 & 기본 주소 조회
+  useEffect(() => {
+    const storedMember = localStorage.getItem("member");
+    if (storedMember) {
+      const parsedMember = JSON.parse(storedMember);
+      fetchBuyerData(parsedMember.mno);
+    }
+  }, []);
+
+  // ✅ 회원 정보 기반으로 기본 주소 가져오기
+  const fetchBuyerData = async (mno) => {
+    try {
+      const memberData = await req("GET", `common/member/${mno}`);
+      
+      if (memberData) {
+        // 기본 주소 찾기 (isDefault가 true인 주소)
+        const defaultAddress = memberData.addresses.find(addr => addr.default);
+
+        console.log(memberData);
+
+        setBuyer({
+          mno: memberData.mno,
+          name: memberData.name,
+          email: memberData.email,
+          phone: "010-1234-5678", // TODO: 실제 전화번호 데이터 추가 필요
+          address: defaultAddress ? `${defaultAddress.roadAddr} ${defaultAddress.detailAddr}` : "주소 없음",
+          zipcode: defaultAddress ? defaultAddress.zipcode : "",
+        });
+      }
+    } catch (err) {
+      console.error("구매자 정보 불러오기 실패:", err);
+    }
+  };
+
   const handlePay = () => {
     const orderData = {
-      buyer: {
-        mno: 24,
-        name: "우아한삼형제1", // 로그인 유저 데이터로 대체 가능
-        email: "hof1",
-        phone: "010-1234-5678",
-        address: "서울시 강남구",
-        zipcode: "12345",
-      },
+      buyer,
       products: [
         {
           pno: product.pno,
@@ -178,8 +207,10 @@ const ShopDetail = () => {
             </div>
           </div>
           <hr />
-
-          <Button className="w-100 fw-bold btn-hof" onClick={handlePay}>결제</Button>
+          <div className="d-flex">
+            <CartButton product={product} quantity={quantity} selectedOptions={selectedOptions} />
+            <Button className=" w-50 fw-bold btn-hof" onClick={handlePay}>결제</Button>
+          </div>
         </Col>
       </Row>
 

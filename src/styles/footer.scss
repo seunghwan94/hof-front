@@ -1,0 +1,58 @@
+/* Footer 컨텐츠 스타일 */
+.footer-content {
+  display: flex;
+  flex-wrap: wrap; /* 모바일에서 자동 줄 바꿈 */
+  gap: 20px;
+  text-align: center;
+}
+
+/* Footer 회사 정보 */
+.footer-info {
+  font-size: clamp(0.8rem, 1vw, 1rem); /* 반응형 폰트 크기 */
+  max-width: 400px;
+}
+
+/* Footer 아이콘 스타일 */
+.footer-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.footer-icon {
+  width: 40px;
+  height: auto;
+  transition: transform 0.2s ease-in-out;
+}
+
+.footer-icon:hover {
+  transform: scale(1.1);
+}
+
+/* footer.scss */
+
+.footer-content a {
+  color: inherit; /* 부모의 글자색 상속 */
+  text-decoration: none; /* 기본 밑줄 제거 */
+  transition: all 0.3s ease; /* 부드러운 전환 효과 */
+}
+
+.footer-content a:hover {
+  text-decoration: underline; /* 호버 시 밑줄 추가 */
+}
+
+
+/* 반응형 설정 */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .footer-info {
+    text-align: center;
+  }
+}
+

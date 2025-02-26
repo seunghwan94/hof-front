@@ -28,11 +28,7 @@ function Signup(){
           <LoginLeft />
         </div>
         <div style={{ flexShrink: 0, width: "700px", minHeight: "500px" }}>
-        {step === 1 ? (
-            <SignupTerms onNext={handleNext} />
-          ) : (
-            <SignupForm termsAccepted={termsAccepted} />
-          )}
+        {step === 1 ? (<SignupTerms onNext={handleNext} />) : (<SignupForm termsAccepted={termsAccepted} />)}
         </div>
       </div>
     </div>  

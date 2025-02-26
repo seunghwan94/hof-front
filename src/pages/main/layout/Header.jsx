@@ -139,7 +139,7 @@ const Header = ({ fixed }) => {
         </div>
       </nav>
 
-      {!fixed && <hr className="mb-5" style={{ width: "100%", marginTop: 0 }} />}
+      {!fixed && <hr className="mb-0" style={{ width: "100%", marginTop: 0 }} />}
     </>
   );
 };

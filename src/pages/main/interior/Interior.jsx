@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Component } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // 추가
 import useAxios from "../../../hooks/useAxios";
 import "../../../styles/interior.scss";
@@ -6,53 +6,9 @@ import { Container } from "react-bootstrap";
 import SliderPage from "./SliderPage";
 
 /* 슬라이더 컴포넌트 (레거시 방식) */
-class ImageSlider extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentIndex: 0,
-    };
-    this.nextSlide = this.nextSlide.bind(this);
-    this.prevSlide = this.prevSlide.bind(this);
-  }
-
-  nextSlide() {
-    const { images } = this.props;
-    this.setState((prevState) => ({
-      currentIndex: (prevState.currentIndex + 1) % images.length,
-    }));
-  }
-
-  prevSlide() {
-    const { images } = this.props;
-    this.setState((prevState) => ({
-      currentIndex:
-        (prevState.currentIndex - 1 + images.length) % images.length,
-    }));
-  }
-
-  render() {
-    const { images } = this.props;
-    const { currentIndex } = this.state;
-
-    return (
-      <div className="slider-container">
-        <button className="slider-btn prev" onClick={this.prevSlide}>
-          &#10094;
-        </button>
-        <div className="slider-image">
-          <img src={images[currentIndex]} alt={`Slide ${currentIndex}`} />
-        </div>
-        <button className="slider-btn next" onClick={this.nextSlide}>
-          &#10095;
-        </button>
-      </div>
-    );
-  }
-}
 
 const Interior = () => {
-  const { data, loading, error, req } = useAxios();
+  const { loading, error, req } = useAxios();
   const [companies, setCompanies] = useState([]);
   const navigate = useNavigate(); // 네비게이션 추가
 

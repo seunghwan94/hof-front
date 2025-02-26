@@ -130,7 +130,7 @@ const Intro = () => {
           <div className="section app-download-section">
             <h2 className="app-download-title">앱 다운로드</h2>
             <img
-              src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo.svg"
+              src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo2.png"
               alt="앱 다운로드 아이콘"
               className="app-download-icon"
               loading="lazy"
@@ -140,42 +140,59 @@ const Intro = () => {
 
         {/* Footer */}
         <div className={`footer-intro ${currentSection === sections.length - 1 ? "show" : ""}`}>
-          <div className="container footer-content d-flex flex-column flex-md-row justify-content-around align-items-center text-light">
-            <div className="footer-info text-center text-md-start">
-              <div className="mb-3">
-                정의서 / WBS / ERD / 프로토타입 / PPT <br />
-                Swagger / Jacoco /
-              </div>
-              <small>
-                서울 구로구 디지털로 306 대륭포스트타워 2차 203호
-                <br />
-                대표번호: 010-xxxx-xxxx
-                <br />
-                Copyright ⓒ 2024 - 2024 dcinside. All rights reserved.
-              </small>
-            </div>
-            <div className="footer-icons d-flex gap-3">
-              <img
-                src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo.svg"
-                alt="앱 다운로드 아이콘"
-                className="footer-icon"
-                loading="lazy"
-              />
-              <img
-                src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo.svg"
-                alt="앱 다운로드 아이콘"
-                className="footer-icon"
-                loading="lazy"
-              />
-              <img
-                src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo.svg"
-                alt="앱 다운로드 아이콘"
-                className="footer-icon"
-                loading="lazy"
-              />
-            </div>
-          </div>
-        </div>
+  <div className="container footer-content d-flex flex-column flex-md-row justify-content-around align-items-center text-light">
+    
+    {/* 회사 정보 */}
+    <div className="footer-info text-center text-md-start">
+      <div className="mb-3">
+        {/* 파일 다운로드 링크 */}
+        <a href="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/%EC%A0%95%EC%9D%98%EC%84%9C.xlsx" download="정의서.xlsx" target="_blank" rel="noopener noreferrer">정의서</a> /{" "}
+        <a href="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/WBS.xlsx" download="WBS.xlsx" target="_blank" rel="noopener noreferrer">WBS</a> /{" "}
+        <a href="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/ERD.xlsx" download="ERD.xlsx" target="_blank" rel="noopener noreferrer">ERD</a> / 프로토타입 / PPT <br />
+        <a href="http://localhost:8080/api/v1/swagger-ui/index.html" target="_blank" rel="noopener noreferrer">Swagger</a> /{" "}
+        <a href="https://hof.lshwan.com/jacoco/index.html" target="_blank" rel="noopener noreferrer"> Jacoco</a> / 
+        <a href="https://github.com/seunghwan94" target="_blank" rel="noopener noreferrer"> GitHub </a>[ 
+        <a href="https://github.com/seunghwan94/hof-front" target="_blank" rel="noopener noreferrer"> Front </a>| 
+        <a href="https://github.com/seunghwan94/hof-back" target="_blank" rel="noopener noreferrer"> Back </a>]<br />
+      </div>
+      <small>
+        서울 구로구 디지털로 306 대륭포스트타워 2차 203호<br />
+        대표번호: 010-xxxx-xxxx<br />
+        Copyright ⓒ 2024 - 2024 dcinside. All rights reserved.
+      </small>
+    </div>
+
+    {/* 앱 다운로드 아이콘 */}
+    <div className="footer-icons d-flex gap-3">
+      {/* GitHub 링크 */}
+      <a href="https://github.com/seunghwan94" target="_blank" rel="noopener noreferrer">
+        <img 
+          src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/github-icon.svg" 
+          alt="GitHub 아이콘" 
+          className="footer-icon github-icon"
+        />
+      </a>
+
+      {/* Gmail 링크 */}
+      <a href="mailto:seunghwan94.dev@gmail.com">
+        <img 
+          src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/Gmail_icon.svg" 
+          alt="Gmail 아이콘" 
+          className="footer-icon"
+        />
+      </a>
+
+      {/* App Logo */}
+      <img 
+        src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo2.png" 
+        alt="Hof 아이콘" 
+        className="footer-icon"
+      />
+    </div>
+
+  </div>
+</div>
+
       </div>
     </PageLoader>
   );

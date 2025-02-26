@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../../components/layout/Logo';
 import useAxios from '../../../hooks/useAxios';
 
-const SignupForm = () => {
+const SignupForm = ({ termsAccepted }) => {
+
+  const navigate = useNavigate();
+  const { privacyConsent, marketingConsent, allowNotification } = termsAccepted;
+
   const [id, setId] = useState('');
   const [idValidCheck, setIdValidCheck] = useState('');
   const [idAvailable, setIdAvailable] = useState(false);
@@ -16,22 +20,14 @@ const SignupForm = () => {
 
   const [email, setEmail] = useState('');
   const [emailValidCheck, setEmailValidCheck] = useState('');
-  // const [verificationToken, setVerificationToken] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [verificationValid, setVerificationValid] = useState(false);
-
-  const [privacyConsent, setPrivacyConsent] = useState(false);
-  const [marketingConsent, setMarketingConsent] = useState(false);
-  const [allowNotification, setAllowNotification] = useState(false);
 
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
   const { data, error, req } = useAxios();
 
-  const location = useLocation();
-  const { state } = location;
-
-  // id 유효성 검사
+  // 아이디 유효성 검사
   const validId = (enteredID) => {
     const regex = /^[a-z0-9]{5,20}$/;
     return regex.test(enteredID);
@@ -49,21 +45,10 @@ const SignupForm = () => {
     return regex.test(enteredEmail);
   };
 
-  // 약관 동의 상태 가져오기
-  useEffect(() => {
-    if (state) {
-      setPrivacyConsent(state.privacyConsent || false);
-      setMarketingConsent(state.marketingConsent || false);
-      setAllowNotification(state.allowNotification || false);
-    }
-  }, [state]);
-
-  // id 입력 처리
+  // 아이디 입력 처리
   const handleIdChange = (e) => {
     const enteredID = e.target.value;
     setId(enteredID);
-    // setIdAvailable(false);
-    // setIdValidCheck('');
   };
 
   // 비밀번호 입력 처리
@@ -86,7 +71,7 @@ const SignupForm = () => {
     }
   };
 
-  // 중복 체크 버튼 클릭 시 실행
+  // 아이디 중복 확인 버튼 클릭 시 실행
   const handleIdCheck = async () => {
     // 유효성 검사
     if (!validId(id)) {
@@ -121,7 +106,7 @@ const SignupForm = () => {
     const enteredConfirmPassword = e.target.value;
     setConfirmPassword(enteredConfirmPassword);
 
-    // 비밀번호와 일치하는지 검사
+    // 비밀번호 일치 확인
     if (enteredConfirmPassword !== pw) {
       setConfirmPasswordValidCheck('비밀번호가 일치하지 않습니다.');
     } else {
@@ -193,6 +178,7 @@ const SignupForm = () => {
       console.log(reqMemberData);
       console.log("reqMemberData확인")
       alert(response);  // 회원가입 성공 여부를 알림으로 표시
+      navigate('/login');
     } catch (error) {
       console.error("회원가입 실패:", error);
       alert("회원가입에 실패했습니다.");
@@ -230,15 +216,7 @@ const SignupForm = () => {
       alert("인증 코드 검증에 실패했습니다.");
     }
   };
-  // const handleVerifyCodeSubmit = async () => {
-  //   try {
-  //     const response = await req('POST', 'signup/verify', { verificationCode });
-  //     alert(response);  // 인증 코드 검증 성공 여부를 알림으로 표시
-  //   } catch (error) {
-  //     console.error("이메일 인증 코드 검증 실패:", error);
-  //     alert("인증 코드 검증에 실패했습니다.");
-  //   }
-  // };
+
 
   return (
     <form onSubmit={handleSubmit}>
