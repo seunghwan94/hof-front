@@ -123,3 +123,35 @@
     }
   }
 }
+
+
+/* ✅ Footer 링크 스타일 */
+.footer-content a {
+  color: inherit; /* 부모의 색상 상속 */
+  text-decoration: none; /* 밑줄 제거 */
+  transition: all 0.3s ease;
+}
+
+.footer-content a:hover {
+  text-decoration: underline; /* 호버 시 밑줄 추가 */
+}
+
+/* ✅ Footer 아이콘 */
+.footer-icon {
+  width: 40px;
+  height: auto;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1); /* 호버 시 확대 */
+  }
+}
+/* ✅ GitHub 아이콘 색상 변경 */
+.github-icon {
+  filter: brightness(0) invert(1); /* 흰색으로 변경 */
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1); /* 호버 시 확대 */
+  }
+}
