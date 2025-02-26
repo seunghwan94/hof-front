@@ -59,10 +59,10 @@ const Prod = () => {
         return;
       }
 
-      // ✅ 상품 상세 정보 상태 업데이트
+      //  상품 상세 정보 상태 업데이트
       setSelectedProduct({...productDetail, cno: product.cno});
 
-      // ✅ 모달 열기
+      // 모달 열기
       setShowModal(true);
     } catch (error) {
       console.error("상품 상세 정보를 가져오는 중 오류 발생:", error);
@@ -89,20 +89,24 @@ const Prod = () => {
 			}));
 		};
 	
-		// 상품 정보 수정 (API 요청)
-		const handleSaveChanges = async () => {
-			if (!selectedProduct) return;
-	
-			await req("put", `main/prod/${selectedProduct.pno}`, selectedProduct);
-			alert("상품 정보가 수정되었습니다.");
-      const updatedProducts  = await req("get", "main/prod"); // 수정 후 목록 새로고침
-      console.log(updatedProducts);
-      if (Array.isArray(updatedProducts)) {
-        setProducts(updatedProducts);  // 🔹 올바른 방식으로 업데이트
-      } 
-			handleCloseModal();
+/** 상품 정보 수정 (API 요청) */
+const handleSaveChanges = async (updatedProduct) => {
+  if (!updatedProduct) return;
 
-		};
+  console.log("최종 저장할 content:", updatedProduct.content);
+
+  await req("put", `main/prod/${updatedProduct.pno}`, updatedProduct);
+  alert("상품 정보가 수정되었습니다.");
+
+  // 최신 데이터 다시 불러오기
+  const updatedProducts = await req("get", "main/prod"); 
+
+  if (Array.isArray(updatedProducts)) {
+    setProducts(updatedProducts);  // 목록 업데이트
+  } 
+
+  handleCloseModal();
+};
 		  // 상품 삭제
 			const handleDelete = async () => {
 				if (!selectedProduct) return;
@@ -205,6 +209,7 @@ const Prod = () => {
         handleSaveChanges={handleSaveChanges}
         handleDelete={handleDelete}
         handleOptionChange={handleOptionChange}
+        setSelectedProduct={setSelectedProduct}
       />
           {/* 🔹 상품 등록 모달 추가 */}
     <ProductCreateModal show={showCreateModal} handleClose={handleCloseCreateModal} />
