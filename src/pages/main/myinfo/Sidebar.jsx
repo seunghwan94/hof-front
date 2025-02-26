@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "../../../styles/myinfo/sidebar.scss";
 import useAxios from "../../../hooks/useAxios";
-import Logo from "../../../components/layout/Logo";
 
 function Sidebar() {
 

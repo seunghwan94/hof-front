@@ -5,14 +5,57 @@ import CartItem from "./CartItem";
 import "../../../../styles/myinfo/cart.scss";
 
 const Cart = () => {
-  const { data, loading, error, req } = useAxios();
+  const {  loading, error, req } = useAxios();
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
   const cartItemRefs = useRef([]);
+  const [buyer, setBuyer] = useState(null);
+  const userId = JSON.parse(localStorage.getItem("member"))?.mno;
 
   useEffect(() => {
+    if (userId) {
+      fetchBuyerData(userId);
+    }
+  }, [userId]);
+
+  const fetchBuyerData = async (mno) => {
+    try {
+      const memberData = await req("GET", `common/member/${mno}`);
+
+      if (memberData) {
+        // 기본 주소 찾기 (isDefault가 true인 주소)
+        const defaultAddress = memberData.addresses.find((addr) => addr.default);
+        if (!defaultAddress) {
+          alert("내 정보에서 기본 주소를 등록하셔야 합니다.");
+          return;
+        }
+
+        setBuyer({
+          mno: memberData.mno,
+          name: memberData.name,
+          email: memberData.email,
+          address: `${defaultAddress.roadAddr} ${defaultAddress.detailAddr}`,
+          zipcode: defaultAddress.zipcode,
+        });
+      }
+    } catch (err) {
+      console.error("구매자 정보 불러오기 실패:", err);
+    }
+  };
+  // ✅ 장바구니 아이템 삭제
+  const handleDeleteItem = async (cartId) => {
+    const isConfirmed = window.confirm("장바구니에서 삭제하시겠습니까?");
+    if (!isConfirmed) return;
+
+    try {
+      await req("DELETE", `main/cart/${cartId}`);
+      setCartItems((prev) => prev.filter((item) => item.cartNo !== cartId)); // 삭제된 항목 제거
+    } catch (error) {
+      alert("삭제 실패: " + error.message);
+    }
+  };
+  useEffect(() => {
     const fetchCart = async () => {
-      const userId = 23; // 🔄 실제 회원 ID로 교체
       const res = await req("get", `main/cart/${userId}`);
       if (res) {
         setCartItems(res);
@@ -20,7 +63,7 @@ const Cart = () => {
     };
     fetchCart();
   }, [req]);
- // ✅ 임시저장
+ // 임시저장
  const handleSave = async () => {
     try {
       await req("put", "main/cart/save", cartItems);
@@ -29,10 +72,16 @@ const Cart = () => {
       alert("임시저장 실패");
     }
   };
-  // ✅ 결제 - PayInfo로 데이터 전달
+  // 결제 - PayInfo로 데이터 전달
   const handleCheckout = () => {
     // 모든 CartItem의 최신 상태 가져오기
     const updatedCartItems = cartItemRefs.current.map(ref => ref.getItemData());
+
+    // 기본 주소가 등록되지 않은 경우 결제 진행 불가
+    if (!buyer) {
+      alert("내 정보에서 기본 주소를 등록하셔야 결제 가능합니다.");
+      return;
+    }
 
     // 전체 결제 금액 계산
     const total_price = updatedCartItems.reduce((acc, item) => {
@@ -48,19 +97,10 @@ const Cart = () => {
       return acc + itemTotal; // 누적합
     }, 0);
 
-    req("delete", `main/cart/all/${23}`);
-
+    req("delete", `main/cart/all/${userId}`);
 
     const orderData = {
-      
-      buyer: {
-        mno : 24,
-        name: "홍길동", // 🔄 실제 데이터로 교체 필요
-        email: "hong@example.com",
-        phone: "010-1234-5678",
-        address: "서울특별시 강남구",
-        zipcode: "12345",
-      },
+      buyer,
       products: updatedCartItems.map(item => ({
         pno: item.pno,
         title: item.title,
@@ -91,8 +131,8 @@ const Cart = () => {
             <CartItem
               key={item.pno}
               item={item}
-              onDelete={(cartNo) => setCartItems(prev => prev.filter(ci => ci.cartNo !== cartNo))}
-              ref={(el) => (cartItemRefs.current[index] = el)} // ✅ ref 연결
+              onDelete={handleDeleteItem}
+              ref={(el) => (cartItemRefs.current[index] = el)}
             />
           ))}
 

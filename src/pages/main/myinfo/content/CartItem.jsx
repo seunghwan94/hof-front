@@ -44,6 +44,11 @@ const CartItem = forwardRef(({ item, onDelete }, ref) => {
     });
   }, []);
 
+  // ✅ 장바구니 삭제 확인 및 삭제
+  const handleDelete = () => {
+    onDelete(item.cartNo);
+  };
+
   // ✅ 총 가격 계산
   const calculateTotalPrice = () => {
     const optionsTotal = selectedOptions.reduce((sum, optNo) => {
@@ -73,7 +78,7 @@ const CartItem = forwardRef(({ item, onDelete }, ref) => {
           <div className="quantity-select">
             {/* ✅ 삭제 버튼 */}
             <div className="text-end mt-3">
-              <button className="btn btn-danger" onClick={() => onDelete(item.cartNo)}>X</button>
+              <button className="btn btn-outline-hof" onClick={handleDelete}>X</button>
             </div>
           </div>
         </div>

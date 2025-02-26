@@ -28,7 +28,7 @@ const ShopDetail = () => {
     }
   }, []);
 
-  // ✅ 회원 정보 기반으로 기본 주소 가져오기
+  // 회원 정보 기반으로 기본 주소 가져오기
   const fetchBuyerData = async (mno) => {
     try {
       const memberData = await req("GET", `common/member/${mno}`);
@@ -36,14 +36,15 @@ const ShopDetail = () => {
       if (memberData) {
         // 기본 주소 찾기 (isDefault가 true인 주소)
         const defaultAddress = memberData.addresses.find(addr => addr.default);
-
-        console.log(memberData);
+        if(defaultAddress == null){
+          alert("내 정보에서 주소를 등록하셔야 됩니다.");
+          return;
+        }
 
         setBuyer({
           mno: memberData.mno,
           name: memberData.name,
           email: memberData.email,
-          phone: "010-1234-5678", // TODO: 실제 전화번호 데이터 추가 필요
           address: defaultAddress ? `${defaultAddress.roadAddr} ${defaultAddress.detailAddr}` : "주소 없음",
           zipcode: defaultAddress ? defaultAddress.zipcode : "",
         });
