@@ -64,7 +64,6 @@ const PaymentInfo = () => {
             <h4 className="fw-bold">구매자 정보</h4>
             <p><strong>이름:</strong> {orderData.buyer?.name}</p>
             <p><strong>이메일:</strong> {orderData.buyer?.email}</p>
-            <p><strong>연락처:</strong> {orderData.buyer?.phone}</p>
           </Col>
           <Col md={6}>
             <h4 className="fw-bold">배송지 정보</h4>
