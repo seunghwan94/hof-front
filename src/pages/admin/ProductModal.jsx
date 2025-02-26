@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Modal, Button, Form, Image } from "react-bootstrap";
 import useAxios from "../../hooks/useAxios";
 import CustomEditor from "../../components/layout/CustomEditor";
@@ -15,6 +15,8 @@ const ProductModal = ({ show, handleClose, p = {}, handleChange, handleSaveChang
   const [prevContent, setPrevContent] = useState("");
   // 상품 데이터 상태 관리 (p의 변경 감지)
   const [product, setProduct] = useState(p);
+    const [fwlResponse, setFwlResponse] = useState([]); // 금지어 리스트 상태
+    const [loading, setLoading] = useState(true); // 로딩 상태 추가
   useEffect(() => {
     setProduct(p);
   }, [p]);
@@ -126,8 +128,25 @@ const handleDeleteOption = async (index, optionNo) => {
         handleChange({ target: { name: "content", value: newContent } });
     setPrevContent(newContent);
   };
+    const fetchFwlList = useCallback(async () => {
+      try {
+        const response = await req("get", "admin/fwl");
+        setFwlResponse(response); // 금지어 리스트 업데이트
+      } catch (error) {
+        console.error("금지어 리스트 불러오기 실패:", error);
+      } finally {
+        setLoading(false); // 로딩 완료
+      }
+    }, [req]); // `req`가 변경되지 않도록 유지
   
-
+    useEffect(()=> {
+      fetchFwlList();
+    },[fetchFwlList]);
+    const isForbiddenWordUsed = (text) => {
+    
+      return fwlResponse.some(fwl => text.includes(fwl.content));
+    };
+  
   /** Base64 → S3 URL 변환 후 content 업데이트 */
   const handleFinalSave = async () => {
     try {
@@ -182,7 +201,11 @@ const handleDeleteOption = async (index, optionNo) => {
         console.log("이미 S3 URL 변환된 content, 재업로드 스킵");
         return content;
       }
-  
+      if (isForbiddenWordUsed(product.title) || isForbiddenWordUsed(product.content)) {
+        alert(`상품명 또는 상품 설명에 금지어가 포함되어 있습니다.\n 내용 : ${product.title}${product.content}`);
+        return;
+      }
+      console.log("🔍 fwlResponse (JSON 변환):", JSON.stringify(fwlResponse, null, 2));
       // Base64 → S3 업로드 로직 실행
       const updatedContent = `<div class='product-images'>${content}</div>`;
       console.log("최종 변환된 content:", updatedContent);

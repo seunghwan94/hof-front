@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Modal, Button, Form, Image } from "react-bootstrap";
 import useAxios from "../../hooks/useAxios";
-import { Editor } from "@tinymce/tinymce-react";
+
+import CustomEditor from "../../components/layout/CustomEditor";
 
 const categoryMap = {
   1: "침대",
@@ -13,8 +14,10 @@ const categoryMap = {
 
 const ProductCreateModal = ({ show, handleClose }) => {
   const { req } = useAxios();
-  const [previewImages, setPreviewImages] = useState([]);
-  const [contentUpdated, setContentUpdated] = useState(false);
+  const [prevContent, setPrevContent] = useState("");
+  const [fwlResponse, setFwlResponse] = useState([]); // 금지어 리스트 상태
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+
   const [newOptionForm, setNewOptionForm] = useState(false); // 옵션 입력 필드 표시 여부
   const [previewThumbnail, setPreviewThumbnail] = useState([]); //  썸네일 미리보기
   const [thumbnailUrl, setThumbnailUrl] = useState([]); // 썸네일 URL 저장
@@ -102,23 +105,34 @@ const ProductCreateModal = ({ show, handleClose }) => {
     }));
   };
 
-  /** 🔹 이미지 업로드 핸들러 (TinyMCE 미리보기) */
-  const handleImageUpload = async (blobInfo, success, failure) => {
-    try {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const imageUrl = reader.result;
-        setPreviewImages((prev) => [...prev, imageUrl]);
-        success(imageUrl);
-      };
-      
-      reader.readAsDataURL(blobInfo.blob());
-    } catch (error) {
-      console.error("이미지 미리보기 오류:", error);
-      failure("이미지 미리보기에 실패했습니다.");
-    }
+  const handleEditorChange = (newContent) => {
+    if (newContent === prevContent){
+      return;
+    } 
+        handleChange({ target: { name: "content", value: newContent } });
+    setPrevContent(newContent);
   };
+  const fetchFwlList = useCallback(async () => {
+    try {
+      const response = await req("get", "admin/fwl");
+      setFwlResponse(response); // 금지어 리스트 업데이트
+    } catch (error) {
+      console.error("금지어 리스트 불러오기 실패:", error);
+    } finally {
+      setLoading(false); // 로딩 완료
+    }
+  }, [req]); // `req`가 변경되지 않도록 유지
+
+  useEffect(()=> {
+    fetchFwlList();
+  },[fetchFwlList]);
   
+
+
+  const isForbiddenWordUsed = (text) => {
+    
+    return fwlResponse.some(fwl => text.includes(fwl.content));
+  };
 
   const handleFinalSave = async () => {
     if (newProduct.options.length === 0 ) {
@@ -128,7 +142,13 @@ const ProductCreateModal = ({ show, handleClose }) => {
       alert("상품명은 반드시 입력해야합니다.")
       return;
     }
+    if (isForbiddenWordUsed(newProduct.title) || isForbiddenWordUsed(newProduct.content)) {
+      alert(`상품명 또는 상품 설명에 금지어가 포함되어 있습니다.\n 내용 : ${newProduct.title}${newProduct.content}`);
+      return;
+    }
     try {
+
+
       let content = newProduct.content;
       const imgRegex = /<img[^>]+src=["'](.*?)["']/g;
       let match;
@@ -146,14 +166,6 @@ const ProductCreateModal = ({ show, handleClose }) => {
           const blob = await fetch(url).then((res) => res.blob());
           const formData = new FormData();
           formData.append("file", blob, "image.jpg");
-          
-          const response = await req("post", "file/upload", formData, {
-            "Content-Type": "multipart/form-data",
-          });
-
-          console.log(response);
-  
-          return response?.location || response?.data?.url || response[0];
         })
       );
       //tinymce content내 이미지 url로 변경
@@ -226,24 +238,11 @@ const ProductCreateModal = ({ show, handleClose }) => {
             <Form.Control type="text" name="price" value={newProduct.price.toLocaleString()} onChange={handleChange} />
           </Form.Group>
 
-          {/* 🔹 상품 설명 입력 (TinyMCE Editor) */}
-          <Form.Group className="mb-3">
-            <Form.Label>상품 설명</Form.Label>
-            <Editor
-              apiKey="trgnbu8snkmw5p1ktqkfz87cxleiphn5div5xeo0n1tnrhxm"
-              value={newProduct.content}
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: ["image", "link", "media", "codesample", "lists", "visualblocks"],
-                toolbar: "undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | removeformat | image",
-                images_upload_handler: handleImageUpload,
-                automatic_uploads: false,
-                image_uploadtab: true,
-              }}
-              onEditorChange={(content) => handleChange({ target: { name: "content", value: content } })}
-            />
-          </Form.Group>
+          {/* TinyMCE 컴포넌트 적용 */}
+          <Form.Group className="mt-4">
+                <Form.Label>상품 설명</Form.Label>
+                <CustomEditor  onContentChange={handleEditorChange}  uploadUrl={`file/upload`} initialValue={newProduct.content}/>
+              </Form.Group>
 
           {/* 옵션 추가 폼 */}
           <h5>옵션 추가</h5>

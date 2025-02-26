@@ -10,6 +10,7 @@ const CustomEditor = ({ initialValue = "", onContentChange, uploadUrl }) => {
   const lastContentRef = useRef(""); //  마지막 content 저장
   const prevImageCountRef = useRef(0); //  이전 이미지 개수 저장
   const prevImageUrlsRef = useRef([]); // 이전 이미지 리스트 저장
+  const editorRef = useRef(null); // TinyMCE 에디터 참조 객체
 
   /** TinyMCE 이미지 업로드 핸들러 */
   const handleImageUpload = async (blobInfo, success, failure) => {
@@ -27,7 +28,13 @@ const CustomEditor = ({ initialValue = "", onContentChange, uploadUrl }) => {
       setLoading(false);
     }
   };
-
+// 정규식에서 안전하게 사용하기 위해 특수문자를 이스케이프 처리
+const escapeRegExp = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
+const removeBase64Images = (content) => {
+  return content.replace(/<img[^>]+src=["']data:image\/[^"']+["'][^>]*>/g, "");
+};
  /** TinyMCE에서 내용이 변경될 때 호출됨 */
  const handleEditorChange = async (newContent) => {
   console.log("TinyMCE 입력 감지됨:", newContent);
@@ -52,7 +59,7 @@ const CustomEditor = ({ initialValue = "", onContentChange, uploadUrl }) => {
 
   const currentImageCount = imgUrls.length;
 
-  // ✅ 이미지 개수가 같아도, 이미지 URL이 변경되었는지 확인
+  //  이미지 개수가 같아도, 이미지 URL이 변경되었는지 확인
   const isSameImages =
     currentImageCount === prevImageCountRef.current &&
     JSON.stringify(imgUrls) === JSON.stringify(prevImageUrlsRef.current);
@@ -77,6 +84,7 @@ const CustomEditor = ({ initialValue = "", onContentChange, uploadUrl }) => {
 
   try {
     let isHarmful = false;
+    let harmfulUrls = [];
 
     // Vision API 검사 (JSON 형식)
     await Promise.all(
@@ -124,6 +132,7 @@ const CustomEditor = ({ initialValue = "", onContentChange, uploadUrl }) => {
         const VALID_LEVEL = ["POSSIBLE", "LIKELY", "VERY_LIKELY"];
         if (Object.values(visionResponse).some(value => VALID_LEVEL.includes(value))) {
           isHarmful = true;
+          harmfulUrls.push(url);
         }
         
       })
@@ -131,6 +140,24 @@ const CustomEditor = ({ initialValue = "", onContentChange, uploadUrl }) => {
 
     if (isHarmful) {
       alert("유해 이미지로 판별되어 업로드할 수 없습니다.");
+
+      // 유해 이미지 삭제
+      harmfulUrls.forEach((harmfulUrl) => {
+        if (harmfulUrl.startsWith("data:image")) {
+          // Base64 이미지일 경우 별도 삭제 처리
+          content = removeBase64Images(content);
+        } else {
+          // 일반 URL 이미지 삭제
+          const safeUrl = escapeRegExp(harmfulUrl);
+          content = content.replace(new RegExp(`<img[^>]+src=["']${safeUrl}["'][^>]*>`, "g"), "");
+        }
+      });
+
+      console.log("유해 이미지 삭제 후 content:", content);
+
+      if(editorRef.current){
+        editorRef.current.setContent(content);
+      }
       setLoading(false);
       isUploadingRef.current = false;
       return;
@@ -196,6 +223,7 @@ const CustomEditor = ({ initialValue = "", onContentChange, uploadUrl }) => {
       <Editor
         apiKey="trgnbu8snkmw5p1ktqkfz87cxleiphn5div5xeo0n1tnrhxm"
         value={initialValue}
+        onInit={(evt, editor) => (editorRef.current = editor)} 
         init={{
           height: 300,
           menubar: false,
