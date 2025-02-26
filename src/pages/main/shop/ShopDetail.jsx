@@ -6,6 +6,7 @@ import "../../../styles/shop.scss";
 import ShopDetailDescription from "./ShopDetailDescription";
 import ShopDetailReviews from "./ShopDetailReviews";
 import ShopDetailInquiries from "./ShopDetailInquiries";
+import CartButton from "./CartButton";
 
 const ShopDetail = () => {
   const { id } = useParams();
@@ -206,8 +207,10 @@ const ShopDetail = () => {
             </div>
           </div>
           <hr />
-
-          <Button className="w-100 fw-bold btn-hof" onClick={handlePay}>결제</Button>
+          <div className="d-flex">
+            <CartButton product={product} quantity={quantity} selectedOptions={selectedOptions} />
+            <Button className=" w-50 fw-bold btn-hof" onClick={handlePay}>결제</Button>
+          </div>
         </Col>
       </Row>
 

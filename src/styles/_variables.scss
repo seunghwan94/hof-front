@@ -58,6 +58,7 @@ body {
   @extend .btn-outline-primary; // ✅ Bootstrap의 btn-outline-primary 스타일 상속
   color: #35c5f0 !important;
   border-color: #35c5f0 !important;
+  background-color: white !important;
   
   &:hover {
     color: white !important;
