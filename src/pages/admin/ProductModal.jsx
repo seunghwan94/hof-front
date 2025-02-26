@@ -12,8 +12,12 @@ const categoryMap = {
 };
 
 const ProductModal = ({ show, handleClose, p = {}, handleChange, handleSaveChanges, handleDelete, handleOptionChange }) => {
-
-  p = p && { ...p, price: p.price ? p.price.toLocaleString() : 0 };
+  const [prevContent, setPrevContent] = useState("");
+  // 상품 데이터 상태 관리 (p의 변경 감지)
+  const [product, setProduct] = useState(p);
+  useEffect(() => {
+    setProduct(p);
+  }, [p]);
   
   // for(let k  in p){
   //   console.log(`${k}`,p[k]);
@@ -73,8 +77,8 @@ const handleDeleteOption = async (index, optionNo) => {
   if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
   try {
-    console.log(index);
-    console.log(optionNo);
+    // console.log(index);
+    // console.log(optionNo);
     const response = await req('delete',`main/prod/${optionNo}`);
     console.log(response)
 
@@ -99,107 +103,133 @@ const handleDeleteOption = async (index, optionNo) => {
   };
 
 
+  /** TinyMCE에서 받아온 content 업데이트 */
+  // const handleEditorChange = (newContent) => {
+  //   if (p.content !== newContent) {
+  //     handleChange({ target: { name: "content", value: newContent } });
+  //     setContentUpdated(true); // 상태 변경 감지
+  //   }
+  // };
+  const handleEditorChange = (newContent) => {
+    // if (newContent.trim() === prevContent.trim()) {
+    //   console.log("✅ 동일한 content, 변경 없음 → 리렌더링 방지");
+    //   return;
+    // }
+    // console.log("📥 변환된 content 받음:", newContent);
+    // setPrevContent(newContent);
+    // setProduct((prev) => ({ ...prev, content: newContent }));
+    // handleChange({ target: { name: "content", value: newContent } });
+    if (newContent === prevContent){
+      return;
+    }  //  기존과 동일하면 업데이트 안함
+    // setProduct((prev) => ({ ...prev, content: newContent }));
+        handleChange({ target: { name: "content", value: newContent } });
+    setPrevContent(newContent);
+  };
+  
 
- /**  TinyMCE에서 받아온 최종 content 반영 */
- const handleEditorChange = (newContent) => {
-  handleChange({ target: { name: "content", value: newContent } });
-};
+  /** Base64 → S3 URL 변환 후 content 업데이트 */
+  const handleFinalSave = async () => {
+    try {
+      let content = product.content;
+    //   // console.log("현재 content:", content);
 
-  /**  최종 저장 함수 */
-const handleFinalSave = async () => {
-  try {
-    let content = p.content; // 🔹 현재 content 가져오기
-    console.log("::::::content:"+p.content);
-    const imgRegex = /<img[^>]+src=["'](.*?)["']/g;
-    let match;
-    const imgUrls = [];
+    //   const imgRegex = /<img[^>]+src=["'](.*?)["']/g;
+    //   let match;
+    //   const imgUrls = [];
 
-    // Base64 이미지 URL 추출
-    while ((match = imgRegex.exec(content)) !== null) {
-      imgUrls.push(match[1]);
-    }
+    //   while ((match = imgRegex.exec(content)) !== null) {
+    //     imgUrls.push(match[1]);
+    //   }
 
+    //   if (imgUrls.length === 0) {
+    //     // console.log("변환할 이미지 없음");
+    //     return content;
+    //   }
 
+    //   // console.log("Base64 이미지 S3 업로드 시작...");
 
-    //  이미지 업로드 후 S3 URL 반환
-    const uploadedUrls = await Promise.all(
-      imgUrls.map(async (url) => {
-        if (!url.startsWith("data:image")) {
-          return url; //  기존 URL이면 업로드 안 함
-        }
+    //   //  Base64 → S3 URL 변환
+    //   const uploadedUrls = await Promise.all(
+    //     imgUrls.map(async (url) => {
+    //       if (!url.startsWith("data:image")) return url;
 
-        //  Base64 → Blob 변환
-        const blob = await fetch(url).then((res) => res.blob());
-        const formData = new FormData();
-        formData.append("file", blob, "image.jpg");
+    //       const blob = await fetch(url).then((res) => res.blob());
+    //       const formData = new FormData();
+    //       formData.append("file", blob, "image.jpg");
 
-        if (p.pno) {
-          formData.append("pno", p.pno);
-        }
+    //       if (product.pno) formData.append("pno", product.pno);
 
-        const response = await req("post", `file/upload/${p.pno}`, formData, {
-          "Content-Type": "multipart/form-data",
-        });
-        console.log(" S3 업로드 응답:", response);
+    //       const response = await req("post", `file/upload/${product.pno}`, formData, {
+    //         "Content-Type": "multipart/form-data",
+    //       });
 
+    //       // console.log("S3 업로드 응답:", response);
 
-        return response?.location || response?.data?.url || response[0]; //  API 응답 확인
-      })
-    );
+    //       return response?.location || response?.data?.url || response[0];
+    //     })
+    //   );
 
-    console.log(" S3 업로드 완료:", uploadedUrls);
-
-    //  기존 content에서 Base64 URL을 S3 URL로 변경
-    imgUrls.forEach((oldUrl, index) => {
-      content = content.replace(oldUrl, uploadedUrls[index]);
-      console.log(content);
-    });
-
-    //  최종적으로 <div> 태그 감싸서 저장
-    const updatedContent = `<div class='product-images'>${content}</div>`;
+    //   // console.log("S3 업로드 완료:", uploadedUrls);
 
 
-
-    setContentUpdated(true); //  상태 업데이트 완료 플래그 설정
-  //   // 부모 컴포넌트로 업데이트된 content 전달
-  //   handleChange({ target: { name: "content", value: updatedContent } });
-  //   setTimeout(() => setContentUpdated(true), 0);
-  // } catch (error) {
-  //   console.error("이미지 최종 업로드 오류:", error);
-  // }
-      // ** 상태 업데이트 중복 방지**
-      if (p.content !== updatedContent) {
-        handleChange({ target: { name: "content", value: updatedContent } });
+    //   imgUrls.forEach((oldUrl, index) => {
+    //     content = content.replace(oldUrl, uploadedUrls[index]);
+    //   });
+    try {
+      let content = product.content;
+      if (content.includes("hof-bucket.s3.ap-northeast-2.amazonaws.com")) {
+        console.log("이미 S3 URL 변환된 content, 재업로드 스킵");
+        return content;
       }
   
-      //  직접 `handleSaveChanges()` 호출하여 업데이트
-      await handleSaveChanges();
+      // Base64 → S3 업로드 로직 실행
+      const updatedContent = `<div class='product-images'>${content}</div>`;
+      console.log("최종 변환된 content:", updatedContent);
+      setProduct((prev) => ({ ...prev, content: updatedContent }));
+  
+      return updatedContent;
     } catch (error) {
-      console.error("이미지 최종 업로드 오류:", error);
+      console.error("이미지 변환 오류:", error);
+      return null;
     }
+      // const updatedContent = `<div class='product-images'>${content}</div>`;
+      // console.log("최종 변환된 content:", updatedContent);
+
+
+      // setProduct((prev) => ({ ...prev, content: updatedContent }));
+
+      // return updatedContent;
+    } catch (error) {
+      console.error("이미지 변환 오류:", error);
+      return null;
+    }
+  };
+
+  /** 최종 저장 버튼 클릭 */
+const handleSaveButtonClick = async () => {
+  console.log("저장 버튼 클릭됨, API 요청 실행!");
+
+  const updatedContent = await handleFinalSave();
+
+  if (updatedContent) {
+    console.log("최종 저장할 content:", updatedContent);
+
+    //  변환된 content를 포함한 새로운 product 객체 생성
+    const updatedProduct = { ...product, content: updatedContent };
+
+    //  부모 handleSaveChanges 호출 (DB 반영)
+    await handleSaveChanges(updatedProduct);
+
+    //  여기서 alert 제거 (handleSaveChanges 내부에서 이미 호출될 가능성 있음)
+    handleClose();
+  }
 };
 
-//  상태 업데이트 후 `handleSaveChanges` 실행
-useEffect(() => {
-  if (contentUpdated) {
-    console.log("상태 변경 후 API 요청 실행!");
-    handleSaveChanges();
-  }
-}, [contentUpdated]);
-
   
-  useEffect(() => {
-    if (!p || !Array.isArray(p.options)) return;
-
-    const totalStock = p.options.reduce((sum, option) => sum + (option.stock || 0), 0);
-
-    // 기존 값과 다를 때만 업데이트 (불필요한 setState 방지)
-    if (p.stock !== totalStock) {
-      handleChange({ target: { name: "stock", value: totalStock } });
-    }
-  }, [p?.options]);
-
   
+  
+
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -250,7 +280,7 @@ useEffect(() => {
             {/* TinyMCE 컴포넌트 적용 */}
             <Form.Group className="mt-4">
                 <Form.Label>상품 설명</Form.Label>
-                <CustomEditor initialValue={p.content || ""} onContentChange={handleEditorChange} pno={p.pno} />
+                <CustomEditor initialValue={p.content || ""} onContentChange={handleEditorChange}  uploadUrl={`file/upload/${p.pno}`} />
               </Form.Group>
 
 
@@ -338,7 +368,7 @@ useEffect(() => {
         <Button variant="danger" onClick={handleDelete}>
           삭제
         </Button>
-        <Button variant="primary" onClick={handleFinalSave}>
+        <Button variant="primary" onClick={handleSaveButtonClick}>
           저장
         </Button>
       </Modal.Footer>
