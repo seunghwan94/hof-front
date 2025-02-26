@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import "../../../styles/myinfo/myinfo.scss";
 
 function Myinfo() {
@@ -14,34 +14,33 @@ function Myinfo() {
     };
 
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
-    <>
+    <Container className=" mt-5 d-flex justify-content-center">
       {isMobile ? (
-        // 모바일 레이아웃 (Container 제거)
+        // 📌 모바일 레이아웃 (위쪽 Sidebar + 아래 Content)
         <div className="myinfo-mobile">
-          <Sidebar/>
-          <div className="main-content">
+          <Sidebar />
+          <div className="myinfo-content">
             <Outlet />
           </div>
         </div>
       ) : (
-        // 데스크탑 레이아웃 (Container 사용)
-        <Container>
+        // 📌 데스크탑 레이아웃 (좌측 Sidebar + 우측 Content)
+        <Container fluid className="myinfo-desktop">
           <Row className="myinfo-row">
-            <Col md={2} className="sidebar-col">
+            <Col md={3} className="sidebar-col">
               <Sidebar />
             </Col>
-            <Col md={10} className="content-col">
+            <Col md={9} className="content-col">
               <Outlet />
             </Col>
           </Row>
         </Container>
       )}
-    </>
+    </Container>
   );
 }
 

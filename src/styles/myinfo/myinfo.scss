@@ -1,46 +1,53 @@
-// 공통 스타일
-.myinfo-container,
-.myinfo-mobile {
+// 🔹 전체 컨테이너 스타일 (카드 느낌 적용)
+.myinfo-card {
+  width: 100%;
+  // border-radius: 12px;
+  // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background: #fff;
   padding: 20px;
 }
 
-// 데스크탑 레이아웃
-.myinfo-container {
+// 🔹 데스크탑 레이아웃
+.myinfo-desktop {
   .myinfo-row {
     display: flex;
   }
 
   .sidebar-col {
-    border: 2px solid red;
+    width: 250px;
+    background: #fff;
+    border-right: 1px solid #ddd;
     padding: 20px;
   }
 
   .content-col {
-    border: 2px solid red;
-    padding: 20px;
+    flex-grow: 1;
+    background: #fff;
+    padding: 30px;
   }
 }
 
-// 모바일 레이아웃
+// 🔹 모바일 레이아웃 (768px 이하)
 .myinfo-mobile {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 
   .sidebar {
-    border: 2px solid red;
-    padding: 20px;
-    margin-bottom: 20px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 15px;
   }
 
-  .main-content {
-    border: 2px solid red;
+  .myinfo-content {
+    background: #fff;
     padding: 20px;
   }
 }
 
-// 반응형 추가 (768px 이하)
+// 🔹 반응형 디자인 (모바일 최적화)
 @media (max-width: 768px) {
-  .myinfo-container {
+  .myinfo-desktop {
     display: none; // 데스크탑 레이아웃 숨김
   }
 
