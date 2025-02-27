@@ -3,6 +3,8 @@ import { Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import useAxios from "../../../hooks/useAxios";
 import Logo from "../../../components/layout/Logo";
+import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 function LoginForm() {
   const [id, setId] = useState("");
@@ -30,12 +32,25 @@ function LoginForm() {
     }
   }, [data, navigate]);
 
+
+    const handleGoogleSuccess = (response) => {
+      console.log("구글 로그인 성공", response);
+      const token = response.credential; // Google로부터 받은 JWT token
+      localStorage.setItem("jwt", token);
+      // 이후 사용자 정보 저장 및 리디렉션 처리
+    };
+  
+    const handleGoogleFailure = (error) => {
+      console.error("구글 로그인 실패", error);
+    };
+
   const socialLogins = [
-    { platform: "구글", icon: "google-icon.svg" },
+    { platform: "구글", icon: "google-icon.svg", loginType: "google" },
     { platform: "깃허브", icon: "github-icon.svg" },
     { platform: "카카오", icon: "kakao-icon.svg" },
     { platform: "네이버", icon: "naver_icon.svg" },
   ];
+
 
   return (
     <form onSubmit={handleSubmit}>
@@ -121,6 +136,10 @@ function LoginForm() {
           <hr />
 
           <div className="mt-4">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleFailure}
+          />
             {socialLogins.map((login, index) => (
               <button key={index} className="btn btn-outline-hof w-100 mt-2">
                 <img
@@ -130,7 +149,7 @@ function LoginForm() {
                 />
                 {login.platform}로 로그인
               </button>
-            ))}
+            ))} 
           </div>
         </div>
       </div>

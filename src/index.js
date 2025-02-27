@@ -7,10 +7,13 @@ import './styles/_variables.scss';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "./styles/custom_alert.scss";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <GoogleOAuthProvider clientId="49646177178-t0odlifogo8pol3bp6vgl27b9qqobcm7.apps.googleusercontent.com">
     <App />
+    </GoogleOAuthProvider>
   </React.StrictMode>
 );
 
