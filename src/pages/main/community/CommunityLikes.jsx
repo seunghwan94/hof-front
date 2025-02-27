@@ -18,10 +18,10 @@ const CommunityLikes = ({ targetNo, targetType, userMno }) => {
         const params = new URLSearchParams(newParams).toString();
 
         const countResponse = await req("GET", `common/likes/count?${params}`,);
+        
+        // ✅ 사용자가 좋아요 했는지 확인
+        const userLiked = await req("GET", `common/likes/user-liked?mno=${userMno}&targetNo=${targetNo}&targetType=${targetType}`);
         setLikeCount(countResponse);
-
-        // 사용자 좋아요 여부 확인 (API 필요)
-        const userLiked = false; // <- API 결과에 따라 변경 필요
         setLiked(userLiked);
       } catch (error) {
         console.error("좋아요 상태 조회 실패:", error);

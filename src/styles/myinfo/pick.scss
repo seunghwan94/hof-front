@@ -1,0 +1,108 @@
+.pick-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+
+  h2 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .pick-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px;
+  }
+
+  .pick-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fff;
+    transition: 0.2s ease-in-out;
+    
+    &:hover {
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .pick-thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 5px;
+    background: #f9f9f9;
+  }
+
+  .pick-details {
+    flex-grow: 1;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+    
+    .product-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap; // ✅ 한 줄 유지
+      overflow: hidden; // ✅ 초과된 텍스트 숨김
+      text-overflow: ellipsis; // ✅ 너무 길면 "..."
+      max-width: 200px; // ✅ 제목 최대 너비 설정
+
+      &:hover {
+        color: #007bff;
+        text-decoration: underline;
+      }
+    }
+
+    .base-price {
+      font-size: 14px;
+      color: #ff4d4f;
+      margin-top: 5px;
+    }
+  }
+
+  .delete-btn {
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    color: #ff4d4f;
+    transition: 0.2s ease-in-out;
+    
+    &:hover {
+      color: #e63946;
+    }
+  }
+
+  // ✅ 모바일 반응형 스타일
+  @media (max-width: 600px) {
+    .pick-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .pick-thumbnail {
+      width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .pick-details {
+      padding-left: 0;
+      width: 100%;
+
+      .product-title {
+        max-width: 100%; // ✅ 모바일에서는 너비 조정
+      }
+    }
+  }
+}

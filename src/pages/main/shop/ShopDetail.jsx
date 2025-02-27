@@ -7,6 +7,7 @@ import ShopDetailDescription from "./ShopDetailDescription";
 import ShopDetailReviews from "./ShopDetailReviews";
 import ShopDetailInquiries from "./ShopDetailInquiries";
 import CartButton from "./CartButton";
+import CommunityLikes from "../community/CommunityLikes";
 
 const ShopDetail = () => {
   const { id } = useParams();
@@ -16,10 +17,9 @@ const ShopDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [buyer, setBuyer] = useState(null);
-
   const navigate = useNavigate();
-
-  // ✅ 로컬 스토리지에서 회원 정보 가져오기 & 기본 주소 조회
+  
+  const userId = JSON.parse(localStorage.getItem("member"))?.mno;
   useEffect(() => {
     const storedMember = localStorage.getItem("member");
     if (storedMember) {
@@ -153,7 +153,9 @@ const ShopDetail = () => {
         <Col md={6} sm={12} className="d-flex flex-column p-3 shop-info">
           <h3 className="fw-bold">{product.title}</h3>
           <p className="text-muted product-content">{product.content.replace(/<\/?[^>]+(>|$)/g, "")}</p>
-
+          <div className="text-end">
+            <CommunityLikes userMno={userId} targetNo={product.pno} targetType={"FAV"}/>
+          </div>
           <hr />
           <Row className="mb-3">
             <Col xs={6}>
