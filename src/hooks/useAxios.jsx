@@ -32,7 +32,8 @@ const useAxios = (baseUrl = BASE_URL) => {
               'Content-Type':'application/json',
               ...(token && { Authorization: `Bearer ${token}` }),
               ...addHeaders
-            }
+            },
+            withCredentials: true,
           });
           setData(resp.data);
           return resp.data;

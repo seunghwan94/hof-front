@@ -1,21 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import useAxios from "../../../hooks/useAxios";
 import { Line } from "react-chartjs-2";
 
 const ActivityChart = () => {
-  const data = {
-    labels: ["1월", "2월", "3월", "4월", "5월", "6월"],
-    datasets: [
-      {
-        label: "방문자 횟수",
-        data: [300, 450, 600, 800, 650, 900],
-        borderColor: "rgba(255,99,132,1)",
-        backgroundColor: "rgba(255,99,132,0.2)",
-        fill: true,
-      },
-    ],
-  };
+  const { req } = useAxios();
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [],
+  });
 
-  return <Line data={data} />;
+  useEffect(() => {
+    req("GET", "admin/visit/stats")
+      .then((response) => {
+        if (response) {
+          const labels = Object.keys(response); // 날짜 리스트
+          const membersPC = [];
+          const membersMobile = [];
+          const guestsPC = [];
+          const guestsMobile = [];
+          const formattedLabels = labels.map(date => {
+            const parsedDate = new Date(date);
+            return parsedDate.toLocaleDateString("ko-KR", {
+
+              month: "long",
+              day: "numeric",
+              weekday: "short" // "월" (월요일) 추가
+            }).replace(/\.$/, ""); // 일부 브라우저에서 마지막 마침표 제거
+          });
+          
+          labels.forEach(date => {
+            const data = response[date];
+            membersPC.push(data?.회원?.PC || 0);
+            membersMobile.push(data?.회원?.모바일 || 0);
+            guestsPC.push(data?.비회원?.PC || 0);
+            guestsMobile.push(data?.비회원?.모바일 || 0);
+          });
+
+          setChartData({
+            labels: formattedLabels,
+            datasets: [
+              { label: "회원 (PC)", data: membersPC, borderColor: "blue", backgroundColor: "lightblue", fill: true },
+              { label: "회원 (모바일)", data: membersMobile, borderColor: "orange", backgroundColor: "lightorange", fill: true },
+              { label: "비회원 (PC)", data: guestsPC, borderColor: "green", backgroundColor: "lightgreen", fill: true },
+              { label: "비회원 (모바일)", data: guestsMobile, borderColor: "red", backgroundColor: "pink", fill: true }
+            ],
+          });
+        }
+      })
+      .catch((error) => console.error("방문자 데이터 불러오기 실패:", error));
+  }, []);
+
+  return <Line data={chartData} />;
 };
 
 export default ActivityChart;
