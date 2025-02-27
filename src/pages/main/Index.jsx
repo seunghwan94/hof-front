@@ -17,6 +17,7 @@ import IntegratedAccount from "./myinfo/content/IntegratedAccount";
 import Cart from "./myinfo/content/Cart";
 import Pick from "./myinfo/content/Pick";
 import InteriorDetail from "./interior/InteriorDetail";
+import VisitLogger from "../admin/VisitLogger";
 
 function Index() {
   const location = useLocation(); // 현재 경로 가져오기
@@ -58,6 +59,7 @@ function Index() {
   
   return (
     <>
+      <VisitLogger/>
       {!!isValidRoute && <Header fixed={isFullPageView}/>}
       {routes}
       {!!isValidRoute &&    

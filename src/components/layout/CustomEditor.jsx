@@ -212,7 +212,7 @@ const removeBase64Images = (content) => {
   } finally {
     setTimeout(() => {
       isUploadingRef.current = false;
-    }, 1000);
+    }, 500);
   }
 };
 

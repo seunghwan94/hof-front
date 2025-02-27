@@ -84,6 +84,7 @@ const MemberList = () => {
   if (loading) {
     return <div><h1>로딩중</h1></div>;
   }
+  console.log()
   return (
     <Container>
       <h3 className="mb-3">회원 관리</h3>
