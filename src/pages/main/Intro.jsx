@@ -163,13 +163,20 @@ const Intro = () => {
 
           {/* 섹션 4: 앱 다운로드 */}
           <div className="section app-download-section">
-            <h2 className="app-download-title">앱 다운로드</h2>
+            
+            <h2 className="app-download-title"> 
+              <a href="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/app-release.apk" className="text-black" style={{textDecorationLine:"blink"}}>
+                앱 다운로드
+              </a>
+            </h2>
+            <a href="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/app-release.apk">
             <img
               src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo2.png"
               alt="앱 다운로드 아이콘"
               className="app-download-icon"
               loading="lazy"
             />
+            </a>
           </div>
         </div>
 
@@ -218,11 +225,13 @@ const Intro = () => {
       </a>
 
       {/* App Logo */}
-      <img 
-        src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo2.png" 
-        alt="Hof 아이콘" 
-        className="footer-icon"
-      />
+      <a href="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/app-release.apk">
+        <img 
+          src="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/AppLogo2.png" 
+          alt="Hof 아이콘" 
+          className="footer-icon"
+        />
+      </a>
     </div>
 
   </div>
