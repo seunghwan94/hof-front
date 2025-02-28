@@ -42,7 +42,7 @@ const ShopDetail = () => {
         }
 
         setBuyer({
-          mno: memberData.mno,
+          mno,
           name: memberData.name,
           email: memberData.email,
           address: defaultAddress ? `${defaultAddress.roadAddr} ${defaultAddress.detailAddr}` : "주소 없음",

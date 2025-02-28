@@ -84,7 +84,6 @@ useEffect(() => {
       console.error("삭제 실패:", error);
     }
   };
-  console.log(inquiries);
   return (
     <div>
       <h4 className="fw-bold">상품 문의</h4>

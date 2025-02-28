@@ -29,13 +29,13 @@ const Pay = () => {
   useEffect(() => {
     if (!orderData?.items?.length) {
       alert("❌ 주문 정보가 없습니다.");
-      navigate("/payment-failed");
+      navigate("/PayFailed");
       return;
     }
 
     if (!orderData.buyer?.mno) {
       alert("❌ 회원 정보가 올바르지 않습니다.");
-      navigate("/payment-failed");
+      navigate("/PayFailed");
       return;
     }
 
@@ -46,7 +46,7 @@ const Pay = () => {
       // console.log("orderData:", orderData);
 
       try {
-        // 1️⃣ 주문 생성 요청
+        // 주문 생성 요청
         const orderResponse = await req("POST", "main/order/create", {
           mno: orderData.buyer.mno,
           items: orderData.items.map(item => ({
@@ -54,13 +54,13 @@ const Pay = () => {
             count: item.count,
             basePrice: item.basePrice,
             subtotalPrice: item.subtotalPrice,
-            optionNo:  item.optionNo // ✅ 옵션 번호 리스트 전달
+            optionNo:  item.optionNo // 옵션 번호 리스트 전달
           }))
         });
 
         if (!orderResponse || !orderResponse.no) {
           alert(`❌ 주문 생성 실패\n서버 응답: ${JSON.stringify(orderResponse)}`);
-          navigate("/payment-failed");
+          navigate("/PayFailed");
           return;
         }
 
@@ -101,7 +101,7 @@ const Pay = () => {
         
               if (!payResponse || !payResponse.no) {
                 alert("❌ 결제 정보 저장 실패");
-                navigate("/payment-failed");
+                navigate("/PayFailed");
                 return;
               }
         
@@ -120,24 +120,24 @@ const Pay = () => {
               // 5️⃣ 결제 성공 검증
               if (!paymentResponse || paymentResponse.status !== "완료") {
                 alert("❌ 결제 완료 처리 실패. 고객센터에 문의하세요.");
-                navigate("/payment-failed");
+                navigate("/PayFailed");
                 return;
               }
         
               // 6️⃣ 최종 결제 성공 처리
-              navigate("/payment-success");
+              navigate("/paysuccess");
             } catch (error) {
               alert(`❌ 결제 확인 요청 중 오류 발생: ${error.message}`);
-              navigate("/payment-failed");
+              navigate("/PayFailed");
             }
           } else {
             alert(`❌ 결제 실패: ${response.error_msg}`);
-            navigate("/payment-failed");
+            navigate("/PayFailed");
           }
         });
       } catch (error) {
         alert(`❌ 주문 생성 중 오류 발생: ${error.message}`);
-        navigate("/payment-failed");
+        navigate("/PayFailed");
       }
     };
 

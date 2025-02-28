@@ -21,7 +21,7 @@ const PaymentInfo = () => {
 
 
   // ✅ 선택된 결제 방법 상태 관리
-  const [paymentMethod, setPaymentMethod] = useState("신용카드");
+  const [paymentMethod, setPaymentMethod] = useState("카드");
   console.log(orderData);
   if (!orderData) {
     return <h2 className="text-center mt-5">결제 정보를 불러올 수 없습니다.</h2>;
@@ -122,7 +122,7 @@ const PaymentInfo = () => {
             label="신용카드"
             name="paymentMethod"
             value="카드"
-            checked={paymentMethod === "신용카드"}
+            checked={paymentMethod === "카드"}
             onChange={(e) => setPaymentMethod(e.target.value)}
           />
           {/* <Form.Check

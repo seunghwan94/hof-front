@@ -19,6 +19,8 @@ import Cart from "./myinfo/content/Cart";
 import Pick from "./myinfo/content/Pick";
 import InteriorDetail from "./interior/InteriorDetail";
 import VisitLogger from "../admin/VisitLogger";
+import PayFailed from "./pay/PayFailed";
+import PaySuccess from "./pay/PaySuccess";
 
 function Index() {
   const location = useLocation(); // 현재 경로 가져오기
@@ -40,6 +42,8 @@ function Index() {
     { path: "/Interior/:companyId", element: <InteriorDetail /> },
     { path: "/Pay", element: <Pay /> },
     { path: "/PayInfo", element: <PayInfo /> },
+    { path: "/PayFailed", element: <PayFailed /> },
+    { path: "/PaySuccess", element: <PaySuccess /> },
     { path: "/myinfo",
       element: <Myinfo />,
       children: [
