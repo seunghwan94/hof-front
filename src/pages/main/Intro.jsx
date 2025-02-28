@@ -12,6 +12,9 @@ const Intro = () => {
   const [isScrolling, setIsScrolling] = useState(false);
 
   const sections = [0, 1, 2, 3]; // 총 4개 섹션
+  // 모바일 터치 이벤트를 위한 상태
+  const touchStartY = useRef(0);
+  const touchEndY = useRef(0);
 
   useEffect(() => {
     videoRef.current?.play();
@@ -33,7 +36,7 @@ const Intro = () => {
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     return () => window.removeEventListener("wheel", handleWheel);
-  }, [isScrolling]);
+  }, [isScrolling, sections.length]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -41,9 +44,41 @@ const Intro = () => {
     }
   }, [currentSection]);
 
+
+  /** 모바일 터치 이벤트 핸들러 */
+  const handleTouchStart = (e) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = () => {
+    if (isScrolling) return;
+    setIsScrolling(true);
+
+    const touchDiff = touchStartY.current - touchEndY.current;
+
+    if (touchDiff > 50) {
+      // 아래로 스크롤
+      setCurrentSection((prev) => Math.min(prev + 1, sections.length - 1));
+    } else if (touchDiff < -50) {
+      // 위로 스크롤
+      setCurrentSection((prev) => Math.max(prev - 1, 0));
+    }
+
+    setTimeout(() => setIsScrolling(false), 800);
+  };
+
   return (
     <PageLoader>
-      <div className="intro">
+      <div
+        className="intro"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {/* 비디오 백그라운드 */}
         <div className="video-background">
           <video

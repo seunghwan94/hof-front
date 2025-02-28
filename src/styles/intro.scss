@@ -112,16 +112,32 @@
 
   /* ✅ 반응형 설정 */
   @media (max-width: 768px) {
-    .text-overlay {
-      font-size: 2.5rem;
+    .intro {
+      position: relative; /* 모바일에서는 fixed 해제 */
+      overflow: auto; /* 스크롤 가능하도록 변경 */
+      height: auto; /* 높이를 자동으로 조절 */
     }
-
+  
+    .video-background {
+      position: absolute; /* 모바일에서는 fixed 대신 absolute */
+      height: 100%; /* 높이를 자동 조절 */
+    }
+  
+    .intro-container {
+      height: auto; /* 모바일에서는 auto */
+    }
+  
+    .text-overlay {
+      font-size: 2.5rem; /* 모바일에서 글씨 크기 조정 */
+    }
+  
     .shopping-title,
     .community-title,
     .app-download-title {
       font-size: 3rem;
     }
   }
+  
 }
 
 
