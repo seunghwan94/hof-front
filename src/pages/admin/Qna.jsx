@@ -11,7 +11,7 @@ const Qna = () => {
   const [showModal, setShowModal] = useState(false);
 
   const fetchData = async () => {
-    const res = await req("get", "admin/fwl/qna");
+    const res = await req("get", "common/qna");
     console.log(res);
     if (res) {
       const filteredQna = res.filter(qna => !qna.parentNo);
@@ -53,15 +53,15 @@ const Qna = () => {
       }
     
       const replyData = {
-        memberId: "hof",  // ✅ 관리자 ID (임시, 서버에서 처리 가능)
-        content: selectedQna.replyContent,  // ✅ 답변 내용
-        parentNo: selectedQna.no,  // ✅ 부모 문의 번호 추가
+        memberId: "hof",  //  관리자 ID (임시, 서버에서 처리 가능)
+        content: selectedQna.replyContent,  // 답변 내용
+        parentNo: selectedQna.no,  //  부모 문의 번호 추가
         pno: selectedQna.pno,
-        status: "처리후"  // ✅ 상태 변경
+        status: "처리후"  //  상태 변경
       };
     
       try {
-        const response = await req("post", "admin/fwl/qna", replyData);
+        const response = await req("post", "common/qna", replyData);
         
         if (response) {
           alert("답변이 등록되었습니다.");
@@ -79,7 +79,7 @@ const Qna = () => {
     
         handleCloseModal();
 
-          req("get", "admin/fwl/qna");
+          req("get", "common/qna");
 
       } catch (error) {
         console.error("등록 오류:", error);
@@ -105,7 +105,7 @@ const Qna = () => {
       const handleSaveChanges = async () => {
         if (!selectedQna) return;
     
-        await req("put", `admin/fwl/qna/${selectedQna.no}`, selectedQna);
+        await req("put", `common/qna/${selectedQna.no}`, selectedQna);
         alert("상품 정보가 수정되었습니다.");
         handleCloseModal();
         req("get", "admin/fwl"); // 수정 후 목록 새로고침
@@ -115,7 +115,7 @@ const Qna = () => {
           if (!selectedQna) return;
       
           if (window.confirm("정말 삭제하시겠습니까?")) {
-            await req("delete", `admin/fwl/qna/${selectedQna.no}`);
+            await req("delete", `common/qna/${selectedQna.no}`);
             alert("문의글 이 삭제되었습니다.");
             handleCloseModal();
             await fetchData(); // ✅ 삭제 후 목록 다시 불러오기
