@@ -24,22 +24,48 @@ const ShopDetailInquiries = ({ pno }) => {
     fetchInquiries();
   }, [pno, req]);
 
-  // ✅ 문의 등록 / 대댓글 작성
-  const handleSubmitInquiry = async () => {
-    if (!inquiryText.trim()) return;
-    const newInquiry = { pno, content: inquiryText, memberId: userId, parentNo: replyTarget?.no || null };
-
-    try {
-      const data = await req("POST", "common/qna", newInquiry);
-      if (data) {
-        setInquiries((prev) => [...prev, data]); // 새 문의 추가
-        setInquiryText("");
-        setReplyTarget(null); // 대댓글 작성 후 초기화
-      }
-    } catch (error) {
-      console.error("문의 등록 실패:", error);
-    }
+ // ✅ 문의 등록 / 대댓글 작성 후 최신 데이터로 갱신
+const handleSubmitInquiry = async () => {
+  if (!inquiryText.trim()) return;
+  
+  const newInquiry = { 
+    pno, 
+    content: inquiryText, 
+    memberId: userId, 
+    parentNo: replyTarget?.no || null 
   };
+
+  try {
+    const data = await req("POST", "common/qna", newInquiry);
+    if (data) {
+      setInquiryText("");
+      setReplyTarget(null); // 대댓글 작성 후 초기화
+
+      // ✅ 문의 등록 후 전체 리스트 다시 불러오기 (재렌더링)
+      fetchInquiries();
+    }
+  } catch (error) {
+    console.error("문의 등록 실패:", error);
+  }
+};
+
+// ✅ 문의 목록을 다시 불러오는 함수 (재사용 가능)
+const fetchInquiries = async () => {
+  try {
+    const data = await req("GET", `common/qna/qna/${pno}`);
+    if (data) {
+      setInquiries(data);
+    }
+  } catch (error) {
+    console.error("문의 목록 불러오기 실패:", error);
+  }
+};
+
+// ✅ 문의 목록을 처음 불러올 때 실행
+useEffect(() => {
+  fetchInquiries();
+}, [pno, req]);
+
 
   // ✅ 문의 삭제 (본인만 가능)
   const handleDeleteInquiry = async (qno, writerId) => {
@@ -58,7 +84,7 @@ const ShopDetailInquiries = ({ pno }) => {
       console.error("삭제 실패:", error);
     }
   };
-
+  console.log(inquiries);
   return (
     <div>
       <h4 className="fw-bold">상품 문의</h4>
@@ -68,44 +94,67 @@ const ShopDetailInquiries = ({ pno }) => {
 
       {/* ✅ 문의 리스트 */}
       {inquiries.length > 0 ? (
-        inquiries.map((inquiry) => (
-          <div
-            key={inquiry.no}
-            className={`border-bottom py-3`}
-            style={{
-              paddingLeft: inquiry.parentNo ? `20px` : "0",
-              backgroundColor: inquiry.parentNo ? "#f8f9fa" : "transparent",
-              borderLeft: inquiry.parentNo ? "3px solid #ddd" : "none",
-              borderRadius: "5px",
-              marginBottom: "8px",
-            }}
-          >
-            <div className="d-flex justify-content-between align-items-center">
-              <strong>{inquiry.memberId}</strong>
-              <small className={`ms-3 badge ${inquiry.status === "처리후" ? "bg-success" : "bg-warning"}`}>
-                {inquiry.status}
-              </small>
-            </div>
-            
+  inquiries
+    .filter(inquiry => inquiry.parentNo === null) // ✅ 부모 댓글만 먼저 필터링
+    .map((parentInquiry) => (
+      <div key={parentInquiry.no}>
+        {/* ✅ 부모 댓글 */}
+        <div
+          className="border-bottom py-3"
+          style={{
+            backgroundColor: "transparent",
+            borderRadius: "5px",
+            marginBottom: "8px",
+          }}
+        >
+          <div className="d-flex justify-content-between align-items-center">
+            <strong>{parentInquiry.memberId}</strong>
+            <small className={`ms-3 badge ${parentInquiry.status === "처리후" ? "bg-success" : "bg-warning"}`}>
+              {parentInquiry.status}
+            </small>
+          </div>
 
-            {/* ✅ 답변 버튼 (대댓글 작성) */}
-            <div className="d-flex justify-content-between">
-              <p>{inquiry.content}</p>
-              {userId === inquiry.memberId && (
-                <Button
-                  className="btn btn-outline-hof"
-                  size="sm"
-                  onClick={() => handleDeleteInquiry(inquiry.no, inquiry.memberId)}
-                >
-                  삭제
-                </Button>
-              )}
+          <p>{parentInquiry.content}</p>
+          {userId === parentInquiry.memberId && (
+            <div className="text-end">
+              <Button
+                className="btn btn-outline-hof"
+                size="sm"
+                onClick={() => handleDeleteInquiry(parentInquiry.no, parentInquiry.memberId)}
+              >
+                삭제
+              </Button>
             </div>
+          )}
+        </div>
+
+        {/* 해당 부모 댓글의 대댓글들 */}
+        {inquiries
+              .filter(childInquiry => childInquiry.parentNo === parentInquiry.no) // 부모 댓글과 연결된 대댓글만 표시
+              .map((childInquiry) => (
+                <div
+                  key={childInquiry.no}
+                  className="border-bottom py-3 ms-4"
+                  style={{
+                    paddingLeft: "20px",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "3px solid #ddd",
+                    borderRadius: "5px",
+                    marginBottom: "8px",
+                  }}
+                >
+                  <div className="d-flex justify-content-between align-items-center">
+                    <strong>{childInquiry.memberId}</strong>
+                  </div>
+                  <p>{childInquiry.content}</p>
+                </div>
+              ))}
           </div>
         ))
-      ) : (
-        <p>등록된 문의가 없습니다.</p>
-      )}
+    ) : (
+      <p>등록된 문의가 없습니다.</p>
+    )}
+
 
       {/* ✅ 문의 작성 폼 */}
       {replyTarget && (
@@ -124,9 +173,11 @@ const ShopDetailInquiries = ({ pno }) => {
         value={inquiryText}
         onChange={(e) => setInquiryText(e.target.value)}
       />
-      <Button className="mt-2 btn-hof" onClick={handleSubmitInquiry}>
-        {replyTarget ? "답변 등록" : "문의 등록"}
-      </Button>
+      <div className="text-end">
+        <Button className="mt-2 btn-hof" onClick={handleSubmitInquiry}>
+          {replyTarget ? "답변 등록" : "문의 등록"}
+        </Button>
+      </div>
     </div>
   );
 };

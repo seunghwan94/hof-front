@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Spinner, Modal, Badge } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as solidStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
 import useAxios from "../../../hooks/useAxios";
+import "../../../styles/shopDetailReviews.scss";
 
 const ShopDetailReviews = ({ pno }) => {
   const { req, loading, error } = useAxios();
@@ -12,7 +16,8 @@ const ShopDetailReviews = ({ pno }) => {
   const [editedStar, setEditedStar] = useState("five");
   const [showModal, setShowModal] = useState(false);
   const [averageStar, setAverageStar] = useState(0);
-
+  const mno = JSON.parse(localStorage.getItem("member"))?.mno;
+  
   // 리뷰 불러오기
   useEffect(() => {
     const fetchReviews = async () => {
@@ -60,17 +65,20 @@ const ShopDetailReviews = ({ pno }) => {
 
   // 숫자를 별표로 변환
   const renderStars = (starCount) => {
-    const filledStars = "★".repeat(starCount);
-    const emptyStars = "☆".repeat(5 - starCount);
-    return filledStars + emptyStars;
+    const filledStars = Array.from({ length: starCount }, (_, i) => (
+      <FontAwesomeIcon key={`filled-${i}`} icon={solidStar} className="star-icon-shop" />
+    ));
+    const emptyStars = Array.from({ length: 5 - starCount }, (_, i) => (
+      <FontAwesomeIcon key={`empty-${i}`} icon={regularStar} className="star-icon-shop" />
+    ));
+    return [...filledStars, ...emptyStars];
   };
 
   // 리뷰 등록
   const handleSubmitReview = async () => {
     if (!reviewText.trim()) return;
 
-    const newReview = { mno: 24, pno, content: reviewText, star: reviewStar };
-    console.log("리뷰 등록 요청:", newReview);
+    const newReview = { mno, pno, content: reviewText, star: reviewStar };
 
     try {
       // 서버에서 저장된 리뷰 객체를 응답받음
@@ -88,6 +96,8 @@ const ShopDetailReviews = ({ pno }) => {
         setReviewText("");
         setReviewStar("FOUR");
         alert("리뷰가 성공적으로 등록되었습니다!");
+      }else{
+        alert("구매한 사용자만 리뷰 가능합니다.");
       }
     } catch (err) {
       console.error("리뷰 등록 에러:", err);
@@ -162,7 +172,6 @@ const ShopDetailReviews = ({ pno }) => {
       setEditedText("");
     }
   };
-
   return (
     <div>
       <h4 className="fw-bold">고객 리뷰</h4>
@@ -170,29 +179,26 @@ const ShopDetailReviews = ({ pno }) => {
       {/* 평균 별점 표시 */}
       <div className="mb-3">
         <h5>
-          평균 별점: {averageStar} / 5.0{" "}
-          <Badge bg="warning" text="dark">
-            {renderStars(Math.round(averageStar))}
-          </Badge>
+          평균 별점 : {averageStar} / 5.0{" "}{renderStars(Math.round(averageStar))}
         </h5>
       </div>
 
       {loading && <Spinner animation="border" />}
-      {error && <p className="text-danger">리뷰를 불러오는 중 오류 발생</p>}
+      {/* {error && <p className="text-danger">리뷰를 불러오는 중 오류 발생</p>} */}
 
       {/* 리뷰 리스트 */}
       {reviews.length > 0 ? (
         reviews.map((review) => (
           <div key={review.reviewId} className="border-bottom py-3 position-relative">
             <div className="d-flex justify-content-between">
-              <strong>{review.member?.name || "익명 사용자"}</strong>
+              <strong>{review.memberName || "익명 사용자"}</strong>
               <span>{renderStars(starRatingToNumber(review.star))}</span>
             </div>
             <p>{review.content}</p>
-
-            <div>
+            {review.mno === mno && (
+            <div className="text-end">
               <Button
-                variant="outline-primary"
+                className="btn-outline-hof"
                 size="sm"
                 onClick={() => handleEditReview(review)}
               >
@@ -206,6 +212,7 @@ const ShopDetailReviews = ({ pno }) => {
                 삭제
               </Button>
             </div>
+            )}
           </div>
         ))
       ) : (
@@ -213,16 +220,8 @@ const ShopDetailReviews = ({ pno }) => {
       )}
 
       {/* 리뷰 작성 폼 */}
-      <Form.Control
-        as="textarea"
-        rows={3}
-        placeholder="리뷰를 작성하세요"
-        className="mt-3"
-        value={reviewText}
-        onChange={(e) => setReviewText(e.target.value)}
-      />
+      <h4 className="mt-4 mb-3">리뷰작성</h4>
       <Form.Select
-        className="mt-2"
         value={reviewStar}
         onChange={(e) => setReviewStar(e.target.value)}
       >
@@ -232,10 +231,20 @@ const ShopDetailReviews = ({ pno }) => {
         <option value="FOUR">★★★★☆ (4)</option>
         <option value="FIVE">★★★★★ (5)</option>
       </Form.Select>
-      <Button className="mt-2 btn-hof" onClick={handleSubmitReview}>
-        리뷰 등록
-      </Button>
-
+      <Form.Control
+        as="textarea"
+        rows={3}
+        placeholder="리뷰를 작성하세요"
+        className="mt-2"
+        value={reviewText}
+        onChange={(e) => setReviewText(e.target.value)}
+      />
+      
+      <div className="text-end">
+        <Button className="mt-2 btn-hof" onClick={handleSubmitReview}>
+          리뷰 등록
+        </Button>
+      </div>
       {/* 리뷰 수정 모달 */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
