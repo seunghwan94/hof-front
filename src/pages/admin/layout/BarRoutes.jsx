@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CategoryBar from '../CategoryBar';
-import { useLocation, useRoutes } from 'react-router-dom';
+import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 import Home from "../Home";
 import Member from "../Member";
 import Prod from "../Prod";
@@ -33,14 +33,21 @@ const BarRoutes = () => {
   const isNotFound = !isValidRoute; // 유효한 경로가 아니면 404
   const routes = useRoutes(routesConfig);
   // 현재 경로가 routesConfig에 포함되는지 확인
-
+  const navigate = useNavigate();
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
     const closeSidebar = () => {
       setSidebarOpen(false);
     };
-  
+
+useEffect(() => {
+  const member = localStorage.getItem("member");
+  if (!member) {
+    alert("로그인 후 이용해주세요.");
+    navigate("/login", { replace: true }); 
+  }
+}, [navigate]);
   return (
         <div className="d-flex" style={{ height: "100vh" }}>
          {/*햄버거 전용*/}

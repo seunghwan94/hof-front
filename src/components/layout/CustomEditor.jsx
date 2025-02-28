@@ -130,10 +130,16 @@ const removeBase64Images = (content) => {
         // Spoof == 사행성
         // visionResponse
         const VALID_LEVEL = ["POSSIBLE", "LIKELY", "VERY_LIKELY"];
-        if (Object.values(visionResponse).some(value => VALID_LEVEL.includes(value))) {
+
+        if (
+          visionResponse.racy === "VERY_LIKELY" || 
+          Object.entries(visionResponse).some(([key, value]) => key !== "racy" && VALID_LEVEL.includes(value))
+        ) {
           isHarmful = true;
           harmfulUrls.push(url);
         }
+
+
         
       })
     );
@@ -143,6 +149,7 @@ const removeBase64Images = (content) => {
 
       // 유해 이미지 삭제
       harmfulUrls.forEach((harmfulUrl) => {
+        console.log(harmfulUrl);
         if (harmfulUrl.startsWith("data:image")) {
           // Base64 이미지일 경우 별도 삭제 처리
           content = removeBase64Images(content);

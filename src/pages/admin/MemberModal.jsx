@@ -29,6 +29,34 @@ const MemberDetailModal = ({ show, handleClose, member }) => {
                 <td>{member.role}</td>
               </tr>
               <tr>
+                <th>성별</th>
+                <td>{member.gender}</td>
+              </tr>
+              <tr>
+                <th>도로명주소</th>
+                <td>{member.roadAddr}</td>
+              </tr>
+              <tr>
+                <th>상세주소</th>
+                <td>{member.detailAddr}</td>
+              </tr>
+              <tr>
+                <th>우편번호</th>
+                <td>{member.zipcode}</td>
+              </tr>
+              <tr>
+                <th>마케팅수신동의</th>
+                <td>{member.marketingConsent == true ? "동의":"비동의"}</td>
+              </tr>
+              <tr>
+                <th>개인정보 동의</th>
+                <td>{member.privacyConsent == true ? "동의":"비동의"}</td>
+              </tr>
+              <tr>
+                <th>알림 수신 동의</th>
+                <td>{member.allowNotification == true ? "동의":"비동의"}</td>
+              </tr>
+              <tr>
                 <th>가입 일자</th>
                 <td>{member.regDate ? member.regDate : "등록일자가 없습니다"}</td>
               </tr>

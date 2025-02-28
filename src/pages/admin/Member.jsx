@@ -5,7 +5,8 @@ import CompanyList from "./CompanyList";
 import CompanyRequests from "./CompanyRequests";
 import useAxios from "../../hooks/useAxios";
 import MemberDetailModal from "./MemberModal";
-
+import MemberSearch from "./MemberSearch";
+import PaginationComponent from "../../components/layout/Paging"
 const Member = () => {
   const [activeTab, setActiveTab] = useState("members");
 
@@ -52,7 +53,14 @@ const MemberList = () => {
   const [members, setMembers] = useState([]);
   const [selectedMember, setSelectedMember] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [filteredMember, setfilteredMember] = useState([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
+  const handleSearchResults = (searchResults) => {
+    setfilteredMember(searchResults); //  검색된 상품 목록으로 상태 변경
+    setCurrentPage(1);
+  };
   const handleShowModal = (member) => {
     setSelectedMember(member);
     setShowModal(true);
@@ -65,7 +73,11 @@ const MemberList = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await req("get", "admin/fwl/list");
+      const response = await req("get", "admin/fwl/list");
+
+      if(response){
+        setfilteredMember(response);
+      }
     };
     fetchData();
   }, [req]);
@@ -85,10 +97,15 @@ const MemberList = () => {
     return <div><h1>로딩중</h1></div>;
   }
   console.log()
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentFilteredMember = filteredMember.slice(indexOfFirstItem, indexOfLastItem);
   return (
     <Container>
       <h3 className="mb-3">회원 관리</h3>
-
+      <div className="mb-4">
+          <MemberSearch onSearchResults={handleSearchResults} />
+        </div>
       {/* PC 화면에서는 테이블 형식 */}
       <div className="d-none d-md-block">
         <div className="table-responsive">
@@ -103,8 +120,8 @@ const MemberList = () => {
               </tr>
             </thead>
             <tbody>
-              {members && members.length > 0 ? (
-                members.map((m) => (
+              {filteredMember && filteredMember.length > 0 ? (
+                currentFilteredMember.map((m) => (
                   <tr key={m.mno} onClick={() => handleShowModal(m)} style={{ cursor: "pointer" }}>
                     <td>{m.mno}</td>
                     <td>{m.id}</td>
@@ -128,8 +145,8 @@ const MemberList = () => {
       {/* 모바일 화면에서는 카드 형식 */}
       <div className="d-md-none">
         <Row className="g-3">
-          {members && members.length > 0 ? (
-            members.map((m) => (
+          {filteredMember && filteredMember.length > 0 ? (
+            currentFilteredMember.map((m) => (
               <Col xs={12} key={m.mno}>
                 <Card className="p-3 shadow-sm">
                   <Card.Body>
@@ -154,6 +171,11 @@ const MemberList = () => {
       </div>
 
       <MemberDetailModal show={showModal} handleClose={handleCloseModal} member={selectedMember} />
+      <PaginationComponent
+          currentPage={currentPage}
+          totalPages={Math.ceil((filteredMember?.length || 0) / itemsPerPage)}
+          onPageChange={setCurrentPage}
+        />
     </Container>
   );
 };
