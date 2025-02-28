@@ -32,7 +32,6 @@ const CommunityModal = ({ nno, onHide }) => {
         {/* 오른쪽: 게시물 정보 */}
         <div className="modal-info-container p-3" style={{ height: "85vh", overflowY: "auto"}}>
           <div className="d-flex align-items-center border-bottom pb-2 mb-2">
-            <img src="https://via.placeholder.com/40" alt="Profile" className="profile-icon me-2" />
             <div>
               <strong>{post.memberName || "익명"}</strong>
               <div className="text-muted small">{post.createdAt || "날짜 없음"}</div>

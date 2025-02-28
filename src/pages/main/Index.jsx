@@ -5,6 +5,7 @@ import Intro from "./Intro";
 import Shop from "./shop/Shop";
 import ShopDetail from "./shop/ShopDetail"; // ✅ ShopDetail 추가
 import Community from "./community/Community";
+import CommunityAdd from "./community/CommunityAdd";
 import Interior from "./interior/Interior";
 import NotFound from "../not-found/NotFound"; 
 import Footer from "./layout/Footer";
@@ -29,13 +30,18 @@ function Index() {
     { path: "/Intro", element: <Intro /> },
     { path: "/shop", element: <Shop /> },
     { path: "/shop/detail/:id", element: <ShopDetail /> },
-    { path: "/community", element: <Community /> },
+    { path: "/community", 
+      element: <Community /> ,
+      children: [
+        { path: "add", element: <CommunityAdd /> },
+      ],
+    }
+      ,
     { path: "/Interior", element: <Interior /> },
     { path: "/Interior/:companyId", element: <InteriorDetail /> },
     { path: "/Pay", element: <Pay /> },
     { path: "/PayInfo", element: <PayInfo /> },
-    {
-      path: "/myinfo",
+    { path: "/myinfo",
       element: <Myinfo />,
       children: [
         { path: "profile", element: <Profile /> },
