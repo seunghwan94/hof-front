@@ -109,7 +109,7 @@ const CommentSection = ({ nno }) => {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             />
-            <Button variant="primary" className="ms-2" type="submit">
+            <Button className="ms-2 w-25 btn-hof" type="submit">
               등록
             </Button>
           </Form>
@@ -167,7 +167,7 @@ const CommentSection = ({ nno }) => {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
-          <Button variant="primary" className="ms-2" type="submit">
+          <Button className="ms-2 btn btn-hof w-25" type="submit">
             등록
           </Button>
         </Form>

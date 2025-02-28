@@ -35,8 +35,7 @@ function Index() {
       children: [
         { path: "add", element: <CommunityAdd /> },
       ],
-    }
-      ,
+    },
     { path: "/Interior", element: <Interior /> },
     { path: "/Interior/:companyId", element: <InteriorDetail /> },
     { path: "/Pay", element: <Pay /> },

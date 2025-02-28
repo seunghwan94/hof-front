@@ -1,0 +1,50 @@
+.community-modal {
+  .modal-body {
+    display: flex;
+    flex-direction: row;
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+
+  .modal-image-container {
+    flex: 1;
+    max-width: 50%;
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+    @media (max-width: 768px) {
+      display: none; // 모바일에서는 이미지 숨김
+    }
+  }
+
+  .modal-info-container {
+    flex: 2;
+    padding: 15px;
+    overflow-y: auto;
+    @media (max-width: 768px) {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+
+  .mobile-image-container {
+    display: none;
+    @media (max-width: 768px) {
+      display: block;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .mobile-modal-image {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+    }
+  }
+
+  .full-width {
+    width: 100%;
+  }
+}

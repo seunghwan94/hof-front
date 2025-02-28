@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import useAxios from "../../hooks/useAxios";
 
-const CustomEditor = ({ initialValue = "", onContentChange, uploadUrl }) => {
+const CustomEditor = ({ initialValue = "", onContentChange, uploadUrl, domain }) => {
   const { req } = useAxios();
   const [loading, setLoading] = useState(false);
 
@@ -12,8 +12,12 @@ const CustomEditor = ({ initialValue = "", onContentChange, uploadUrl }) => {
   const prevImageUrlsRef = useRef([]); // 이전 이미지 리스트 저장
   const editorRef = useRef(null); // TinyMCE 에디터 참조 객체
 
+  // "community" 도메인에서는 이미지 업로드 비활성화
+  const disableImageUpload = domain === "community";
+
   /** TinyMCE 이미지 업로드 핸들러 */
   const handleImageUpload = async (blobInfo, success, failure) => {
+    
     console.log("::::::::::::::::::::::::::::::::::::::::::::::::::::")
     console.log("TinyMCE 이미지 업로드 감지됨...");
     try {
@@ -227,14 +231,17 @@ const removeBase64Images = (content) => {
         init={{
           height: 300,
           menubar: false,
-          plugins: ["image", "link", "media", "codesample", "lists", "visualblocks"],
-          toolbar:
-            "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image",
-          images_upload_handler: handleImageUpload, // 이미지 업로드 핸들러
+          plugins: disableImageUpload
+          ? ["link", "media", "codesample", "lists", "visualblocks"]
+          : ["image", "link", "media", "codesample", "lists", "visualblocks"],
+          toolbar: disableImageUpload
+            ? "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat"
+            : "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image",
+          images_upload_handler: disableImageUpload ? null : handleImageUpload,
           automatic_uploads: false,
-          image_uploadtab: true,
-          image_advtab: true,
-          file_picker_types: "image",
+          image_uploadtab: !disableImageUpload,
+          image_advtab: !disableImageUpload,
+          file_picker_types: disableImageUpload ? "" : "image",
           image_dimensions: false,
         }}
         onEditorChange={handleEditorChange} // 내용 변경 시 변환 처리
