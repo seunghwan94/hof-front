@@ -2,45 +2,48 @@ import React, { useState } from "react";
 import { Container, Form, InputGroup, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import useAxios from "../../../hooks/useAxios";
+import useAxios from "../../hooks/useAxios";
 
-function Category({onSearchResults}) {
+function MemberSearch({ onSearchResults }) {
   const { req } = useAxios();
-  const [category, setCategory] = useState("");
+  const [searchType, setSearchType] = useState("id"); // 기본값: ID 검색
   const [keyword, setKeyword] = useState("");
-  const [searchResults, setSearchResults] = useState([]); // 검색 결과 저장
 
-  // 카테고리 매핑 (1: 침대, 2: 의자 ...)
-  const categoryMap = {
-    "": null, // 선택 안 함
-    "1": "침대",
-    "2": "의자",
-    "3": "책상",
-    "4": "수납장",
-    "5": "옷장",
-    "6": "기타"
-  };
+  
 
   // 검색 실행 함수
   const handleSearch = async () => {
-   
+    if (!keyword.trim()) {
+      alert("검색어를 입력하세요.");
+      return;
+    }
+
+    // 검색 컬럼 설정
+    let searchColumns = [];
+    if (searchType === "id") {
+      searchColumns = ["id"];
+    } else if (searchType === "name") {
+      searchColumns = ["name"];
+    } else {
+      searchColumns = ["id", "name"]; // ID + 이름 검색
+    }
 
     const requestData = {
-      tableName: "tbl_prod", // 검색 대상 테이블
+      tableName: "tbl_member", // 회원 테이블
       keyword: keyword,
-      searchColumns: ["title"], // 상품명(title)만 검색
+      searchColumns: searchColumns, // 선택된 검색 컬럼
       sortColumn: "reg_date", // 최신 등록 순 정렬
       sortOrder: "DESC",
-      category: category ? Number(category) : null // 카테고리를 숫자로 변환 (없으면 null)
     };
 
     const res = await req("post", "search", requestData);
 
     if (res) {
-      console.log(" 검색 결과:", res);
-      setSearchResults(res); // 검색 결과 저장
-      onSearchResults(res);
+      console.log("🔹 검색 결과:", res);
+      onSearchResults(res); // 🔹 부모 컴포넌트로 검색 결과 전달
     }
+    // 🔹 Enter 키 입력 시 검색 실행
+
   };
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -48,23 +51,21 @@ function Category({onSearchResults}) {
       handleSearch();
     }
   };
+
   return (
     <Container className="p-4">
       <Form onSubmit={(e) => e.preventDefault()}>
         <Form.Group>
           <InputGroup>
-            {/* 카테고리 선택 */}
+            {/* 검색 기준 선택 */}
             <Form.Select
               className="custom-width"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              value={searchType}
+              onChange={(e) => setSearchType(e.target.value)}
             >
-              <option value="">- 선택 -</option>
-              {Object.entries(categoryMap)
-                .filter(([key]) => key !== "")
-                .map(([key, value]) => (
-                  <option key={key} value={key}>{value}</option>
-                ))}
+              <option value="id">ID 검색</option>
+              <option value="name">이름 검색</option>
+              <option value="id+name">ID + 이름 검색</option>
             </Form.Select>
 
             {/* 검색어 입력 */}
@@ -83,10 +84,8 @@ function Category({onSearchResults}) {
           </InputGroup>
         </Form.Group>
       </Form>
-
-
     </Container>
   );
 }
 
-export default Category;
+export default MemberSearch;

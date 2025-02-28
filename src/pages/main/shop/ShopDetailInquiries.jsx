@@ -13,7 +13,7 @@ const ShopDetailInquiries = ({ pno }) => {
   useEffect(() => {
     const fetchInquiries = async () => {
       try {
-        const data = await req("GET", `admin/fwl/qna/${pno}`);
+        const data = await req("GET", `common/qna/qna/${pno}`);
         if (data) {
           setInquiries(data);
         }
@@ -30,7 +30,7 @@ const ShopDetailInquiries = ({ pno }) => {
     const newInquiry = { pno, content: inquiryText, memberId: userId, parentNo: replyTarget?.no || null };
 
     try {
-      const data = await req("POST", "admin/fwl/qna", newInquiry);
+      const data = await req("POST", "common/qna", newInquiry);
       if (data) {
         setInquiries((prev) => [...prev, data]); // 새 문의 추가
         setInquiryText("");
@@ -52,7 +52,7 @@ const ShopDetailInquiries = ({ pno }) => {
     if (!isConfirmed) return;
 
     try {
-      await req("DELETE", `admin/fwl/qna/${qno}`);
+      await req("DELETE", `common/qna/${qno}`);
       setInquiries((prev) => prev.filter((inq) => inq.no !== qno));
     } catch (error) {
       console.error("삭제 실패:", error);

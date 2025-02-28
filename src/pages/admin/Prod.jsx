@@ -3,7 +3,8 @@ import { Table, Container, Row, Col, Card, Button } from "react-bootstrap";
 import useAxios from "../../hooks/useAxios";
 import ProductModal from "./ProductModal"; // 모달 컴포넌트 import
 import ProductCreateModal from "./ProductCreateModal";
-
+import Search from "../main/shop/Search";
+import PaginationComponent from "../../components/layout/Paging"
 const categoryMap = {
   1: "침대",
   2: "의자",
@@ -13,17 +14,22 @@ const categoryMap = {
 }
 
 const Prod = () => {
+  
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 15;
   const {req } = useAxios();
   const [products, setProducts] = useState([]); //상품목록
   const [] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false); // 🔹 등록 모달 상태 추가
   const [selectedProduct, setSelectedProduct] = useState(null); //상품 상세정보
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
   const axios = async () => {
     const response = await req("get", "main/prod");
     if(response){
       setProducts(response);
+      setFilteredProducts(response);
     }
 
     };
@@ -34,7 +40,14 @@ const Prod = () => {
     
 }, [req]);
 
+useEffect(() => {
+  setFilteredProducts(products); 
+}, [products]);
 
+const handleSearchResults = (searchResults) => {
+  setFilteredProducts(searchResults); //  검색된 상품 목록으로 상태 변경
+  setCurrentPage(1);
+};
 
 // useEffect(() => {
 //     if (!loading && data?.dtoList) {
@@ -141,9 +154,22 @@ const handleSaveChanges = async (updatedProduct) => {
       const handleCloseCreateModal = () => {
         setShowCreateModal(false);
       };
+      const indexOfLastItem = currentPage * itemsPerPage;
+      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+      const currentFilteredProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
+      const member = localStorage.getItem("member");
+  const userMno = JSON.parse(member).mno;
+if (!member) {
+    alert("로그인 후 이용해주세요.");
+    return;
+  }
   return products && (
     <Container>
       <h3 className="mb-3">상품 관리</h3>
+
+      <div className="mb-4">
+          <Search onSearchResults={handleSearchResults} />
+        </div>
 
       {/* PC 화면에서는 테이블 형식 */}
       <div className="d-none d-md-block">
@@ -154,17 +180,17 @@ const handleSaveChanges = async (updatedProduct) => {
                 <th>카테고리</th>
                 <th>상품명</th>
                 <th>가격</th>
-                <th>재고</th>
+
               </tr>
             </thead>
             <tbody>
               {
-                products.map((p) => (
+                currentFilteredProducts.map((p) => (
                   <tr key={p.pno} onClick={() => handleShowModal(p)} style={{ cursor: "pointer" }}>
                     <td>{categoryMap[p.cno] || "기타"}</td>
                     <td>{p.title.length > 30 ? p.title.slice(0, 30) + "..." : p.title}</td>
                     <td>{p.price.toLocaleString()}원</td>
-                    <td>{p.stock}</td>
+
                   </tr>
                 ))
               }
@@ -177,13 +203,14 @@ const handleSaveChanges = async (updatedProduct) => {
       <div className="d-md-none">
         <Row className="g-3">
           {products.length > 0 ? (
-            products.map((p) => (
+            currentFilteredProducts.map((p) => (
               <Col xs={12} key={p.pno}>
                 <Card className="p-3 shadow-sm" onClick={() => handleShowModal(p)} style={{ cursor: "pointer" }}>
                   <Card.Body>
                     <h5>{p.title}</h5>
+                    <p>카테고리 :{categoryMap[p.cno] || "기타"} </p>
                     <p className="text-muted">가격: {p.price.toLocaleString()}원</p>
-                    <p>재고: {p.stock}</p>
+
                   </Card.Body>
                 </Card>
               </Col>
@@ -214,6 +241,11 @@ const handleSaveChanges = async (updatedProduct) => {
       
           {/* 🔹 상품 등록 모달 추가 */}
     <ProductCreateModal show={showCreateModal} handleClose={handleCloseCreateModal} />
+    <PaginationComponent
+          currentPage={currentPage}
+          totalPages={Math.ceil((filteredProducts?.length || 0) / itemsPerPage)}
+          onPageChange={setCurrentPage}
+        />
   </Container>
 
   );
