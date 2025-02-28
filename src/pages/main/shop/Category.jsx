@@ -30,7 +30,7 @@ function Category() {
 
   return (
     <>
-      <h4>카테고리</h4>
+      <h4 className="mt-5 mb-3 fw-bold">카테고리</h4>
       <Row className="justify-content-center">
         {categories.map((category, index) => {
           const isActive = currentCategory === category.query;

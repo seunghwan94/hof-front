@@ -123,9 +123,8 @@ const ShopDetail = () => {
   const totalPrice =
     selectedOptions.reduce((acc, option) => acc + (product.price + option.addPrice), 0) ;
 
-  if (loading) return <h2 className="text-center mt-5">로딩 중...</h2>;
+  if (loading || !product) return <h2 className="text-center mt-5">로딩 중...</h2>;
   if (error) return <h2 className="text-center mt-5 text-danger">상품을 불러오는 중 오류 발생</h2>;
-  if (!product) return <h2 className="text-center mt-5">상품을 찾을 수 없습니다.</h2>;
 
   return (
     <Container className="mt-4">
