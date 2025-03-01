@@ -1,3 +1,4 @@
+/* 찜 목록 컨테이너 */
 .pick-container {
   max-width: 800px;
   margin: 0 auto;
@@ -16,93 +17,107 @@
     gap: 15px;
     padding: 10px;
   }
+}
 
-  .pick-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    background: #fff;
-    transition: 0.2s ease-in-out;
-    
+/* 개별 찜한 상품 스타일 */
+.pick-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fff;
+  transition: 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* ✅ 상품 썸네일 */
+.pick-thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 5px;
+  background: #f9f9f9;
+}
+
+/* ✅ 상품 정보 */
+.pick-details {
+  flex-grow: 1;
+  padding-left: 15px;
+  display: flex;
+  flex-direction: column;
+
+  .product-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+    max-width: 400px; // ✅ 제목 최대 너비 설정
+    display: -webkit-box;
+    -webkit-line-clamp: 2; // ✅ 최대 2줄까지 표시
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     &:hover {
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+      color: #007bff;
+      text-decoration: underline;
     }
   }
 
+  .base-price {
+    font-size: 14px;
+    color: #ff4d4f;
+    margin-top: 5px;
+  }
+}
+
+/* ✅ 찜 삭제 버튼 */
+.delete-btn {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  color: #ff4d4f;
+  transition: 0.2s ease-in-out;
+
+  &:hover {
+    color: #e63946;
+  }
+}
+
+/* ✅ 모바일 반응형 스타일 */
+@media (max-width: 600px) {
+  .pick-item {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
+
+  /* ✅ 모바일에서 썸네일 크기 줄이기 */
   .pick-thumbnail {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    border-radius: 5px;
-    background: #f9f9f9;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
   }
 
   .pick-details {
-    flex-grow: 1;
-    padding-left: 15px;
-    display: flex;
-    flex-direction: column;
-    
+    padding-left: 0;
+    width: 100%;
+    text-align: center;
+
     .product-title {
-      font-size: 16px;
-      font-weight: bold;
-      color: #333;
-      text-decoration: none;
-      cursor: pointer;
-      white-space: nowrap; // ✅ 한 줄 유지
-      overflow: hidden; // ✅ 초과된 텍스트 숨김
-      text-overflow: ellipsis; // ✅ 너무 길면 "..."
-      max-width: 200px; // ✅ 제목 최대 너비 설정
-
-      &:hover {
-        color: #007bff;
-        text-decoration: underline;
-      }
-    }
-
-    .base-price {
-      font-size: 14px;
-      color: #ff4d4f;
-      margin-top: 5px;
+      max-width: 100%; // ✅ 모바일에서도 자동 줄바꿈
+      -webkit-line-clamp: 2; // ✅ 최대 2줄까지 표시
     }
   }
 
   .delete-btn {
-    background: transparent;
-    border: none;
-    font-size: 14px;
-    cursor: pointer;
-    color: #ff4d4f;
-    transition: 0.2s ease-in-out;
-    
-    &:hover {
-      color: #e63946;
-    }
-  }
-
-  // ✅ 모바일 반응형 스타일
-  @media (max-width: 600px) {
-    .pick-item {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .pick-thumbnail {
-      width: 100%;
-      height: auto;
-      margin-bottom: 10px;
-    }
-
-    .pick-details {
-      padding-left: 0;
-      width: 100%;
-
-      .product-title {
-        max-width: 100%; // ✅ 모바일에서는 너비 조정
-      }
-    }
+    align-self: center;
   }
 }

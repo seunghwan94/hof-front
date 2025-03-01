@@ -18,7 +18,7 @@ const Pick = () => {
   const fetchPickList = async (mno) => {
     try {
       const res = await req("GET", `common/likes/list?mno=${mno}&targetType=FAV`);
-      if (res) {
+    if (res) {
         setPickItems(res);
       }
     } catch (err) {

@@ -1,22 +1,4 @@
-/* Cart 전체 컨테이너 */
-.cart-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-
-  h2 {
-    margin-bottom: 30px;
-  }
-}
-
-/* 장바구니 아이템 리스트 */
-.cart-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* 카드 형태 */
+/* 장바구니 아이템 스타일 */
 .cart-card {
   display: flex;
   border: 1px solid #ddd;
@@ -24,62 +6,93 @@
   overflow: hidden;
   width: 100%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  align-items: center;
+}
 
-  .product-image {
-    width: 40%;
-    object-fit: cover;
+/* 상품 이미지 */
+.product-image-card {
+  width: 400px;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 상품 상세 정보 */
+.product-details {
+  flex: 1;
+  padding: 15px 20px;
+
+  .product-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
   }
 
-  .product-details {
-    padding: 15px;
-    flex: 1;
+  .base-price {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
 
-    .product-title {
-      font-size: 1.3rem;
-      font-weight: bold;
-      margin-bottom: 10px;
+  .quantity-select {
+    text-align: end;
+    margin-top: 15px;
+  }
+
+  .option-select {
+    margin-bottom: 10px;
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
     }
 
-    .base-price {
-      font-size: 1rem;
-      margin-bottom: 10px;
+    .option-dropdown {
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
+  }
 
-    .quantity-select,
-    .option-select {
-      margin-bottom: 10px;
-
-      label {
-        display: block;
-        font-size: 0.9rem;
-        margin-bottom: 5px;
-      }
-
-      select {
-        width: 100%;
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-    }
-
-    .total-price {
-      margin-top: 15px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: blue;
-    }
+  .total-price {
+    margin-top: 15px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: blue;
   }
 }
 
-/* 반응형 */
+
+
+/* 반응형 스타일 */
 @media (max-width: 768px) {
   .cart-card {
     flex-direction: column;
+    padding: 10px;
+  }
 
-    .product-image {
-      width: 100%;
-      height: 200px;
+  .product-image-card {
+    width: 100%;
+    height: 200px;
+  }
+
+  .product-details {
+    padding: 10px;
+
+    .product-title {
+      font-size: 1.1rem;
+    }
+
+    .total-price {
+      font-size: 1rem;
     }
   }
 }

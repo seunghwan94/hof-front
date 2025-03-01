@@ -164,7 +164,7 @@ function Profile() {
       </div>
 
       {/* 저장 버튼 */}
-      <div className="profile-section text-end">
+      <div className="profile-section text-end" style={{borderBottom : "0px" }}>
         <button className="btn btn-hof" onClick={handleSave}>
           저장
         </button>

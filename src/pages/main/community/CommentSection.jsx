@@ -91,9 +91,8 @@ const CommentSection = ({ nno }) => {
         {/* 대댓글 토글 버튼 */}
         {reply.children && reply.children.length > 0 && (
           <Button
-            variant="link"
             size="sm"
-            className="ms-2"
+            className="ms-2 btn btn-outline-hof"
             onClick={() => toggleReplies(reply.replyId)}
           >
             {expandedReplies[reply.replyId] ? "대댓글 숨기기" : `대댓글 보기 (${reply.children.length})`}
@@ -154,7 +153,7 @@ const CommentSection = ({ nno }) => {
             )}
           </>
         ) : (
-          <p className="text-muted">첫 번째 댓글을 남겨보세요!</p>
+          <p className="text-muted">댓글이 없습니다.</p>
         )}
       </div>
 

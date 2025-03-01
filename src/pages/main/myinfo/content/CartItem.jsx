@@ -61,23 +61,22 @@ const CartItem = forwardRef(({ item, onDelete }, ref) => {
   return (
     <div className="cart-card">
       {/* ✅ 상품 이미지 */}
-      <Card className="w-25 m-4" style={{ width: "400px", height: "300px", overflow: "hidden" }}>
+      <Card className="product-image-card">
         <img
           src={imageUrls?.[0] || "/placeholder.jpg"}
           alt={title}
           className="product-image"
-          style={{ width: "100%", height: "100%", objectFit: "contain" }}
         />
       </Card>
 
       {/* ✅ 상품 상세 정보 */}
-      <div className="product-details py-4 pe-5">
+      <div className="product-details">
         <div className="d-flex justify-content-between">
-          <h3 className="product-title w-75">{title}</h3>
+          <h3 className="product-title">{title}</h3>
 
           <div className="quantity-select">
             {/* ✅ 삭제 버튼 */}
-            <div className="text-end mt-3">
+            <div className="text-end">
               <button className="btn btn-outline-hof" onClick={handleDelete}>X</button>
             </div>
           </div>
@@ -96,11 +95,11 @@ const CartItem = forwardRef(({ item, onDelete }, ref) => {
           const selectedOptionObj = options.find((opt) => opt.optionNo.toString() === selectedOpt?.toString()) || options[0];
 
           return (
-            <div key={`opt-${idx}`} className="option-select mb-5">
+            <div key={`opt-${idx}`} className="option-select">
               <label className="fw-bold">옵션 선택 {idx + 1}</label>
               <div className="d-flex justify-content-between align-items-center">
                 <select
-                  className="w-75"
+                  className="option-dropdown w-75"
                   value={selectedOpt}
                   onChange={(e) => handleOptionChange(idx, e.target.value)}
                 >

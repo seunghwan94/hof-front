@@ -6,7 +6,7 @@ import "../../../../styles/myinfo/cart.scss";
 
 const Cart = () => {
   const {  loading, error, req } = useAxios();
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(null);
   const navigate = useNavigate();
   const cartItemRefs = useRef([]);
   const [buyer, setBuyer] = useState(null);
@@ -31,7 +31,7 @@ const Cart = () => {
         }
 
         setBuyer({
-          mno: memberData.mno,
+          mno,
           name: memberData.name,
           email: memberData.email,
           address: `${defaultAddress.roadAddr} ${defaultAddress.detailAddr}`,
@@ -116,16 +116,17 @@ const Cart = () => {
     navigate("/PayInfo", { state: { orderData } });
   };
 
-  if (loading) return <p>로딩 중...</p>;
   if (error) return <p>에러 발생: {error.message}</p>;
 
   return (
     <div className="cart-container">
       <h2>장바구니</h2>
 
-      {cartItems.length === 0 ? (
-        <p>장바구니가 비어 있습니다.</p>
-      ) : (
+      {cartItems === null ? ( // cartItems가 null이면 로딩 화면 유지
+          <p>로딩 중...</p>
+        ) : cartItems.length === 0 ? (
+          <p>장바구니가 비어 있습니다.</p>
+        ) : (
         <div className="cart-list">
           {cartItems.map((item, index) => (
             <CartItem
@@ -137,8 +138,8 @@ const Cart = () => {
           ))}
 
           <div className="cart-actions text-end">
-            <button className="btn btn-hof mx-3" onClick={handleSave}>임시저장</button>
-            <button className="btn btn-hof mx-3" onClick={handleCheckout}>결제하기</button>
+            <button className="btn btn-hof m-3" onClick={handleSave}>임시저장</button>
+            <button className="btn btn-hof m-3 me-0" onClick={handleCheckout}>결제하기</button>
           </div>
         </div>
       )}

@@ -1,0 +1,111 @@
+.paylist-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+
+  h2 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .paylist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 16px;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .date {
+      font-size: 14px;
+      color: #888;
+      min-width: 120px;
+    }
+
+    .product-name {
+      font-weight: bold;
+      color: #333;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 280px;
+    }
+
+    .price {
+      font-weight: bold;
+      color: #333;
+      min-width: 100px;
+      text-align: right;
+    }
+
+    .status {
+      font-size: 14px;
+      color: #666;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .refund-button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s ease-in-out;
+      min-width: 80px;
+      text-align: center;
+
+      &.enabled {
+        background-color: #4a56e2;
+        color: white;
+
+        &:hover {
+          background-color: #3b45c3;
+        }
+      }
+
+      &.disabled {
+        background-color: #e0e0e0;
+        color: #888;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  // 📌 반응형 디자인 (모바일 대응)
+  @media screen and (max-width: 600px) {
+    .paylist-item {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 15px;
+
+      .date,
+      .product-name,
+      .price,
+      .status,
+      .refund-button {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 5px;
+      }
+
+      .refund-button {
+        text-align: center;
+      }
+    }
+  }
+}

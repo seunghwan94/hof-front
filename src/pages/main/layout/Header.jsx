@@ -96,7 +96,7 @@ const Header = ({ fixed }) => {
 
                   {/* ✅ 내 정보 */}
                   <li className="nav-item pe-3 ps-1">
-                    <Link to="/myinfo" className="nav-link text-hof fw-bold" style={{ textDecoration: "none" }}>
+                    <Link to="/myinfo/profile" className="nav-link text-hof fw-bold" style={{ textDecoration: "none" }}>
                       내 정보
                     </Link>
                   </li>
@@ -108,7 +108,7 @@ const Header = ({ fixed }) => {
                         className={`nav-link text-danger font-weight-bold ${
                           location.pathname === "/admin" ? "active" : ""
                         }`}
-                        to="/admin"
+                        to="/admin/dashboard"
                         style={{ fontWeight: "bold" }}
                         onClick={() => isMobile && setMenuOpen(false)}
                       >
