@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Button, ButtonGroup, Form } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../../components/layout/Logo';
 import useAxios from '../../../hooks/useAxios';
+import CustomAlert from '../../../components/custom/CustomAlert';
 
 const SignupForm = ({ termsAccepted }) => {
 
@@ -24,8 +25,13 @@ const SignupForm = ({ termsAccepted }) => {
   const [verificationValid, setVerificationValid] = useState(false);
 
   const [name, setName] = useState('');
-  const [gender, setGender] = useState('');
+  const [gender, setGender] = useState('OTHER');
   const { data, error, req } = useAxios();
+
+  // // 커스텀 얼럿 상태 관리
+  // const [alertVisible, setAlertVisible] = useState(false);
+  // const [alertType, setAlertType] = useState('error');
+  // const [alertMessage, setAlertMessage] = useState('');
 
   // 아이디 유효성 검사
   const validId = (enteredID) => {
@@ -41,7 +47,7 @@ const SignupForm = ({ termsAccepted }) => {
 
   // 이메일 유효성 검사
   const validEmail = (enteredEmail) => {
-    const regex = /^[a-zA-Z0-9_+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{1,7}$/;
+    const regex = /^[a-zA-Z0-9_+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$/;
     return regex.test(enteredEmail);
   };
 
@@ -132,6 +138,36 @@ const SignupForm = ({ termsAccepted }) => {
   // 회원가입 처리
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!id || id.trim() === "") {
+      alert("아이디를 입력해주세요.");
+      return;
+    }
+    if (!pw || pw.trim() === "") {
+      alert("비밀번호를 입력해주세요.");
+      return;
+    }
+    if (!confirmPassword || confirmPassword.trim() === "") {
+      alert("비밀번호 확인을 입력해주세요.");
+      return;
+    }
+    if (pw !== confirmPassword) {
+      alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      return;
+    }
+    if (!email || email.trim() === "") {
+      alert("이메일을 입력해주세요.");
+      return;
+    }
+    if (!name || name.trim() === "") {
+      alert('이름을 입력해주세요.');
+      return;
+    }
+    if (!verificationCode || verificationCode.trim() === "") {
+      alert("이메일 인증 코드가 비어 있습니다. 인증 후 회원가입을 진행해주세요.");
+      return;  // 인증 코드가 없으면 서버로 요청을 보내지 않음
+    }
+
+
     if (!idAvailable) {
       setIdValidCheck('아이디를 확인해주세요.');
       return;
@@ -181,20 +217,52 @@ const SignupForm = ({ termsAccepted }) => {
       navigate('/login');
     } catch (error) {
       console.error("회원가입 실패:", error);
-      alert("회원가입에 실패했습니다.");
+    // 에러 객체의 전체 구조를 확인합니다.
+    console.log("Error object:", error);
+
+    // error.response와 error.response.data가 있는지 확인하고 처리합니다.
+    if (error.response && error.response.data) {
+        if (error.response.data === '이메일 인증이 완료되지 않았습니다. 인증 후 회원가입을 진행해주세요.') {
+            alert('이메일 인증이 완료되지 않았습니다. 인증 후 회원가입을 진행해주세요.');
+        } else {
+            alert("회원가입에 실패했습니다.");
+        }
+    } else {
+        alert("알 수 없는 오류가 발생했습니다.");
+    }
     }
   };
 
   // 이메일 인증 요청
   const handleEmailVerification = async () => {
+    if (!validEmail(email)) {
+      alert("이메일 형식이 올바르지 않습니다.");
+      return;  // 이메일 형식이 잘못된 경우 요청을 중단
+    }
+  
     try {
       const response = await req('POST', 'signup/emailsend', { email });
       console.log("이메일인증요청!!!!!:", email);
-      alert(response);  // 이메일 발송 성공 여부를 알림으로 표시
+      console.log("서버 응답:", response);  // 서버 응답 전체 로그 출력
+
+      
+      // 응답 메시지를 alert로 표시
+      if (response && response.data) {
+        alert(response.data);  // 서버에서 보내는 응답 메시지를 표시
+      } else {
+        alert("이메일 인증 코드가 발송되었습니다.");  // 응답이 없으면 기본 메시지 표시
+      }
+  
       setVerificationValid(true);  // 이메일 인증 코드 입력란 표시
     } catch (error) {
       console.error("이메일 인증 요청 실패:", error);
-      alert("이메일 인증 요청에 실패했습니다.");
+      
+      // 오류 응답이 있을 경우 해당 메시지를 alert로 표시
+      if (error.response && error.response.data) {
+        alert(error.response.data);  // 서버에서 보내는 에러 메시지 표시
+      } else {
+        alert("이미 사용중인 이메일입니다.");
+      }
     }
   };
   // 인증 코드 입력 처리
@@ -206,17 +274,34 @@ const SignupForm = ({ termsAccepted }) => {
   const handleVerifyCodeSubmit = async () => {
     try {
       const response = await req('POST', 'signup/verify', {
-        email,
-        verificationCode
+        email,  // 이메일 추가
+        verificationCode  // 인증 코드 추가
       });
-      alert(response);  // 인증 코드 검증 성공 여부를 알림으로 표시
-      setVerificationValid(true); // 인증 성공 시 회원가입 가능 상태로 변경
+      if (response === '이메일 인증 성공') {  // 서버에서 성공 메시지를 받았는지 확인
+        alert('이메일 인증이 완료되었습니다.');
+        setVerificationValid(true);
+      } else {
+        alert('인증 코드가 일치하지 않습니다.');
+        setVerificationValid(false); // 실패 시 false로 설정
+      }
     } catch (error) {
-      console.error("이메일 인증 코드 검증 실패:", error);
-      alert("인증 코드 검증에 실패했습니다.");
+      console.error('이메일 인증 코드 검증 실패:', error);
+      alert('인증 코드 검증에 실패했습니다.');
+      setVerificationValid(false); // 예외 발생 시 false로 설정
     }
   };
 
+  // // 커스텀 얼럿 
+  // const showAlert = (message, type) => {
+  //   setAlertMessage(message);
+  //   setAlertType(type);
+  //   setAlertVisible(true);
+  // };
+
+  // // 커스텀 얼럿 닫기
+  // const handleCloseAlert = () => {
+  //   setAlertVisible(false);
+  // };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -240,19 +325,50 @@ const SignupForm = ({ termsAccepted }) => {
         <Form.Control className="mt-1 py-2" type="email" value={email} onChange={handleEmailChange} placeholder="이메일" />
         <div className='mx-2 mb-2'> {emailValidCheck && (<p className='my-1' style={{ color: "red", fontSize: "14px" }}>{emailValidCheck}</p>)} </div>
         <button type="button" className="btn btn-hof w-100 my-2" onClick={handleEmailVerification}>이메일 인증 요청</button>
-        <Form.Control className="mt-1 py-2" type="text" value={verificationCode} onChange={handleVerificationCodeChange} placeholder="인증 코드 입력" />
-        {verificationValid && (<button type="button" className="btn btn-hof w-100 my-2" onClick={handleVerifyCodeSubmit}>인증 코드 확인</button>)}
+        {verificationValid && (
+        <>
+          <Form.Control className="mt-1 py-2" type="text" value={verificationCode} onChange={handleVerificationCodeChange} placeholder="인증 코드 입력" />
+          <button type="button" className="btn btn-hof w-100 my-2" onClick={handleVerifyCodeSubmit}>인증 코드 확인</button>
+        </>
+      )}
 
         <Form.Control className="mt-1 py-2" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="이름(닉네임)" />
-        <div className="d-flex justify-content-around mt-3 mb-4">
+        {/* <div className="d-flex justify-content-around mt-3 mb-4">
           <button type="button" className={`btn ${gender === 'MALE' ? 'btn-hof' : 'btn-outline-hof'}`} onClick={() => setGender('MALE')}>남자</button>
           <button type="button" className={`btn ${gender === 'FEMALE' ? 'btn-hof' : 'btn-outline-hof'}`} onClick={() => setGender('FEMALE')}>여자</button>
           <button type="button" className={`btn ${gender === 'OTHER' ? 'btn-hof' : 'btn-outline-hof'}`} onClick={() => setGender('OTHER')}>선택하지 않음</button>
-        </div>
+        </div> */}
+        <ButtonGroup className="d-flex justify-content-around mt-3 mb-4" aria-label="성별 선택">
+          <Button 
+            className={`w-100 ${gender === 'MALE' ? 'btn-hof' : 'btn-outline-hof'}`} 
+            onClick={() => setGender('MALE')}
+          >
+            남자
+          </Button>
+          <Button 
+            className={`w-100 ${gender === 'FEMALE' ? 'btn-hof' : 'btn-outline-hof'}`} 
+            onClick={() => setGender('FEMALE')}
+          >
+            여자
+          </Button>
+          <Button 
+            className={`w-100 ${gender === 'OTHER' ? 'btn-hof' : 'btn-outline-hof'}`} 
+            onClick={() => setGender('OTHER')}
+          >
+            선택하지 않음
+          </Button>
+        </ButtonGroup>
 
         <button type='submit' className="btn btn-hof w-100 my-3 py-2">회원가입</button>
         {error && <p style={{ fontSize: '0.9rem', color: 'red', textAlign: 'center' }}>회원가입에 실패했습니다.</p>}
       </div>
+
+      {/* <CustomAlert
+        show={alertVisible}
+        message={alertMessage}
+        type={alertType}
+        onClose={handleCloseAlert}
+      /> */}
     </form>
   );
 };
