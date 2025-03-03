@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Nav, Container, Badge, Row, Col, Card } from "react-bootstrap";
 import useAxios from "../../hooks/useAxios";
+import Refund from "./Refund";
 
 const Cash = () => {
   const [activeTab, setActiveTab] = useState("payment");
@@ -134,8 +135,8 @@ const Payment = () => {
               <Col xs={12} key={payment.no}>
                 <Card className="p-3 shadow-sm">
                   <Card.Body>
-                    <h5>{payment.memberName}</h5>
-                    <h4>{payment.memberId}</h4>
+                    <h5>이름 : {payment.memberName}</h5>
+                    <h4>아이디 : {payment.memberId}</h4>
                     <p className="text-muted">
                       결제 금액: {payment.totalPrice.toLocaleString()}원
                     </p>
@@ -157,12 +158,5 @@ const Payment = () => {
     </Container>
   );
 };
-
-const Refund = () => (
-  <Container>
-    <h3 className="mb-3">환불 관리</h3>
-    <p>환불 내역이 없습니다.</p>
-  </Container>
-);
 
 export default Cash;

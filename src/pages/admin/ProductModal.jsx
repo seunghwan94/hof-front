@@ -139,18 +139,29 @@ const handleDeleteOption = async (index, optionNo) => {
       }
     }, [req]); // `req`가 변경되지 않도록 유지
   
-    useEffect(()=> {
+    useEffect(() => {
       fetchFwlList();
-    },[fetchFwlList]);
-    const isForbiddenWordUsed = (text) => {
+
+    }, [fetchFwlList]);
     
-      return fwlResponse.some(fwl => text.includes(fwl.content));
+    useEffect(() => {
+
+    }, [fwlResponse]);
+    
+    const isForbiddenWordUsed = (text) => {
+      const foundWords = fwlResponse
+        .filter(fwl => fwl.isActive === true && text.includes(fwl.content))
+        .map(fwl => fwl.content);
+    
+      return foundWords.length > 0 ? foundWords : null;
     };
   
   /** Base64 → S3 URL 변환 후 content 업데이트 */
   const handleFinalSave = async () => {
     try {
       let content = product.content;
+      let forbiddenTitleWords = isForbiddenWordUsed(product.title);
+      let forbiddenContentWords = isForbiddenWordUsed(product.content);
     //   // console.log("현재 content:", content);
 
     //   const imgRegex = /<img[^>]+src=["'](.*?)["']/g;
@@ -198,17 +209,26 @@ const handleDeleteOption = async (index, optionNo) => {
     try {
       let content = product.content;
       if (content.includes("hof-bucket.s3.ap-northeast-2.amazonaws.com")) {
-        console.log("이미 S3 URL 변환된 content, 재업로드 스킵");
+        // console.log("이미 S3 URL 변환된 content, 재업로드 스킵");
         return content;
       }
-      if (isForbiddenWordUsed(product.title) || isForbiddenWordUsed(product.content)) {
-        alert(`상품명 또는 상품 설명에 금지어가 포함되어 있습니다.\n 내용 : ${product.title}${product.content}`);
+      if (forbiddenTitleWords || forbiddenContentWords) {
+        let message = "금지어가 포함되어 있습니다.\n";
+    
+        if (forbiddenTitleWords) {
+          message += ` 제목: ${forbiddenTitleWords.join(", ")}\n`;
+        }
+        if (forbiddenContentWords) {
+          message += ` 내용: ${forbiddenContentWords.join(", ")}`;
+        }
+    
+        alert(message);
         return;
       }
-      console.log("🔍 fwlResponse (JSON 변환):", JSON.stringify(fwlResponse, null, 2));
+      // console.log("🔍 fwlResponse (JSON 변환):", JSON.stringify(fwlResponse, null, 2));
       // Base64 → S3 업로드 로직 실행
       const updatedContent = `<div class='product-images'>${content}</div>`;
-      console.log("최종 변환된 content:", updatedContent);
+      // console.log("최종 변환된 content:", updatedContent);
       setProduct((prev) => ({ ...prev, content: updatedContent }));
   
       return updatedContent;
@@ -231,12 +251,12 @@ const handleDeleteOption = async (index, optionNo) => {
 
   /** 최종 저장 버튼 클릭 */
 const handleSaveButtonClick = async () => {
-  console.log("저장 버튼 클릭됨, API 요청 실행!");
+  // console.log("저장 버튼 클릭됨, API 요청 실행!");
 
   const updatedContent = await handleFinalSave();
 
   if (updatedContent) {
-    console.log("최종 저장할 content:", updatedContent);
+    // console.log("최종 저장할 content:", updatedContent);
 
     //  변환된 content를 포함한 새로운 product 객체 생성
     const updatedProduct = { ...product, content: updatedContent };
@@ -249,7 +269,34 @@ const handleSaveButtonClick = async () => {
   }
 };
 
+
+
+
+  const useDebouncedState = (value, delay = 500) => {
+      const [debouncedValue, setDebouncedValue] = useState(value);
   
+      useEffect(() => {
+          const handler = setTimeout(() => {
+              setDebouncedValue(value);
+          }, delay);
+  
+          return () => {
+              clearTimeout(handler);
+          };
+      }, [value, delay]);
+  
+      return debouncedValue;
+  };
+  
+  //  TinyMCE 에디터 입력 값 디바운스 적용
+  const debouncedContent = useDebouncedState(prevContent, 50);
+  
+  useEffect(() => {
+      if (debouncedContent !== prevContent) {
+          setProduct((prev) => ({ ...prev, content: debouncedContent }));
+          setPrevContent(debouncedContent);
+      }
+  }, [debouncedContent]);
   
   
 
@@ -264,11 +311,11 @@ const handleSaveButtonClick = async () => {
           <Form>
             <div className="border p-2 rounded" style={{ backgroundColor: "#fff" }}>
               <Form.Group className="mb-3">
-                <Form.Label>카테고리</Form.Label>
+                <Form.Label style={{ fontWeight: "bold" }}>카테고리</Form.Label>
                 <Form.Control type="text" name="category" value={categoryMap[p.cno] || "기타"} onChange={handleChange} readOnly/>
               </Form.Group>
               <Form.Group className="mb-3">
-              <Form.Label>썸네일</Form.Label>
+              <Form.Label style={{ fontWeight: "bold" }}>썸네일</Form.Label>
               <div className="d-flex flex-wrap">
                 {p.imageUrls && p.imageUrls.length > 0 ? (
                   p.imageUrls.map((thumb, index) => (
@@ -288,21 +335,21 @@ const handleSaveButtonClick = async () => {
             </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>상품명</Form.Label>
+                <Form.Label style={{ fontWeight: "bold" }}>상품명</Form.Label>
                 <Form.Control type="text" name="title" value={p.title} onChange={handleChange} />
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label>가격</Form.Label>
+                <Form.Label style={{ fontWeight: "bold" }}>가격</Form.Label>
                 <Form.Control type="text" name="price" value={p.price} onChange={handleChange} />
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label>재고</Form.Label>
+                <Form.Label style={{ fontWeight: "bold" }}>재고</Form.Label>
                 <Form.Control type="number" name="stock" value={p.stock} onChange={handleChange} readOnly/>
               </Form.Group>
 
             {/* TinyMCE 컴포넌트 적용 */}
             <Form.Group className="mt-4">
-                <Form.Label>상품 설명</Form.Label>
+                <Form.Label style={{ fontWeight: "bold" }}>상품 설명</Form.Label>
                 <CustomEditor initialValue={p.content || ""} onContentChange={handleEditorChange}  uploadUrl={`file/upload/${p.pno}`} />
               </Form.Group>
 
@@ -310,7 +357,7 @@ const handleSaveButtonClick = async () => {
             </div>
 
             {/* 옵션 목록 렌더링 */}
-            <h5 className="mt-4">상품 옵션</h5>
+            <h5 className="mt-4" style={{ fontWeight: "bold" }}>상품 옵션</h5>
             {p.options && p.options.length > 0 ? (
               p.options.map((option, index) => (
                 
@@ -345,7 +392,7 @@ const handleSaveButtonClick = async () => {
                       readOnly
                     />
                   </Form.Group>
-                  <Button variant="danger" size="sm" onClick={() => handleDeleteOption(index,option.optionNo)}>
+                  <Button variant="btn btn-outline-hof" size="sm" onClick={() => handleDeleteOption(index,option.optionNo)}>
                     옵션 삭제
                   </Button>
                 </div>
@@ -381,17 +428,17 @@ const handleSaveButtonClick = async () => {
             )}
 
             {/* 옵션 추가 버튼 */}
-            <Button variant="success" className="mt-3" onClick={handleAddOptionClick}>
+            <Button variant=" btn btn-hof" className="mt-3" onClick={handleAddOptionClick}>
               옵션 추가
             </Button>
           </Form>
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="danger" onClick={handleDelete}>
+        <Button variant="btn btn-outline-hof " onClick={handleDelete}>
           삭제
         </Button>
-        <Button variant="primary" onClick={handleSaveButtonClick}>
+        <Button variant="btn btn-hof" onClick={handleSaveButtonClick}>
           저장
         </Button>
       </Modal.Footer>

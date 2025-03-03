@@ -70,7 +70,7 @@ const FWL = () => {
     try {
       await req('post', 'admin/fwl', { content: newContent, isActive: true });
   
-      setNewContent(''); // ✅ 입력 필드 초기화
+      setNewContent(''); //  입력 필드 초기화
   
 
       req('get', 'admin/fwl'); 
@@ -80,8 +80,8 @@ const FWL = () => {
   };
 
   return (
-    <Container>
-      <h3 className="mb-3">결제 관리</h3>
+    <Container className="mt-4">
+  <h2 className="text-center mb-4 fw-bold">금지어 관리</h2>
 
       {/* PC 화면에서는 테이블 형식 */}
       <div className="d-none d-md-block">
@@ -161,17 +161,18 @@ const FWL = () => {
           ))}
         </Row>
       </div>
-      <Button variant="danger" className="flex-shrink-0" onClick={handleDeleteSelected}>삭제</Button>
-      {/* ✅ 추가 영역 */}
+      <Button variant="btn btn-outline-hof" className="flex-shrink-0 mb-3" onClick={handleDeleteSelected}>삭제</Button>
+      {/*  추가 영역 */}
       <div className="d-flex gap-2 mb-3 align-items-center flex-nowrap">
         <Form.Control 
           type="text"
           placeholder="내용 입력..."
           value={newContent}
           onChange={(e) => setNewContent(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleAdd()}
           style={{ width: '350px' }}
         />
-        <Button variant="primary" className="flex-shrink-0" onClick={handleAdd}>등록</Button>
+        <Button variant="btn btn-hof" className="flex-shrink-0" onClick={handleAdd}>등록</Button>
 
       </div>
     </Container>

@@ -201,7 +201,7 @@ const PopUplist = () => {
           ))}
         </Row>
       </div>
-      <Button variant="danger" className="flex-shrink-0" onClick={handleDeleteSelected}>삭제</Button>
+      <Button variant="btn btn-outline-hof" className="flex-shrink-0" onClick={handleDeleteSelected}>삭제</Button>
     </Container>
   );
 };

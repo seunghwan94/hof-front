@@ -26,7 +26,7 @@ const Qna = () => {
     }
   };
   
-  // ✅ useEffect에서 fetchData 호출
+  //  useEffect에서 fetchData 호출
   useEffect(() => {
     fetchData();
   }, [req]);
@@ -66,7 +66,7 @@ const Qna = () => {
         if (response) {
           alert("답변이 등록되었습니다.");
     
-          // ✅ 상태 업데이트 (새로운 답변 추가)
+          //  상태 업데이트 (새로운 답변 추가)
           setQnaList(prevQnaList => prevQnaList.map(qna => 
             qna.no === selectedQna.no ? { ...qna, status: "처리후" } : qna
           ));
@@ -118,13 +118,13 @@ const Qna = () => {
             await req("delete", `common/qna/${selectedQna.no}`);
             alert("문의글 이 삭제되었습니다.");
             handleCloseModal();
-            await fetchData(); // ✅ 삭제 후 목록 다시 불러오기
+            await fetchData(); //  삭제 후 목록 다시 불러오기
           }
         };
 
   return (
-    <Container>
-      <h3 className="mb-3">문의 관리</h3>
+    <Container className="mt-4">
+<h2 className="text-center mb-4 fw-bold">문의 관리</h2>
 
       {/* PC 화면에서는 테이블 형식 */}
       <div className="d-none d-md-block">
@@ -175,6 +175,8 @@ const Qna = () => {
                     <p className="text-muted">회원 ID: {qna.memberId}</p>
                     <p>내용: {qna.content}</p>
                     <p>상태: {qna.status}</p>
+                    <p>상품명 : {qna.prodTitle}</p>
+                    <p>답변갯수 : {replyCount[qna.no] || 0} </p>
                   </Card.Body>
                 </Card>
               </Col>

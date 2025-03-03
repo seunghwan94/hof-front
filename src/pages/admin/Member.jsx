@@ -24,26 +24,16 @@ const Member = () => {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="restored" className={`custom-tab ${activeTab === "restored" ? "active-tab" : ""}`}>
-            복구회원
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
           <Nav.Link eventKey="companies" className={`custom-tab ${activeTab === "companies" ? "active-tab" : ""}`}>
             업체목록
           </Nav.Link>
         </Nav.Item>
-        <Nav.Item>
-          <Nav.Link eventKey="companyRequests" className={`custom-tab ${activeTab === "companyRequests" ? "active-tab" : ""}`}>
-            업체신청
-          </Nav.Link>
-        </Nav.Item>
+        
       </Nav>
 
       {activeTab === "members" && <MemberList />}
-      {activeTab === "restored" && <RestoredMember />}
       {activeTab === "companies" && <CompanyList />}
-      {activeTab === "companyRequests" && <CompanyRequests />}
+
     </Container>
   );
 };
@@ -74,13 +64,16 @@ const MemberList = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await req("get", "admin/fwl/list");
-
-      if(response){
+      
+      if (Array.isArray(response)) {
         setfilteredMember(response);
+      } else {
+        setfilteredMember([]);
       }
     };
     fetchData();
   }, [req]);
+  
 
   useEffect(() => {
     if (!loading && data) {
@@ -127,7 +120,7 @@ const MemberList = () => {
                     <td>{m.id}</td>
                     <td>{m.name}</td>
                     <td>{m.role}</td>
-                    <td>{m.regDate ? m.regDate : "가입일자가없습니다"}</td>
+                    <td>{m.regDate ? m.regDate.substring(0, 10) : "가입일자가 없습니다"}</td>
                   </tr>
                 ))
               ) : (
@@ -154,7 +147,7 @@ const MemberList = () => {
                     <p className="text-muted">회원 ID: {m.id}</p>
                     <p>이름: {m.name}</p>
                     <p>권한: {m.role}</p>
-                    <p>가입 일자: {m.regDate ? m.regDate : "가입일자가 없습니다"}</p>
+                    <p>가입 일자: {m.regDate ? m.regDate.substring(0, 10) : "가입일자가 없습니다"}</p>
                     <Button variant="primary" onClick={() => handleShowModal(m)}>
                       상세보기
                     </Button>

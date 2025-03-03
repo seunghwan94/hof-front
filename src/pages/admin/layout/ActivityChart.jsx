@@ -14,20 +14,30 @@ const ActivityChart = () => {
       .then((response) => {
         if (response) {
           const labels = Object.keys(response); // 날짜 리스트
+
+          // 🚀 `Invalid Date` 방지: 날짜 형식이 올바른 경우만 변환
+          labels.sort((a, b) => Date.parse(a) - Date.parse(b));
+
           const membersPC = [];
           const membersMobile = [];
           const guestsPC = [];
           const guestsMobile = [];
-          const formattedLabels = labels.map(date => {
-            const parsedDate = new Date(date);
-            return parsedDate.toLocaleDateString("ko-KR", {
 
+          const formattedLabels = labels.map(date => {
+            const parsedDate = new Date(Date.parse(date)); // `Invalid Date` 방지
+
+            if (isNaN(parsedDate)) {
+              console.warn("잘못된 날짜 형식:", date);
+              return date; // 원래 날짜 그대로 반환 (잘못된 날짜는 변환하지 않음)
+            }
+
+            return parsedDate.toLocaleDateString("ko-KR", {
               month: "long",
               day: "numeric",
               weekday: "short" // "월" (월요일) 추가
             }).replace(/\.$/, ""); // 일부 브라우저에서 마지막 마침표 제거
           });
-          
+
           labels.forEach(date => {
             const data = response[date];
             membersPC.push(data?.회원?.PC || 0);

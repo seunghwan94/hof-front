@@ -164,8 +164,8 @@ if (!member) {
     return;
   }
   return products && (
-    <Container>
-      <h3 className="mb-3">상품 관리</h3>
+    <Container className="mt-4">
+<h2 className="text-center mb-4 fw-bold">상품관리</h2>
 
       <div className="mb-4">
           <Search onSearchResults={handleSearchResults} />
@@ -224,7 +224,7 @@ if (!member) {
         
       </div>
     {/* 🔹 상품 등록 버튼 추가 */}
-    <Button variant="primary" className="mb-3" onClick={handleShowCreateModal}>
+    <Button variant="btn btn-hof" className="mb-3" onClick={handleShowCreateModal}>
       상품 등록
     </Button>
       {/* 상품 상세 모달 */}

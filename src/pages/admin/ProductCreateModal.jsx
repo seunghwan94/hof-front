@@ -21,7 +21,7 @@ const ProductCreateModal = ({ show, handleClose }) => {
   const [newOptionForm, setNewOptionForm] = useState(false); // 옵션 입력 필드 표시 여부
   const [previewThumbnail, setPreviewThumbnail] = useState([]); //  썸네일 미리보기
   const [thumbnailUrl, setThumbnailUrl] = useState([]); // 썸네일 URL 저장
-  // 🔹 상품 등록을 위한 상태
+  // 상품 등록을 위한 상태
   const [newProduct, setNewProduct] = useState({
     title: "",
     content: "",
@@ -111,6 +111,7 @@ const ProductCreateModal = ({ show, handleClose }) => {
     } 
         handleChange({ target: { name: "content", value: newContent } });
     setPrevContent(newContent);
+    
   };
   const fetchFwlList = useCallback(async () => {
     try {
@@ -130,11 +131,16 @@ const ProductCreateModal = ({ show, handleClose }) => {
 
 
   const isForbiddenWordUsed = (text) => {
-    
-    return fwlResponse.some(fwl => text.includes(fwl.content));
+    const foundWords = fwlResponse
+      .filter(fwl => fwl.isActive === true && text.includes(fwl.content))
+      .map(fwl => fwl.content);
+  
+    return foundWords.length > 0 ? foundWords : null;
   };
 
   const handleFinalSave = async () => {
+    let forbiddenTitleWords = isForbiddenWordUsed(newProduct.title);
+    let forbiddenContentWords = isForbiddenWordUsed(newProduct.content);
     if (newProduct.options.length === 0 ) {
       alert("최소 한 개의 옵션을 추가해야 합니다.");
       return;
@@ -142,8 +148,21 @@ const ProductCreateModal = ({ show, handleClose }) => {
       alert("상품명은 반드시 입력해야합니다.")
       return;
     }
-    if (isForbiddenWordUsed(newProduct.title) || isForbiddenWordUsed(newProduct.content)) {
-      alert(`상품명 또는 상품 설명에 금지어가 포함되어 있습니다.\n 내용 : ${newProduct.title}${newProduct.content}`);
+    if (thumbnailUrl.length === 0) {
+      alert("최소 1개의 썸네일 이미지를 업로드해야 합니다.");
+      return;
+    }
+    if (forbiddenTitleWords || forbiddenContentWords) {
+      let message = "금지어가 포함되어 있습니다.\n";
+  
+      if (forbiddenTitleWords) {
+        message += ` 제목: ${forbiddenTitleWords.join(", ")}\n`;
+      }
+      if (forbiddenContentWords) {
+        message += ` 내용: ${forbiddenContentWords.join(", ")}`;
+      }
+  
+      alert(message);
       return;
     }
     try {
@@ -191,17 +210,41 @@ const ProductCreateModal = ({ show, handleClose }) => {
       alert("상품 등록 중 오류가 발생했습니다.");
     }
   };
+  const useDebouncedState = (value, delay = 500) => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
 
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+};
+
+//  TinyMCE 에디터 입력 값 디바운스 적용
+const debouncedContent = useDebouncedState(newProduct.content, 50);
+
+useEffect(() => {
+    if (debouncedContent !== prevContent) {
+        setNewProduct((prev) => ({ ...prev, content: debouncedContent }));
+        setPrevContent(debouncedContent);
+    }
+}, [debouncedContent]);
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>상품 등록</Modal.Title>
+        <Modal.Title >상품 등록</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
           {/* 🔹 카테고리 선택 */}
           <Form.Group className="mb-3">
-            <Form.Label>카테고리</Form.Label>
+            <Form.Label style={{ fontWeight: "bold" }}>카테고리</Form.Label>
             <Form.Select name="cno" value={newProduct.cno} onChange={handleChange}>
               {Object.entries(categoryMap).map(([key, value]) => (
                 <option key={key} value={key}>
@@ -211,7 +254,7 @@ const ProductCreateModal = ({ show, handleClose }) => {
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>썸네일 업로드</Form.Label>
+            <Form.Label style={{ fontWeight: "bold" }}>썸네일 업로드</Form.Label>
             <Form.Control type="file" accept="image/*" onChange={handleThumbnailUpload} />
              {/* 썸네일 미리보기 (여러 개 표시) */}
           <div className="d-flex flex-wrap mt-2">
@@ -227,20 +270,20 @@ const ProductCreateModal = ({ show, handleClose }) => {
           </Form.Group>
           {/* 🔹 상품명 입력 */}
           <Form.Group className="mb-3">
-            <Form.Label>상품명</Form.Label>
+            <Form.Label style={{ fontWeight: "bold" }}>상품명</Form.Label>
             <Form.Control type="text" name="title" value={newProduct.title} onChange={handleChange} />
           </Form.Group>
 
 
           {/* 🔹 가격 입력 */}
           <Form.Group className="mb-3">
-            <Form.Label>가격</Form.Label>
+            <Form.Label style={{ fontWeight: "bold" }}>가격</Form.Label>
             <Form.Control type="text" name="price" value={newProduct.price.toLocaleString()} onChange={handleChange} />
           </Form.Group>
 
           {/* TinyMCE 컴포넌트 적용 */}
           <Form.Group className="mt-4">
-                <Form.Label>상품 설명</Form.Label>
+                <Form.Label style={{ fontWeight: "bold" }}>상품 설명</Form.Label>
                 <CustomEditor  onContentChange={handleEditorChange}  uploadUrl={`file/upload`} initialValue={newProduct.content}/>
               </Form.Group>
 
@@ -249,7 +292,7 @@ const ProductCreateModal = ({ show, handleClose }) => {
           {newProduct.options.map((option, index) => (
             <div key={index} className="border p-2 mb-2 rounded">
               <p>{option.type} - {option.value} ({option.addPrice}원) 재고: {option.stock}</p>
-              <Button variant="danger" size="sm" onClick={() => handleDeleteOption(index)}>옵션 삭제</Button>
+              <Button variant="btn btn-outline-hof " size="sm" onClick={() => handleDeleteOption(index)}>옵션 삭제</Button>
             </div>
           ))}
           {newOptionForm && (
@@ -273,7 +316,7 @@ const ProductCreateModal = ({ show, handleClose }) => {
                                 <Form.Label>재고</Form.Label>
                                 <Form.Control type="number" name="stock" value={newOption.stock} onChange={handleNewOptionChange} />
                               </Form.Group>
-                              <Button variant="primary" size="sm" onClick={handleSaveOption}>
+                              <Button variant=" btn btn-hof" size="sm" onClick={handleSaveOption}>
                                 옵션 저장
                               </Button>
                             </div>
@@ -283,7 +326,7 @@ const ProductCreateModal = ({ show, handleClose }) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="primary" onClick={handleFinalSave}>등록</Button>
+        <Button variant=" btn btn-hof" onClick={handleFinalSave}>등록</Button>
       </Modal.Footer>
     </Modal>
   );

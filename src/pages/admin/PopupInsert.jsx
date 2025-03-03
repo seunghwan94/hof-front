@@ -95,7 +95,7 @@ const PopupInsert = ({ setActiveTab }) => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label>URL</Form.Label>
+          <Form.Label>추천상품 URL</Form.Label>
           <Form.Control type="url" name="clickUrl" value={popupData.clickUrl} onChange={handleChange} />
         </Form.Group>
 
@@ -109,7 +109,7 @@ const PopupInsert = ({ setActiveTab }) => {
           <Form.Control type="file" accept="image/*" onChange={handleFileChange} />
         </Form.Group>
 
-        <Button variant="primary" type="submit">
+        <Button variant="btn btn-hof" type="submit">
           등록하기
         </Button>
         <Button variant="secondary" className="ms-2" onClick={() => navigate("/admin/popup")}>

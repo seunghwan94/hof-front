@@ -411,6 +411,9 @@ body {
   overflow-y: auto; 
   z-index: 1000; 
 }
+.category-bar::-webkit-scrollbar {
+  display: none;
+}
 .profile-icon {
   width: 30px;
   height: 30px;
