@@ -25,12 +25,19 @@ jobs:
     - name: Install Dependencies 
       run: yarn install
 
+    - name: Create config.js file
+      run: |
+        cat <<EOF > src/config.js
+        export default { TINYMCE_API_KEY: "${{ secrets.TINYMCE_API_KEY }}" };
+        EOF
+
     - name: Build React App
       run: |
         export NODE_ENV=production
         export CI=false
         yarn build
-        
+
+
     - name: Log in to Docker Hub
       run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
