@@ -103,8 +103,8 @@ const Interior = () => {
           ))}
         </div>
 
-        {/* 더보기 버튼 */}
-        <button className="load-more">더보기</button>
+        {/* 더보기 버튼
+        <button className="load-more">더보기</button> */}
       </div>
     </Container>
   );
