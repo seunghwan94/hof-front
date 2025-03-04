@@ -5,6 +5,7 @@ import useAxios from "../../hooks/useAxios";
 import { useNavigate } from "react-router-dom";
 
 const PopupInsert = ({ setActiveTab }) => {
+  
   const { req } = useAxios();
   const navigate = useNavigate(); 
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -52,14 +53,16 @@ const PopupInsert = ({ setActiveTab }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    const memberId2 = localStorage.getItem("member");
+    const memberData = memberId2 ? JSON.parse(memberId2) : "house3";
     const noticeDto = {
+      
       title: popupData.title,
       content: popupData.content,
       clickUrl: popupData.clickUrl,
       backgroundColor: popupData.backgroundColor,
       fileUrl: popupData.fileUrl,
-      memberId: "hof5",
+      memberId: memberData.id,
     };
     console.log(":::::::::::::::::::::"+noticeDto.fileUrl);
 

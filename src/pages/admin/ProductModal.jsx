@@ -363,7 +363,7 @@ const handleSaveButtonClick = async () => {
                 
                 <div key={index} className="border p-2 mb-4 rounded" style={{ backgroundColor: "#fff" }}>
                   <Form.Group className="mb-3">
-                    <Form.Label>옵션명&#40; {option.type} :::::{option.optionNo} &#41;</Form.Label>
+                    <Form.Label>옵션명&#40; {option.type}  &#41;</Form.Label>
                     <Form.Control
                       type="text"
                       name="value"
@@ -415,12 +415,32 @@ const handleSaveButtonClick = async () => {
                 </Form.Group>
                 <Form.Group className="mb-2">
                   <Form.Label>추가 가격</Form.Label>
-                  <Form.Control type="number" name="addPrice" value={newOption.addPrice} onChange={handleNewOptionChange} />
+                  <Form.Control
+                    type="number"
+                    name="addPrice"
+                    value={newOption.addPrice || ""}
+                    onChange={handleNewOptionChange} // 입력 시 값 변경
+                    onBlur={(e) => {
+                      const cleanedValue = Number(e.target.value).toString(); // 앞의 0 제거
+                      setNewOption((prev) => ({ ...prev, addPrice: cleanedValue }));
+                    }}
+                  />
                 </Form.Group>
+
                 <Form.Group className="mb-2">
                   <Form.Label>재고</Form.Label>
-                  <Form.Control type="number" name="stock" value={newOption.stock} onChange={handleNewOptionChange} />
+                  <Form.Control
+                    type="number"
+                    name="stock"
+                    value={newOption.stock || ""}
+                    onChange={handleNewOptionChange}
+                    onBlur={(e) => {
+                      const cleanedValue = Number(e.target.value).toString();
+                      setNewOption((prev) => ({ ...prev, stock: cleanedValue }));
+                    }}
+                  />
                 </Form.Group>
+
                 <Button variant="primary" size="sm" onClick={handleSaveOption}>
                   옵션 저장
                 </Button>

@@ -310,11 +310,30 @@ useEffect(() => {
                               </Form.Group>
                               <Form.Group className="mb-2">
                                 <Form.Label>추가 가격</Form.Label>
-                                <Form.Control type="number" name="addPrice" value={newOption.addPrice} onChange={handleNewOptionChange} />
+                                <Form.Control
+                                  type="number"
+                                  name="addPrice"
+                                  value={newOption.addPrice || ""}
+                                  onChange={handleNewOptionChange}
+                                  onBlur={(e) => {
+                                    const cleanedValue = Number(e.target.value).toString(); // 앞의 0 제거
+                                    setNewOption((prev) => ({ ...prev, addPrice: cleanedValue }));
+                                  }}
+                                />
                               </Form.Group>
+
                               <Form.Group className="mb-2">
                                 <Form.Label>재고</Form.Label>
-                                <Form.Control type="number" name="stock" value={newOption.stock} onChange={handleNewOptionChange} />
+                                <Form.Control
+                                  type="number"
+                                  name="stock"
+                                  value={newOption.stock || ""}
+                                  onChange={handleNewOptionChange}
+                                  onBlur={(e) => {
+                                    const cleanedValue = Number(e.target.value).toString();
+                                    setNewOption((prev) => ({ ...prev, stock: cleanedValue }));
+                                  }}
+                                />
                               </Form.Group>
                               <Button variant=" btn btn-hof" size="sm" onClick={handleSaveOption}>
                                 옵션 저장
