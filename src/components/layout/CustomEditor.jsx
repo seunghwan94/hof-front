@@ -1,11 +1,14 @@
 import React, { useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import useAxios from "../../hooks/useAxios";
+import config from "../../config";
+
 
 const CustomEditor = ({ initialValue = "", onContentChange, uploadUrl, domain }) => {
   const { req } = useAxios();
   const [loading, setLoading] = useState(false);
 
+  const apiKey = config.TINYMCE_API_KEY;
   const isUploadingRef = useRef(false); //  업로드 상태를 useRef로 관리 (re-render 방지)
   const lastContentRef = useRef(""); //  마지막 content 저장
   const prevImageCountRef = useRef(0); //  이전 이미지 개수 저장
@@ -232,7 +235,7 @@ const removeBase64Images = (content) => {
     <div>
       {loading && <p style={{ color: "red" }}> 이미지 업로드 중...</p>}
       <Editor
-        apiKey="trgnbu8snkmw5p1ktqkfz87cxleiphn5div5xeo0n1tnrhxm"
+        apiKey={apiKey}
         value={initialValue}
         onInit={(evt, editor) => (editorRef.current = editor)} 
         init={{

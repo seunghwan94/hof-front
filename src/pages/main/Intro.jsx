@@ -191,7 +191,7 @@ const Intro = () => {
         <a href="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/%EC%A0%95%EC%9D%98%EC%84%9C.xlsx" download="정의서.xlsx" target="_blank" rel="noopener noreferrer">정의서</a> /{" "}
         <a href="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/WBS.xlsx" download="WBS.xlsx" target="_blank" rel="noopener noreferrer">WBS</a> /{" "}
         <a href="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/ERD.xlsx" download="ERD.xlsx" target="_blank" rel="noopener noreferrer">ERD</a> / 프로토타입 / PPT <br />
-        <a href="http://localhost:8080/api/v1/swagger-ui/index.html" target="_blank" rel="noopener noreferrer">Swagger</a> /{" "}
+        <a href="http://hof.lshwan.com/api/v1/swagger-ui/index.html" target="_blank" rel="noopener noreferrer">Swagger</a> /{" "}
         <a href="https://hof.lshwan.com/jacoco/index.html" target="_blank" rel="noopener noreferrer"> Jacoco</a> / 
         <a href="https://github.com/seunghwan94" target="_blank" rel="noopener noreferrer"> GitHub </a>[ 
         <a href="https://github.com/seunghwan94/hof-front" target="_blank" rel="noopener noreferrer"> Front </a>| 
