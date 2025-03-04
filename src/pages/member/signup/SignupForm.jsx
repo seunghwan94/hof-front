@@ -355,7 +355,7 @@ const SignupForm = ({ termsAccepted }) => {
             className={`w-100 ${gender === 'OTHER' ? 'btn-hof' : 'btn-outline-hof'}`} 
             onClick={() => setGender('OTHER')}
           >
-            선택하지 않음
+            선택하지않음
           </Button>
         </ButtonGroup>
 
