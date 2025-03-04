@@ -3,8 +3,7 @@ import { Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import useAxios from "../../../hooks/useAxios";
 import Logo from "../../../components/layout/Logo";
-import { GoogleLogin } from "@react-oauth/google";
-import axios from "axios";
+
 
 function LoginForm() {
   const [id, setId] = useState("");
@@ -22,13 +21,7 @@ function LoginForm() {
     if (data?.accessToken) {
       localStorage.setItem("jwt", data.accessToken);
       localStorage.setItem("member", JSON.stringify(data.member));
-      const role = data.member?.role;
-
-      if (role === "admin" || role === "master") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
+      navigate("/");
     }
   }, [data, navigate]);
 
