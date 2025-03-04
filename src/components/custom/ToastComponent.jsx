@@ -8,21 +8,30 @@ const ToastComponent = () => {
 
 
   useEffect(() => {
-    const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const ws = new WebSocket(`${wsProtocol}://${window.location.hostname}:8080/api/v1/ws/notify`);
+    // 현재 호스트 이름 가져오기
+    const hostname = window.location.hostname;
+    
+    // 환경에 따라 WebSocket URL 설정
+    const wsUrl =
+      hostname === "localhost"
+        ? "ws://localhost:8080/api/v1/ws/notify"
+        : "wss://hof.lshwan.com/api/v1/ws/notify";
 
-    ws.onopen = () => console.log(" 웹소켓 연결됨");
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => console.log("웹소켓 연결됨:", wsUrl);
     ws.onmessage = (event) => {
-      console.log("🔔 웹소켓 메시지 수신:", event.data);
+      console.log("웹소켓 메시지 수신:", event.data);
       toast.info(event.data);
     };
-    ws.onerror = (error) => console.error(" 웹소켓 오류 발생:", error);
-    ws.onclose = () => console.log(" 웹소켓 연결 종료");
+    ws.onerror = (error) => console.error("웹소켓 오류 발생:", error);
+    ws.onclose = () => console.log("웹소켓 연결 종료");
 
     setSocket(ws);
 
     return () => ws.close();
-}, []);
+  }, []);
+
   const showToast = (message, type) => {
     // const backgroundColors = {
     //     success: "#007bff",
