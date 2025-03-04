@@ -272,7 +272,7 @@ const handleSaveButtonClick = async () => {
 
 
 
-  const useDebouncedState = (value, delay = 500) => {
+  const useDebouncedState = (value, delay = 2000) => {
       const [debouncedValue, setDebouncedValue] = useState(value);
   
       useEffect(() => {
@@ -289,7 +289,7 @@ const handleSaveButtonClick = async () => {
   };
   
   //  TinyMCE 에디터 입력 값 디바운스 적용
-  const debouncedContent = useDebouncedState(prevContent, 50);
+  const debouncedContent = useDebouncedState(prevContent, 2000);
   
   useEffect(() => {
       if (debouncedContent !== prevContent) {
