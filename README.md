@@ -56,7 +56,10 @@ House Of Furniture는 인테리어 제품을 판매하고, 인테리어 시공�
 **GitHub Actions 실행 내역**: [GitHub Actions](https://github.com/seunghwan94/hof-back/actions)  
 
 ### **배포 방식**  
-- **Git Branch 이원관리** (Merge Commit 이력 보존)  
+- **Git Branch 전략(이원관리)** (Merge Commit 이력 보존)
+- Feature Branch 전략을 사용하여 feature/ 브랜치에서만 개발 진행
+- 새로운 기능을 추가할 때 feature/기능명 형태로 브랜치를 생성
+- 개발 완료 후 master 브랜치로 Merge Commit 방식을 사용하여 병합
 - `master` 브랜치에 push 시 자동 배포  
   - Docker 이미지 빌드 및 Docker Hub에 배포 (**Docker Compose 미사용**)  
   - **Discord 연동** → 배포 성공/실패 알림  
