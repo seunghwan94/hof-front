@@ -227,7 +227,7 @@ const ProductCreateModal = ({ show, handleClose }) => {
 };
 
 //  TinyMCE 에디터 입력 값 디바운스 적용
-const debouncedContent = useDebouncedState(newProduct.content, 50);
+const debouncedContent = useDebouncedState(newProduct.content, 300);
 
 useEffect(() => {
     if (debouncedContent !== prevContent) {

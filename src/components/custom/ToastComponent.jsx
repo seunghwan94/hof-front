@@ -6,8 +6,13 @@ import "react-toastify/dist/ReactToastify.css";
 const ToastComponent = () => {
   const [socket, setSocket] = useState(null);
 
-
+// 모바일 여부 확인
+const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   useEffect(() => {
+    if (isMobile) {
+      console.log("📱 모바일 환경이므로 토스트를 비활성화합니다.");
+      return; // 모바일에서는 WebSocket 연결을 하지 않음
+    }
     // 현재 호스트 이름 가져오기
     const hostname = window.location.hostname;
     
