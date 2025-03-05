@@ -342,10 +342,7 @@ const handleSaveButtonClick = async () => {
                 <Form.Label style={{ fontWeight: "bold" }}>가격</Form.Label>
                 <Form.Control type="text" name="price" value={p.price} onChange={handleChange} />
               </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label style={{ fontWeight: "bold" }}>재고</Form.Label>
-                <Form.Control type="number" name="stock" value={p.stock} onChange={handleChange} readOnly/>
-              </Form.Group>
+
 
             {/* TinyMCE 컴포넌트 적용 */}
             <Form.Group className="mt-4">

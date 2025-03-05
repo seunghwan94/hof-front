@@ -204,7 +204,7 @@ const ProductCreateModal = ({ show, handleClose }) => {
       await req("post", "main/prod", updatedProduct);
       alert("상품이 등록되었습니다!");
       handleClose();
-      window.location.reload(); 
+      // window.location.reload();
     } catch (error) {
       console.error("상품 등록 오류:", error);
       alert("상품 등록 중 오류가 발생했습니다.");
@@ -268,14 +268,14 @@ useEffect(() => {
             )}
           </div>
           </Form.Group>
-          {/* 🔹 상품명 입력 */}
+          {/*  상품명 입력 */}
           <Form.Group className="mb-3">
             <Form.Label style={{ fontWeight: "bold" }}>상품명</Form.Label>
             <Form.Control type="text" name="title" value={newProduct.title} onChange={handleChange} />
           </Form.Group>
 
 
-          {/* 🔹 가격 입력 */}
+          {/*  가격 입력 */}
           <Form.Group className="mb-3">
             <Form.Label style={{ fontWeight: "bold" }}>가격</Form.Label>
             <Form.Control type="text" name="price" value={newProduct.price.toLocaleString()} onChange={handleChange} />

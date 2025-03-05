@@ -88,6 +88,7 @@ const handleSearchResults = (searchResults) => {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedProduct(null);
+
   };
 	  // 입력값 변경 핸들러
 		const handleChange = (e) => {
@@ -153,6 +154,7 @@ const handleSaveChanges = async (updatedProduct) => {
 
       const handleCloseCreateModal = () => {
         setShowCreateModal(false);
+        axios(); // 🔹 모달 닫을 때 상품 목록 새로고침
       };
       const indexOfLastItem = currentPage * itemsPerPage;
       const indexOfFirstItem = indexOfLastItem - itemsPerPage;
