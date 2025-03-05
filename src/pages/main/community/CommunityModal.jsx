@@ -10,6 +10,9 @@ import "../../../styles/communityModal.scss"; // ✅ 반응형 스타일 추가
 const CommunityModal = ({ nno, onHide }) => {
   const { data: post, loading, error, req } = useAxios();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const mno = localStorage.getItem("member").mno;
+
+
 
   // 반응형 감지
   useEffect(() => {
@@ -27,6 +30,11 @@ const CommunityModal = ({ nno, onHide }) => {
     };
     if (nno) fetchPost();
   }, [nno, req]);
+
+  if (!mno) {
+    alert("로그인 후 이용해주세요.");
+    return;
+  }
 
   if (loading) return <Spinner animation="border" />;
   if (error) return <p>에러 발생: {error.message}</p>;
@@ -68,7 +76,7 @@ const CommunityModal = ({ nno, onHide }) => {
 
           {/* 좋아요 및 댓글 수 */}
           <div className="d-flex justify-content-between mt-2 text-muted">
-            <CommunityLikes targetNo={nno} targetType="NOTE" userMno={24} />
+            <CommunityLikes targetNo={nno} targetType="NOTE" userMno={mno} />
             <span>
               <FontAwesomeIcon icon={faComment} className="me-1" /> {post.commentCount || 0}
             </span>

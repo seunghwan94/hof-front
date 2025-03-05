@@ -9,6 +9,7 @@ const CommentSection = ({ nno }) => {
   const [expandedReplies, setExpandedReplies] = useState({}); // 대댓글 펼침 상태
   const [visibleComments, setVisibleComments] = useState(5);
   const [showScroll, setShowScroll] = useState(false);
+  const mno = localStorage.getItem("member").mno;
 
   // 댓글 목록 가져오기
   const fetchComments = async () => {
@@ -25,7 +26,7 @@ const CommentSection = ({ nno }) => {
     if (comment.trim()) {
       await req("POST", `main/reply`, {
         nno,
-        mno: 24, // 임시 사용자 ID
+        mno, // 임시 사용자 ID
         content: comment,
         parentReplyId: replyTo, // 대댓글일 경우 parentReplyId 설정
       });

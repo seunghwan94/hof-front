@@ -48,7 +48,7 @@ const CommunityAdd = () => {
             
 
               // 🔹 이미지 업로드가 완료된 후 게시글 데이터 전송
-              const newParams = { mno: userMno, title, content };
+              const newParams = { mno: userMno, title: "제목", content };
               const params = new URLSearchParams(newParams).toString();
 
               const postData = new FormData();
@@ -103,15 +103,6 @@ const CommunityAdd = () => {
       <h2 className="mb-4">게시글 작성</h2>
       {error && <p className="text-danger">{error}</p>}
       <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>제목</Form.Label>
-          <Form.Control
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </Form.Group>
 
         <Form.Group className="mb-3">
           <Form.Label>이미지 업로드</Form.Label>
