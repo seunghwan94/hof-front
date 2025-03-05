@@ -10,7 +10,9 @@ import "../../../styles/communityModal.scss"; // ✅ 반응형 스타일 추가
 const CommunityModal = ({ nno, onHide }) => {
   const { data: post, loading, error, req } = useAxios();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const mno = localStorage.getItem("member").mno;
+
+  const mno = JSON.parse(localStorage.getItem("member"))?.mno;
+  console.log(mno);
 
 
 

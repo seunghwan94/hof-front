@@ -9,8 +9,7 @@ const CommentSection = ({ nno }) => {
   const [expandedReplies, setExpandedReplies] = useState({}); // 대댓글 펼침 상태
   const [visibleComments, setVisibleComments] = useState(5);
   const [showScroll, setShowScroll] = useState(false);
-  const mno = localStorage.getItem("member").mno;
-
+  const mno = JSON.parse(localStorage.getItem("member"))?.mno;
   // 댓글 목록 가져오기
   const fetchComments = async () => {
     await req("GET", `main/reply/note/${nno}`);
