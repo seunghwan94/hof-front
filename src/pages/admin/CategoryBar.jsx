@@ -71,7 +71,7 @@ const isActive = (path) => location.pathname.startsWith(path);
         </li>
         <li style={{ backgroundColor: isActive("/admin/fwl") ? "#35c5f0" : "transparent" }} className="mt-3">
           <Link to="/admin/fwl" className="nav-link text-white d-flex align-items-center  font-weight-bold" onClick={handleLinkClick}>
-          <FontAwesomeIcon icon={faRectangleXmark}  className="me-4"style={{width : 16,height : 16}} /> FWL
+          <FontAwesomeIcon icon={faRectangleXmark}  className="me-4"style={{width : 16,height : 16}} /> 금지어 관리
           </Link>
         </li>
         <li style={{ backgroundColor: isActive("/admin/notification") ? "#35c5f0" : "transparent" }} className="mt-3">

@@ -12,7 +12,6 @@ const CommunityModal = ({ nno, onHide }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   const mno = JSON.parse(localStorage.getItem("member"))?.mno;
-  console.log(mno);
 
 
 
