@@ -23,7 +23,7 @@ function Footer() {
             <a href="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/WBS.xlsx" download="WBS.xlsx" target="_blank" rel="noopener noreferrer">WBS</a> /{" "}
             <a href="https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/ERD.xlsx" download="ERD.xlsx" target="_blank" rel="noopener noreferrer">ERD</a> /{" "}
             <a href="https://youtu.be/X1xhnW_Am7w" target="_blank" rel="noopener noreferrer">Prototype</a> /{" "}
-            <a href="https://www.dropbox.com/scl/fi/yh2t5i4q9y2t1cu6boi0b/House-OF-Furniture.pptx?rlkey=vq7p80i97fu7j29fa6dpnbr2k&e=1&st=wqozeqzy&dl=0" target="_blank" rel="noopener noreferrer">PPT(발표자료)</a> /{" "}<br />
+            <a href="https://docs.google.com/presentation/d/106Bbp9wGKJkDONSXwj8kMHOLIopljb1A/edit?usp=sharing&ouid=104512884664028305458&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer">PPT(발표자료)</a> /{" "}<br />
             {/* 환경에 따라 Swagger URL 변경 */}
             <a href={swaggerUrl} target="_blank" rel="noopener noreferrer">Swagger</a> /{" "}
             <a href="https://hof.lshwan.com/jacoco/index.html" target="_blank" rel="noopener noreferrer"> Jacoco</a> / 
